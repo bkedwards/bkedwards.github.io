@@ -1,0 +1,47 @@
+.container {
+    background-color: #243456;
+    border: 1px solid #f7cd83;
+    border-radius: 50px;
+    display: flex;
+    margin-left: 15%;
+    margin-right: 15%;
+    flex-direction: column;
+    color: white;
+    padding: 2rem;
+    min-height: 100vh;
+    overflow: visible;
+}
+
+.title {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    font-size: 48px;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+.project-columns {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+}
+
+.project-row {
+  display: flex;
+  gap: 2rem;
+  flex: 1; /* split vertical space between rows */
+}
+
+.project-card {
+  min-height: 500px;
+  flex: 1;
+  padding: 2rem;
+  border: 1px solid #f7cd83;
+  border-radius: 25px;
+  background: linear-gradient(to left, #001737, #243456);
+  display: flex;
+  flex-direction: column;
+}
