@@ -1,0 +1,21 @@
+/* Basic CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base Styles */
+html {
+  font-size: 16px;
+
+}
+
+body {
+  background-color: #001d42;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+app-root {
+  width: 100%;
+}
