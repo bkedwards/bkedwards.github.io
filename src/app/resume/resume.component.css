@@ -9,8 +9,8 @@
     flex-direction: row;
     color: white;
     padding: 2rem;
-    min-height: 100vh; /* maintains minimum height */
-    height: auto;      /* allows vertical growth */
+    min-height: 100vh;
+    height: auto;
     position: relative; /* Create positioning context */
 }
 
@@ -39,8 +39,8 @@
     font-size: 36px;
 }
 
-.section-title:hover {
-    color: #f7cd83;
+.section:hover .section-title {
+  color: #f7cd83;
 }
 
 .divider {
@@ -92,6 +92,10 @@
   font-size: 48px;
   color: white;
   margin-bottom: 1rem;
+}
+
+.resume-title:hover {
+  color: #f7cd83;
 }
 
 .socials-grid {
@@ -147,31 +151,40 @@ a:hover {
 }
 
 .right-column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative; /* Added for absolute positioning context */
-  /* Remove height:100% as it might be causing issues */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Added for absolute positioning context */
 }
 
 .vertical-timeline {
-  width: 12px;
-  background-color: white;
-  position: absolute; /* Changed to absolute positioning */
-  top: 250px; /* Start below the photo with some margin */
-  bottom: 0; /* Extend to the bottom of parent */
-  left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Ensure proper centering */
+    width: 4px;
+    background-color: white;
+    position: absolute;
+    top: 300px; /* Start below the photo with some margin */
+    bottom: 0;  /* Extend to the bottom of parent */
+    left: 50%;  /* Center horizontally */
+    transform: translateX(-50%);
+    z-index: 1;
 }
 
 .timeline-dot {
-    width: 18px;
-    height: 18px;
-    background-color: #f7cd83;
+    width: 30px;
+    height: 30px;
+    background-color: white;
     border-radius: 50%;
-    border: 3px solid white;
+    border: 4px solid white;
     position: absolute;
-    top: 40px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 2;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.timeline-dot:hover {
+    width: 36px;
+    height: 36px;
+    background-color: white;
+    border-color: #f7cd83;
 }
