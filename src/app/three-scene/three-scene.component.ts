@@ -27,6 +27,7 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
 
   // ─── NEW PROPERTIES ─────────────────────────────────────────────────────────
   private positions!: Float32Array; // keep reference to the buffer
+  private originalPositions!: Float32Array;
   private count = 2000; // same as your loop
   private noise = new ImprovedNoise(); // Perlin noise generator
 
@@ -40,6 +41,81 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
     cancelAnimationFrame(this.frameId);
     window.removeEventListener('resize', this.onResize);
     this.renderer.dispose();
+  }
+
+  getPoint(
+    v: THREE.Vector3,
+    size: number,
+    data: Float32Array,
+    offset: number
+  ): any {
+    v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
+    if (v.length() > 1) return this.getPoint(v, size, data, offset);
+    return v.normalize().multiplyScalar(size).toArray(data, offset);
+  }
+
+  getSphere(count: number, size: number): Float32Array {
+    const data = new Float32Array(count * 3); // x, y, z only
+    const p = new THREE.Vector3();
+    for (let i = 0; i < count * 3; i += 3) {
+      this.getPoint(p, size, data, i);
+    }
+    return data;
+  }
+
+  computeCurlNoise(x: number, y: number, z: number, scale = 1): THREE.Vector3 {
+    const eps = 0.01;
+    const dx = eps;
+    const dy = eps;
+    const dz = eps;
+
+    const noise = this.noise; // Assume it's a Perlin-like 3D noise
+
+    const dF_dy_z = noise.noise(x, y + dy, z) - noise.noise(x, y - dy, z);
+    const dF_dz_y = noise.noise(x, y, z + dz) - noise.noise(x, y, z - dz);
+    const dF_dz_x = noise.noise(x + dx, y, z) - noise.noise(x - dx, y, z);
+    const dF_dx_z = noise.noise(x, y, z + dz) - noise.noise(x, y, z - dz);
+    const dF_dx_y = noise.noise(x, y + dy, z) - noise.noise(x, y - dy, z);
+    const dF_dy_x = noise.noise(x + dx, y, z) - noise.noise(x - dx, y, z);
+
+    const curlX = (dF_dz_y - dF_dy_z) * 0.5;
+    const curlY = (dF_dx_z - dF_dz_x) * 0.5;
+    const curlZ = (dF_dy_x - dF_dx_y) * 0.5;
+
+    return new THREE.Vector3(curlX, curlY, curlZ).multiplyScalar(scale);
+  }
+
+  computeMultiOctaveCurl(
+    x: number,
+    y: number,
+    z: number,
+    baseFreq = 0.25,
+    octaves = 4,
+    baseScale = 0.02
+  ): THREE.Vector3 {
+    let curl = new THREE.Vector3();
+    let freq = baseFreq;
+    let amp = 1.0;
+    let totalAmp = 0.0;
+
+    for (let i = 0; i < octaves; i++) {
+      const scaledX = x * freq;
+      const scaledY = y * freq;
+      const scaledZ = z * freq;
+      const c = this.computeCurlNoise(
+        scaledX,
+        scaledY,
+        scaledZ,
+        baseScale * amp
+      );
+      curl.add(c);
+      totalAmp += amp;
+      freq *= 2.0;
+      amp *= 0.5; // Halve amplitude each octave
+    }
+
+    curl.divideScalar(totalAmp); // Optional: normalize total amplitude
+    return curl;
   }
 
   private initThree() {
@@ -65,56 +141,71 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
 
     // Build a sphere of points
     const radius = 2;
-    this.positions = new Float32Array(this.count * 3);
+    this.positions = this.getSphere(this.count, radius);
     const colors = new Float32Array(this.count * 3);
     const alphas = new Float32Array(this.count);
 
-    for (let i = 0; i < this.count; i++) {
-      // random point on sphere
-      const phi = Math.acos(2 * Math.random() - 1);
-      const theta = 2 * Math.PI * Math.random();
-      const x = radius * Math.sin(phi) * Math.cos(theta);
-      const y = radius * Math.sin(phi) * Math.sin(theta);
-      const z = radius * Math.cos(phi);
-      this.positions.set([x, y, z], i * 3);
+    if (!this.originalPositions) {
+      this.originalPositions = this.positions.slice(); // shallow clone of Float32Array
+    }
 
-      // random blue or gold
+    for (let i = 0; i < this.count; i++) {
       const c =
         Math.random() < 0.5
           ? new THREE.Color(0x0000ff)
           : new THREE.Color(0xffd700);
       colors.set([c.r, c.g, c.b], i * 3);
 
-      // random alpha
       alphas[i] = Math.random();
     }
 
     const geo = new THREE.BufferGeometry();
     geo.setAttribute('position', new THREE.BufferAttribute(this.positions, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geo.setAttribute('alpha', new THREE.BufferAttribute(alphas, 1));
+
+    const positionsTexture = new THREE.DataTexture(
+      this.getSphere(512 * 512, 128),
+      512,
+      512,
+      THREE.RGBAFormat,
+      THREE.FloatType
+    );
 
     const mat = new THREE.ShaderMaterial({
       transparent: true,
+      blending: THREE.NormalBlending,
+      depthWrite: false,
+      uniforms: {
+        uTime: { value: 0 },
+        uFocus: { value: 7 },
+        uFov: { value: 14 },
+        uBlur: { value: 8.1 },
+      },
       vertexShader: `
-        attribute vec3 color;
-        attribute float alpha;
+        uniform float uTime;
+        uniform float uFocus;
+        uniform float uFov;
+        uniform float uBlur;
         varying vec3 vColor;
         varying float vAlpha;
+        varying float vDistance;
+
         void main() {
-          vColor = color;
-          vAlpha = alpha;
-          gl_PointSize = 4.0;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          vec3 pos = position;
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          vDistance = abs(uFocus - -mvPosition.z);
+          gl_PointSize = vDistance * uBlur * 2.0;
         }
       `,
       fragmentShader: `
         varying vec3 vColor;
-        varying float vAlpha;
+        varying float vDistance;
+
         void main() {
           vec2 cxy = 2.0 * gl_PointCoord - 1.0;
           if (dot(cxy, cxy) > 1.0) discard;
-          gl_FragColor = vec4(vColor, vAlpha);
+
+          gl_FragColor = vec4(vec3(0.2, 0.6, 1.0), (1.04 - clamp(vDistance * 1.5, 0.0, 1.0)));
         }
       `,
     });
@@ -133,6 +224,7 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
       'position'
     ] as THREE.BufferAttribute;
     const arr = attr.array as Float32Array;
+
     const t = performance.now() * 0.0005;
     const angle = 0.002;
     const c = Math.cos(angle),
@@ -140,22 +232,28 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
 
     for (let i = 0; i < this.count; i++) {
       const i3 = i * 3;
-      let x = arr[i3],
-        y = arr[i3 + 1],
-        z = arr[i3 + 2];
+      const x = this.originalPositions[i3];
+      const y = this.originalPositions[i3 + 1];
+      const z = this.originalPositions[i3 + 2];
 
-      // simple swirl in XY
+      // Apply swirl in XY
       const nx = x * c - y * s;
       const ny = x * s + y * c;
+      const nz = z;
 
-      // small Perlin‐based jitter
-      const n1 = this.noise.noise(nx * 0.5 + t, ny * 0.5 + t, z * 0.5 + t);
-      const n2 = this.noise.noise(ny * 0.5 - t, z * 0.5 + t, nx * 0.5 - t);
-      const n3 = this.noise.noise(z * 0.5 - t, nx * 0.5 + t, ny * 0.5 + t);
+      // Multi-octave curl noise like in the GLSL shader
+      const curl = this.computeMultiOctaveCurl(
+        nx + t,
+        ny + t,
+        nz + t,
+        5,
+        10,
+        10
+      );
 
-      arr[i3] = nx + n1 * 0.02;
-      arr[i3 + 1] = ny + n2 * 0.02;
-      arr[i3 + 2] = z + n3 * 0.02;
+      arr[i3] = nx + curl.x;
+      arr[i3 + 1] = ny + curl.y;
+      arr[i3 + 2] = nz + curl.z;
     }
     attr.needsUpdate = true;
     // ────────────────────────────────────────────────────────────────────────
