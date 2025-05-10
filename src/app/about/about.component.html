@@ -1,2 +1,18 @@
-<app-three-scene></app-three-scene>
+<div class="three-container">
+  <canvas class="fly-in" #canvas></canvas>
+
+  @if (!buttonClicked()) {
+    <div class="centered-text">
+      <h1 [ngClass]="{'small-text': (typedText$ | async)}">
+        {{ (typedText$ | async)?.text }}
+      </h1>
+
+      @if (showButton()) {
+        <button class="action-button" (click)="handleClick()">
+          <i class="fa-regular fa-circle-play"></i> 
+        </button>
+      }
+    </div>
+  }
+</div>
 

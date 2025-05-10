@@ -1,38 +1,84 @@
-.container {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+.three-container {
   position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
-canvas {
-  position: fixed;
+app-three-scene {
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
 }
 
-.controls {
+.centered-text h1{
   position: absolute;
-  top: 20px;
-  right: 20px;
-  background-color: rgba(0, 0, 0, 0.5);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   color: white;
-  padding: 20px;
-  border-radius: 5px;
-  width: 300px;
+  text-align: center;
+  font-size: 64px;
+  z-index: 10; 
+  display: inline-flex;
+  white-space: pre-line; /* 👈 This makes '\n' effective */
 }
 
-.control-item {
-  margin-bottom: 15px;
+.cursor {
+  display: inline-block;
+  margin-left: 2px;
+  color: white;
+  animation: blink 1s step-end infinite;
 }
 
-label {
-  display: block;
-  margin-bottom: 5px;
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
 }
 
-input[type="range"] {
+.fly-in {
+  animation: flyInFromBottom 1.2s ease-out forwards;
+  transform: translateY(100vh);
+}
+
+@keyframes flyInFromBottom {
+  to {
+    transform: translateY(0);
+  }
+}
+
+.action-button {
+  font-family: inherit;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, 80%);
+  margin-top: 50px;
+  padding: 0;
+  font-size: 36px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 50px;
+  padding: 0.25rem 2.5rem;
+  background: #243456;
+  border: 2px solid white;
+  background: none;
+  justify-content: center;
+  align-items: center;
+  color: white;
+}
+
+.action-button:hover {
+  color: #f7cd83;
+
+}
+
+canvas {
   width: 100%;
+  height: 100%;
+  display: block;
+  background: transparent;
 }

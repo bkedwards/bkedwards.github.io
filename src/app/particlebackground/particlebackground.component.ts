@@ -6,14 +6,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 
 @Component({
-  selector: 'app-three-scene',
-  templateUrl: './three-scene.component.html',
-  styleUrls: ['./three-scene.component.css'],
+  selector: 'app-particle-background',
+  templateUrl: './particlebackground.component.html',
+  styleUrls: ['./particlebackground.component.css'],
 })
-export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
+export class ParticlebackgroundComponent implements AfterViewInit, OnDestroy {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
@@ -22,7 +21,6 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
   private camera!: THREE.PerspectiveCamera;
   private points!: THREE.Points;
   private frameId = 0;
-  //private controls!: OrbitControls;
 
   private simScene!: THREE.Scene;
   private simCamera!: THREE.OrthographicCamera;
@@ -43,23 +41,34 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
     this.renderer.dispose();
   }
 
-  getPoint(
+  getCylinderPoint(
     v: THREE.Vector3,
-    size: number,
+    radius: number,
+    halfLength: number,
     data: Float32Array,
     offset: number
   ): any {
-    v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-    if (v.length() > 1) return this.getPoint(v, size, data, offset);
-    return v.normalize().multiplyScalar(size).toArray(data, offset);
+    const theta = Math.random() * Math.PI * 2;
+    const r = Math.sqrt(Math.random()) * radius;
+
+    v.set(
+      Math.random() * halfLength * 2 - halfLength, // X-axis spans cylinder length
+      r * Math.cos(theta), // Y-axis circular base
+      r * Math.sin(theta) // Z-axis circular base
+    );
+
+    return v.toArray(data, offset);
   }
 
-  getSphere(count: number, size: number): Float32Array {
-    const data = new Float32Array(count * 4); // x, y, z only
+  getCylinder(count: number, radius: number, length: number): Float32Array {
+    const data = new Float32Array(count * 4); // x, y, z only (4th element unused)
     const p = new THREE.Vector3();
+    const halfLength = length / 2;
+
     for (let i = 0; i < count * 4; i += 4) {
-      this.getPoint(p, size, data, i);
+      this.getCylinderPoint(p, radius, halfLength, data, i);
     }
+
     return data;
   }
 
@@ -79,7 +88,6 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
       1000
     );
     this.camera.position.set(0, 0, 6); // Match React camera position
-    //this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.onResize();
 
     this.scene = new THREE.Scene();
@@ -101,13 +109,17 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
       particles[i * 3 + 1] = i / this.simSize / this.simSize;
     }
 
-    this.simRenderTarget = new THREE.WebGLRenderTarget(this.simSize, this.simSize, {
-      minFilter: THREE.NearestFilter,
-      magFilter: THREE.NearestFilter,
-      format: THREE.RGBAFormat,
-      type: THREE.FloatType,
-      depthBuffer: false,
-    });
+    this.simRenderTarget = new THREE.WebGLRenderTarget(
+      this.simSize,
+      this.simSize,
+      {
+        minFilter: THREE.NearestFilter,
+        magFilter: THREE.NearestFilter,
+        format: THREE.RGBAFormat,
+        type: THREE.FloatType,
+        depthBuffer: false,
+      }
+    );
 
     const simGeom = new THREE.BufferGeometry();
     simGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -116,7 +128,7 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
     this.simScene = new THREE.Scene();
 
     const positionsTexture = new THREE.DataTexture(
-      this.getSphere(512 * 512, 128),
+      this.getCylinder(512 * 512, 128, window.innerWidth / 100),
       512,
       512,
       THREE.RGBAFormat,
@@ -361,7 +373,7 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
       const useGold = Math.random() < 0.7;
       if (useGold) {
         colors[i3 + 0] = 0.9686;
-        colors[i3 + 1] = 0.8039;  
+        colors[i3 + 1] = 0.8039;
         colors[i3 + 2] = 0.5137;
       } else {
         colors[i3 + 0] = 0.2; // R
@@ -417,7 +429,6 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
 
   private animate = () => {
     this.frameId = requestAnimationFrame(this.animate);
-    //this.controls.update();
 
     const t = performance.now() * 0.001;
     this.simMaterial.uniforms['uTime'].value = t * 15;
@@ -436,6 +447,8 @@ export class ThreeSceneComponent implements AfterViewInit, OnDestroy {
     const canvas = this.canvasRef.nativeElement;
     const width = window.innerWidth;
     const height = window.innerHeight;
+    const aspect = width / height;
+    const frustumSize = 10;
     this.renderer.setSize(width, height, false);
     if (this.camera instanceof THREE.PerspectiveCamera) {
       this.camera.aspect = width / height;
