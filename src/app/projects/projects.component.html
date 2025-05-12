@@ -1,25 +1,41 @@
 <div class=container>
+
   <div class="slider-container">
+      <div class="left-arrow" (click)="showPrev(selectedIndex)" >
+        <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+      </div>
       @for (project of projects; track project.title; let i = $index)
       {
           <div class="slider-item"
             [ngClass]="{
-              'selected':i===selectedIndex,
-              'prev':i===selectedIndex - 1,
-              'next':i===selectedIndex + 1,
-              'hideLeft':i <selectedIndex - 1,
-              'hideRight':i > selectedIndex + 1,
+              'selected': getIndex(i) === 0,
+              'prev': getIndex(i) === -1,
+              'next': getIndex(i) === 1,
+              'prev2': getIndex(i) === -2,
+              'next2': getIndex(i) === 2,
+              'hideLeft': getIndex(i) < -2,
+              'hideRight': getIndex(i) > 2
             }"
           >
-            <img 
-            [src]="project.image" 
-            alt="Project Photo" 
-            class="slider-img"
-            (panright)="showPrev(i)"
-            (panleft)="showNext(i)"
-            >
+            <div class="slider-card" (panright)="showPrev(i)" (panleft)="showNext(i)" >
+              <img [src]="project.image" alt="Project Photo" class="slider-image">
+              <span class="slider-title"><strong>{{project.title}}</strong></span>
+              <p class="slider-description">{{project.description}}</p>
+              <a [href]="project.link" target="_blank" class="slider-button">View Project</a>
+            </div>
           </div>
       }
+      <div class="right-arrow" (click)="showNext(selectedIndex)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+      </div>
   </div>
+  <div class="pagination">
+    <button
+      *ngFor="let project of projects; let i = index"
+      (click)="goTo(i)"
+      [class.active]="i === currentIndex"
+    ></button>
+  </div>
+
 </div>
 

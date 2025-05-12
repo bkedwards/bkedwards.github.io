@@ -1,13 +1,4 @@
 <section id="about" #about #sectionRef class="page-section">
-  <div class="section-title">
-    <p>About</p>
-    <p>Work</p>
-    <p>Projects</p>
-    <p>Skills</p>
-    <p>Contact</p>
-
-
-  </div>
   <div class="three-container">
     <canvas class="fly-in" #canvas></canvas>
 
@@ -129,36 +120,7 @@
   </div>
 </section>
 <section id="projects" #sectionRef class="page-section">
-  <div class="wrapper">
-    <i id="left" class="fa-solid  fas fa-angle-left"></i>
-    <ul class="carousel">
-      <li class="project-card">
-          <span><strong>Stock Market Prediction Model</strong></span>
-          <img src="assets/stock.png" class="project-photo" alt="Photo" />
-          <div class = "project-description">
-              Trained an ARIMA time-series model to predict future S&P 500 stock prices using historical data. Pre-processed and analyzed stock market data, fitting the model to closing prices to forecast 30-day trends.
-          </div>
-          <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-      </li>
-      <li class="project-card">
-          <span><strong>Stock Market Prediction Model</strong></span>
-          <img src="assets/gaussians.png" class="project-photo" alt="Photo" />
-          <div class = "project-description">
-              Trained an ARIMA time-series model to predict future S&P 500 stock prices using historical data. Pre-processed and analyzed stock market data, fitting the model to closing prices to forecast 30-day trends.
-          </div>
-          <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-      </li>
-      <li class="project-card">
-          <span><strong>Stock Market Prediction Model</strong></span>
-          <img src="assets/asl.png" class="project-photo" alt="Photo" />
-          <div class = "project-description">
-              Trained an ARIMA time-series model to predict future S&P 500 stock prices using historical data. Pre-processed and analyzed stock market data, fitting the model to closing prices to forecast 30-day trends.
-          </div>
-          <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-      </li>
-    </ul>
-    <i id="right" class="fa-solid fas fa-angle-right"></i>
-  </div>
+<app-projects></app-projects>
 </section>
 <section id="skills" #sectionRef class="page-section">
 

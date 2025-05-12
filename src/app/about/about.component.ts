@@ -22,18 +22,26 @@ import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { PrimeIcons } from 'primeng/api';
+import { ProjectsComponent } from '../projects/projects.component';
 
 export interface Event {
-    status: string,
-    date: string,
-    image: string,
-    name: string
-    color: string,
+  status: string;
+  date: string;
+  image: string;
+  name: string;
+  color: string;
 }
 
 @Component({
   selector: 'app-about',
-  imports: [AsyncPipe, NgClass, ButtonModule, TimelineModule, CardModule],
+  imports: [
+    AsyncPipe,
+    NgClass,
+    ButtonModule,
+    TimelineModule,
+    CardModule,
+    ProjectsComponent,
+  ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -811,7 +819,7 @@ export class AboutComponent implements AfterViewInit {
   /**
    * This section handles all functionality for the PROJECTS section
    */
-  
+
   /**
    * This section handles all functionality for the SKILLS section
    */

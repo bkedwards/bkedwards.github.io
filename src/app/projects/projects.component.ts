@@ -16,10 +16,9 @@ export interface Project {
   standalone: true,
   imports: [CommonModule, HammerModule],
   templateUrl: './projects.component.html',
-  styleUrl: './projects.component.css',
+  styleUrl: './projects.component.scss',
 })
 export class ProjectsComponent {
-
   projects: Project[] = [
     {
       title: 'Stock Market Prediction Model',
@@ -65,19 +64,42 @@ export class ProjectsComponent {
     },
   ];
 
-  selectedIndex = 0;
+  selectedIndex = 2;
+  isTransitioning = false;
+
+  getIndex(i: number): number {
+    const total = this.projects.length;
+    const rawOffset = i - this.currentIndex;
+    const half = Math.floor(total / 2);
+
+    if (rawOffset > half) return rawOffset - total;
+    if (rawOffset < -half) return rawOffset + total;
+    return rawOffset;
+  }
+
+  get currentIndex(): number {
+    return (
+      ((this.selectedIndex % this.projects.length) + this.projects.length) %
+      this.projects.length
+    );
+  }
 
   showPrev(i: number) {
-    if (this.selectedIndex > 0) {
-      this.selectedIndex = i - 1;
-    }
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    this.selectedIndex--;
+
+    setTimeout(() => (this.isTransitioning = false), 250);
   }
 
   showNext(i: number) {
-    if (this.selectedIndex < this.projects?.length - 1) {
-      this.selectedIndex = i + 1;
-    }
+    if (this.isTransitioning) return;
+    this.isTransitioning = true;
+    this.selectedIndex++;
+    setTimeout(() => (this.isTransitioning = false), 250);
   }
 
-
+  goTo(index: number): void {
+    this.selectedIndex = index;
+  }
 }
