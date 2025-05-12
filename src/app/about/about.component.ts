@@ -6,6 +6,8 @@ import {
   AfterViewInit,
   ElementRef,
   OnDestroy,
+  QueryList,
+  ViewChildren,
   ViewChild,
 } from '@angular/core';
 import { TypewriterService } from '../typewriter.service';
@@ -16,22 +18,75 @@ import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { TimelineModule } from 'primeng/timeline';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { PrimeIcons } from 'primeng/api';
+
+export interface Event {
+    status: string,
+    date: string,
+    image: string,
+    name: string
+    color: string,
+}
 
 @Component({
   selector: 'app-about',
-  imports: [AsyncPipe, NgClass],
+  imports: [AsyncPipe, NgClass, ButtonModule, TimelineModule, CardModule],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutComponent {
+export class AboutComponent implements AfterViewInit {
   /**
-   * This group of functions/variables handles text and button functionality
+   * These are the important ng-related functions for component initialization and destruction
    */
-  loader = new FontLoader();
+  @ViewChildren('sectionRef') sections!: QueryList<ElementRef<HTMLElement>>;
+  currentSectionId = '';
+  isFading = false;
+
+  ngAfterViewInit(): void {
+    this.initHeader();
+    this.initAbout();
+    Promise.resolve().then(() => this.initWork());
+    window.addEventListener('resize', this.onResize);
+  }
+
+  ngOnDestroy(): void {
+    cancelAnimationFrame(this.frameId);
+    window.removeEventListener('resize', this.onResize);
+    this.renderer.dispose();
+  }
+
+  initHeader(): void {
+    const obs = new IntersectionObserver(
+      (entries) => {
+        // find the one most in view
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+        if (visible) {
+          this.isFading = true;
+          setTimeout(() => {
+            this.currentSectionId = visible.target.id;
+            this.isFading = false;
+          }, 300);
+        }
+      },
+      { threshold: [0.5] }
+    );
+
+    this.sections.forEach((sec) => obs.observe(sec.nativeElement));
+  }
+  /**
+   * This group of functions/variables handles text and button functionality for the ABOUT section
+   */
+
   titles = ['Hello.', "I'm Ben.", 'Want to learn\nmore about me?'];
   private typewriterService = inject(TypewriterService);
 
+  showText = signal(false);
   showButton = signal(false);
   buttonClicked = signal(false);
 
@@ -49,20 +104,25 @@ export class AboutComponent {
   handleClick() {
     this.buttonClicked.set(true);
     //this.pointsMaterial.uniforms['textPoints'].value=true;
-    this.simMaterial.uniforms['uShiftScene'].value=true;
+    this.simMaterial.uniforms['uShiftScene'].value = true;
     this.shiftScene();
   }
   /**
-   * This group of functions/variables handles the particle rendering.
+   * This group of functions/variables handles the particle rendering for the ABOUT Section
    */
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
 
+  @ViewChild('about', { static: false }) aboutRef!: ElementRef;
+  loader = new FontLoader();
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private points!: THREE.Points;
   private frameId = 0;
+
+  private aboutObserver!: IntersectionObserver;
+  private aboutVisible = false;
 
   private simScene!: THREE.Scene;
   private simCamera!: THREE.OrthographicCamera;
@@ -76,19 +136,7 @@ export class AboutComponent {
   private controls!: OrbitControls;
   private textMesh!: THREE.Mesh;
 
-  ngAfterViewInit(): void {
-    this.initThree();
-    this.animate();
-    window.addEventListener('resize', this.onResize);
-  }
-
-  ngOnDestroy(): void {
-    cancelAnimationFrame(this.frameId);
-    window.removeEventListener('resize', this.onResize);
-    this.renderer.dispose();
-  }
-
-  private morphToCube() {
+  private morphToText() {
     this.uProgress = 0;
     const animateMorph = () => {
       this.uProgress += 0.01;
@@ -98,6 +146,9 @@ export class AboutComponent {
         1.0
       );
       if (this.uProgress < 1.0) requestAnimationFrame(animateMorph);
+      else {
+        this.showText.set(true);
+      }
     };
     animateMorph();
   }
@@ -107,72 +158,76 @@ export class AboutComponent {
     const shiftMorph = () => {
       this.uShiftProgress += 0.02;
 
-      this.simMaterial.uniforms['uShiftProgress'].value = Math.min(this.uShiftProgress, 1.0);
+      this.simMaterial.uniforms['uShiftProgress'].value = Math.min(
+        this.uShiftProgress,
+        1.0
+      );
       if (this.uShiftProgress < 1.0) requestAnimationFrame(shiftMorph);
       else {
         //this.simMaterial.uniforms['uShiftScene'].value = false;
-        this.morphToCube();
+        this.morphToText();
       }
-    }
+    };
     shiftMorph();
   }
 
-  private getCube(count: number, halfSize: number): Float32Array {
-    const data = new Float32Array(this.simSize * this.simSize * 4);
+  private getText(count: number): Promise<Float32Array> {
+    return new Promise((resolve, reject) => {
+      const data = new Float32Array(this.simSize * this.simSize * 4);
+      this.loader.load(
+        '../assets/Cormorant Garamond Light_Regular.json',
+        (font) => {
+          const geometry = new TextGeometry('Passion.', {
+            font: font,
+            size: 0.3,
+            depth: 0,
+            curveSegments: 8,
+            bevelEnabled: false,
+            bevelThickness: 0.125,
+            bevelSize: 0.025,
+            bevelOffset: 0,
+            bevelSegments: 4,
+          });
 
-    const offsetX = -2.5;
-    const offsetY = 0.0;
-    const offsetZ = 0.0;
+          geometry.computeBoundingBox();
+          const bbox = geometry.boundingBox!;
+          const size = new THREE.Vector3();
+          bbox.getSize(size);
 
-    for (let i = 0; i < count; i++) {
-      const face = Math.floor(Math.random() * 6);
-      const x = (Math.random() * 2 - 1) * halfSize;
-      const y = (Math.random() * 2 - 1) * halfSize;
-      const z = (Math.random() * 2 - 1) * halfSize;
+          geometry.translate(-bbox.min.x, -bbox.max.y, -bbox.min.z);
 
-      let px = x,
-        py = y,
-        pz = z;
+          const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+          const mesh = new THREE.Mesh(geometry, material);
 
-      switch (face) {
-        case 0:
-          px = halfSize;
-          break;
-        case 1:
-          px = -halfSize;
-          break;
-        case 2:
-          py = halfSize;
-          break;
-        case 3:
-          py = -halfSize;
-          break;
-        case 4:
-          pz = halfSize;
-          break;
-        case 5:
-          pz = -halfSize;
-          break;
-      }
+          const sampler = new MeshSurfaceSampler(mesh).build();
 
-      px += offsetX;
-      py += offsetY;
-      pz += offsetZ;
+          const offsetX = -3.8;
+          const offsetY = 1.0;
+          const offsetZ = -0.75;
 
-      data[i * 4] = px;
-      data[i * 4 + 1] = py;
-      data[i * 4 + 2] = pz;
-      data[i * 4 + 3] = 1.0;
-    }
+          for (let i = 0; i < count; i++) {
+            const position = new THREE.Vector3();
+            sampler.sample(position);
 
-    for (let j = count; j < this.simSize * this.simSize; j++) {
-      data[j * 4] = 0;
-      data[j * 4 + 1] = 0;
-      data[j * 4 + 2] = 0;
-      data[j * 4 + 3] = 0.0;
-    }
+            const idx = i * 4;
+            data[idx] = position.x + offsetX;
+            data[idx + 1] = position.y + offsetY;
+            data[idx + 2] = position.z + offsetZ;
+            data[idx + 3] = 1.0;
+          }
 
-    return data;
+          for (let i = count; i < this.simSize * this.simSize; i++) {
+            data[i * 4] = 0;
+            data[i * 4 + 1] = 0;
+            data[i * 4 + 2] = 0;
+            data[i * 4 + 3] = 0.0;
+          }
+          resolve(data);
+        },
+        undefined,
+        (err) => reject(err)
+      );
+    });
   }
 
   getPoint(
@@ -195,91 +250,8 @@ export class AboutComponent {
     return data;
   }
 
-  private initThree() {
-    const canvas = this.canvasRef.nativeElement;
-    this.renderer = new THREE.WebGLRenderer({
-      canvas,
-      antialias: true,
-      alpha: true,
-    });
-    this.renderer.setPixelRatio(2);
-    this.renderer.setClearColor(0x000000, 0);
-    this.camera = new THREE.PerspectiveCamera(
-      25, // Match React camera FOV
-      canvas.clientWidth / canvas.clientHeight,
-      0.1,
-      1000
-    );
-    this.camera.position.set(0, 0, 6);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.onResize();
-
-    this.scene = new THREE.Scene();
-    this.simCamera = new THREE.OrthographicCamera(
-      -1,
-      1,
-      1,
-      -1,
-      1 / Math.pow(2, 53),
-      1
-    );
-    const positions = new Float32Array([
-      -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
-    ]);
-    const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
-    const particles = new Float32Array(this.simSize * this.simSize * 3);
-    for (let i = 0; i < this.simSize * this.simSize; i++) {
-      particles[i * 3 + 0] = (i % this.simSize) / this.simSize;
-      particles[i * 3 + 1] = i / this.simSize / this.simSize;
-    }
-
-    this.simRenderTarget = new THREE.WebGLRenderTarget(
-      this.simSize,
-      this.simSize,
-      {
-        minFilter: THREE.NearestFilter,
-        magFilter: THREE.NearestFilter,
-        format: THREE.RGBAFormat,
-        type: THREE.FloatType,
-        depthBuffer: false,
-      }
-    );
-
-    const simGeom = new THREE.BufferGeometry();
-    simGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    simGeom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
-
-    this.simScene = new THREE.Scene();
-
-    const sphereData = this.getSphere(
-      this.simSize * this.simSize,
-      this.simSize / 4
-    );
-    console.log('Sphere Data: ', sphereData.length);
-    const positionsTexture = new THREE.DataTexture(
-      sphereData,
-      this.simSize,
-      this.simSize,
-      THREE.RGBAFormat,
-      THREE.FloatType
-    );
-    positionsTexture.needsUpdate = true;
-
-    const cubeData = this.getCube(
-      ((this.simSize / 4) * this.simSize) / 4,
-      0.5
-    );
-    console.log('Cube Data: ', cubeData.length);
-    this.targetTexture = new THREE.DataTexture(
-      cubeData,
-      this.simSize,
-      this.simSize,
-      THREE.RGBAFormat,
-      THREE.FloatType
-    );
-    this.targetTexture.needsUpdate = true;
-
-    this.simMaterial = new THREE.ShaderMaterial({
+  getSimMaterial(positionsTexture: THREE.DataTexture): THREE.ShaderMaterial {
+    return new THREE.ShaderMaterial({
       vertexShader: `varying vec2 vUv;
         void main() {
           vUv = uv;
@@ -503,10 +475,14 @@ export class AboutComponent {
         float morphFlag = target.a;
         vec3 targetPos = target.rgb;
 
-        vec3 shiftTarget = vec3(1.0,0,0);
+        targetPos += 0.02 * curl(curl(targetPos * uCurlFreq + t) * uCurlFreq * 2.0) * 0.3;
+        targetPos += curl(target.rgb * uCurlFreq * 2.0) * 0.01;
+
+        vec3 shiftTarget = vec3(1.25,0,0);
         vec3 morphBase = mix(pos, curlPos, cnoise(pos + t));
 
         vec3 finalPos = morphFlag==1.0 ? mix(morphBase, targetPos, uProgress) : morphBase;
+        //finalPos = uProgress==1.0 && morphFlag==1.0 ? mix(morphBase, )
 
         finalPos = uShiftScene ? mix(finalPos, finalPos + shiftTarget, uShiftProgress) : finalPos;
 
@@ -519,16 +495,13 @@ export class AboutComponent {
         uTime: { value: 0 },
         uCurlFreq: { value: 0.31 },
         uProgress: { value: 0.0 },
-        uShiftProgress: {value: 0.0},
-        uShiftScene: {value: false},
+        uShiftProgress: { value: 0.0 },
+        uShiftScene: { value: false },
       },
     });
+  }
 
-    const simMesh = new THREE.Mesh(simGeom, this.simMaterial);
-    this.simScene.add(simMesh);
-
-    const geom = new THREE.BufferGeometry();
-
+  getColorArray(): Float32Array {
     const colors = new Float32Array(this.simSize * this.simSize * 3);
     for (let i = 0; i < this.simSize * this.simSize; i++) {
       const i3 = i * 3;
@@ -543,10 +516,11 @@ export class AboutComponent {
         colors[i3 + 2] = 1.0; // B
       }
     }
-    geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geom.setAttribute('position', new THREE.BufferAttribute(particles, 3));
+    return colors;
+  }
 
-    this.pointsMaterial = new THREE.ShaderMaterial({
+  getPointsMaterial(): THREE.ShaderMaterial {
+    return new THREE.ShaderMaterial({
       uniforms: {
         positions: { value: this.simRenderTarget.texture },
         uTime: { value: 0 },
@@ -560,49 +534,149 @@ export class AboutComponent {
       transparent: true,
       vertexColors: true,
       vertexShader: `
-      uniform bool textPoints;
-      uniform sampler2D positions;
-      uniform float uTime;
-      uniform float uFocus;
-      uniform float uFov;
-      uniform float uBlur;
-      varying float vDistance;
-      varying vec3 vColor;
-      void main() { 
-        vec3 pos = texture2D(positions, position.xy).xyz;
-        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-        gl_Position = projectionMatrix * mvPosition;
-        vDistance = abs(uFocus - -mvPosition.z);
-        float factor = textPoints ? 1.0 :  (step(1.0 - (1.0 / uFov), position.x));
-        gl_PointSize = factor * vDistance * uBlur * 3.0;
-        vColor = color;
-      }`,
+        uniform bool textPoints;
+        uniform sampler2D positions;
+        uniform float uTime;
+        uniform float uFocus;
+        uniform float uFov;
+        uniform float uBlur;
+        varying float vDistance;
+        varying vec3 vColor;
+        void main() { 
+          vec3 pos = texture2D(positions, position.xy).xyz;
+          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+          gl_Position = projectionMatrix * mvPosition;
+          vDistance = abs(uFocus - -mvPosition.z);
+          float factor = textPoints ? 1.0 :  (step(1.0 - (1.0 / uFov), position.x));
+          gl_PointSize = factor * vDistance * uBlur * 3.0;
+          vColor = color;
+        }`,
       fragmentShader: `uniform float uOpacity;
-      varying float vDistance;
-      varying vec3 vColor;
-      void main() {
-        vec2 cxy = 2.0 * gl_PointCoord - 1.0;
-        if (dot(cxy, cxy) > 1.0) discard;
-        gl_FragColor = vec4(vColor, (1.04 - clamp(vDistance * 1.5, 0.0, 1.0)));
-      }`,
+        varying float vDistance;
+        varying vec3 vColor;
+        void main() {
+          vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+          if (dot(cxy, cxy) > 1.0) discard;
+          gl_FragColor = vec4(vColor, (1.04 - clamp(vDistance * 1.5, 0.0, 1.0)));
+        }`,
     });
+  }
 
-    this.points = new THREE.Points(geom, this.pointsMaterial);
-    this.scene.add(this.points);
+  private initAbout() {
+    this.aboutObserver = new IntersectionObserver(
+      (entries) => {
+        this.aboutVisible = entries[0].isIntersecting;
+      },
+      { threshold: 0.1 }
+    );
+
+    this.aboutObserver.observe(this.aboutRef.nativeElement);
+    const canvas = this.canvasRef.nativeElement;
+    this.renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: true,
+    });
+    this.renderer.setPixelRatio(2);
+    this.renderer.setClearColor(0x000000, 0);
+    this.camera = new THREE.PerspectiveCamera(
+      25, // Match React camera FOV
+      canvas.clientWidth / canvas.clientHeight,
+      0.1,
+      1000
+    );
+    this.camera.position.set(0, 0, 6);
+    //this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.onResize();
+
+    this.scene = new THREE.Scene();
+    this.simCamera = new THREE.OrthographicCamera(
+      -1,
+      1,
+      1,
+      -1,
+      1 / Math.pow(2, 53),
+      1
+    );
+    const positions = new Float32Array([
+      -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
+    ]);
+    const uvs = new Float32Array([0, 1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 0]);
+    const particles = new Float32Array(this.simSize * this.simSize * 3);
+    for (let i = 0; i < this.simSize * this.simSize; i++) {
+      particles[i * 3 + 0] = (i % this.simSize) / this.simSize;
+      particles[i * 3 + 1] = i / this.simSize / this.simSize;
+    }
+
+    this.simRenderTarget = new THREE.WebGLRenderTarget(
+      this.simSize,
+      this.simSize,
+      {
+        minFilter: THREE.NearestFilter,
+        magFilter: THREE.NearestFilter,
+        format: THREE.RGBAFormat,
+        type: THREE.FloatType,
+        depthBuffer: false,
+      }
+    );
+
+    const simGeom = new THREE.BufferGeometry();
+    simGeom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    simGeom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+
+    this.simScene = new THREE.Scene();
+
+    const sphereData = this.getSphere(
+      this.simSize * this.simSize,
+      this.simSize / 4
+    );
+
+    const positionsTexture = new THREE.DataTexture(
+      sphereData,
+      this.simSize,
+      this.simSize,
+      THREE.RGBAFormat,
+      THREE.FloatType
+    );
+    positionsTexture.needsUpdate = true;
+
+    this.getText(128 * 128).then((data) => {
+      this.targetTexture = new THREE.DataTexture(
+        data,
+        this.simSize,
+        this.simSize,
+        THREE.RGBAFormat,
+        THREE.FloatType
+      );
+      this.targetTexture.needsUpdate = true;
+
+      this.simMaterial = this.getSimMaterial(positionsTexture);
+      const simMesh = new THREE.Mesh(simGeom, this.simMaterial);
+      this.simScene.add(simMesh);
+
+      const geom = new THREE.BufferGeometry();
+      const colors = this.getColorArray();
+
+      geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+      geom.setAttribute('position', new THREE.BufferAttribute(particles, 3));
+
+      this.pointsMaterial = this.getPointsMaterial();
+
+      this.points = new THREE.Points(geom, this.pointsMaterial);
+      this.scene.add(this.points);
+
+      this.animate();
+    });
   }
 
   private animate = () => {
     this.frameId = requestAnimationFrame(this.animate);
-    this.controls.update();
+
+    if (!this.aboutVisible) return;
+    //this.controls.update();
     const t = performance.now() * 0.001;
     this.simMaterial.uniforms['uTime'].value = t * 15;
     this.pointsMaterial.uniforms['uTime'].value = t;
-
-    // Remove this problematic check:
-    // if (this.simMaterial.uniforms['targetPositions'].value !== this.simMaterial.uniforms['targetPositions'].value) {
-    //   console.warn('Rebinding target texture.');
-    //   this.simMaterial.uniforms['targetPositions'].value = this.simMaterial.uniforms['targetPositions'].value;
-    // }
 
     this.renderer.setRenderTarget(this.simRenderTarget);
     this.renderer.render(this.simScene, this.simCamera);
@@ -619,4 +693,134 @@ export class AboutComponent {
       this.camera.updateProjectionMatrix();
     }
   };
+
+  /**
+   * This section handles all functionality for the WORK section
+   */
+  @ViewChildren('card') cards!: QueryList<ElementRef>;
+  @ViewChildren('timelineDot') dots!: QueryList<ElementRef>;
+  @ViewChild('container', { static: false }) containerRef!: ElementRef;
+
+  gfg = [
+    {
+      title: 'Babar',
+      Date: '1526–1530',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#9C27B0',
+    },
+    {
+      title: 'Humayun',
+      Date: 'I- 1530–1540, II – 1555–1556',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#673AB7',
+    },
+    {
+      title: 'Akbar ',
+      Date: '1556–1605',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#FF9800',
+    },
+    {
+      title: 'Jahangir',
+      Date: '1605–1627',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#607D8B',
+    },
+    {
+      title: 'Shah Jahan',
+      Date: '1628–1658',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#99e2ff',
+    },
+    {
+      title: 'Aurangzeb',
+      Date: '1658–1707',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#99e200',
+    },
+    {
+      title: 'Bahadur Shah',
+      Date: '1707–1712',
+      Icon: PrimeIcons.SORT_DOWN,
+      color: '#990000',
+    },
+  ];
+
+  private initWork() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in-view');
+            observer.unobserve(entry.target); // optional: animate only once
+          }
+        });
+      },
+      {
+        threshold: 0.2,
+      }
+    );
+
+    this.cards.forEach((card) => {
+      observer.observe(card.nativeElement);
+    });
+
+    setTimeout(() => {
+      const cardEls = this.cards.toArray();
+      const dotEls = this.dots.toArray();
+
+      // Get container's position
+      const container = document.querySelector('.container');
+      if (!container) {
+        console.error('Container element not found');
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+
+      for (let i = 0; i < dotEls.length; i++) {
+        if (i >= cardEls.length) break; // Safety check
+
+        const card = cardEls[i].nativeElement;
+        const dot = dotEls[i].nativeElement;
+
+        // Get the card's position relative to the viewport
+        const cardRect = card.getBoundingClientRect();
+
+        // Calculate center of the card
+        const cardCenter = cardRect.top + cardRect.height / 2;
+
+        // Calculate dot position relative to container
+        const dotPosition = cardCenter - containerRect.top;
+
+        // Set dot position
+        dot.style.top = `${dotPosition}px`;
+
+        card.addEventListener('mouseenter', () => {
+          dot.classList.add('enlarged');
+        });
+
+        // Add mouseleave event to shrink the dot back
+        card.addEventListener('mouseleave', () => {
+          dot.classList.remove('enlarged');
+        });
+      }
+    }, 100);
+  }
+
+  /**
+   * This section handles all functionality for the PROJECTS section
+   */
+  
+  /**
+   * This section handles all functionality for the SKILLS section
+   */
+
+  /**
+   * This section handles all functionality for the IDEAS section
+   */
+
+  /**
+   * This section handles all functionality for the CONTACT section
+   */
 }

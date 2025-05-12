@@ -1,63 +1,25 @@
-<div class="container">
-    <div class="title">
-        Projects
-    </div>
-    <div class="project-columns">
-        <div class="project-row">
-            <div class="project-card">
-                <span><strong>American Sign Language Alphabet Detector</strong></span>
-                <img src="assets/asl.png" class="project-photo" alt="Photo" />
-                <div class = "project-desc">
-                    Created a real-time detector for letters of the ASL alphabet. Used OpenCV to capture and process data, MediaPipe to draw hand landmarks, and a Random Forest Classifier to train a model to predict hand gestures with 99.2% accuracy on test set.
-                </div>
-                <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-            </div>
-            <div class="project-card">
-                <span><strong>Semantic Trading Bot</strong></span>
-                <img src="assets/stock.png" class="project-photo" alt="Photo" />
-                <div class = "project-desc">
-                    Developed a trading bot that looks at sentiment of live news events to make appropriate trades. Used ALPACA and Lumibot libraries.
-                </div>
-                <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-            </div>
-        </div>
-        <div class="project-row">
-            <div class="project-card">
-                <span><strong>Stock Market Prediction Model</strong></span>
-                <img src="assets/stock.png" class="project-photo" alt="Photo" />
-                <div class = "project-desc">
-                    Trained an ARIMA time-series model to predict future S&P 500 stock prices using historical data. Pre-processed and analyzed stock market data, fitting the model to closing prices to forecast 30-day trends.
-                </div>
-                <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-            </div>
-            <div class="project-card">
-                <span><strong>Hierarchical Gaussians Viewer in Unity</strong></span>
-                <img src="assets/gaussians.png" class="project-photo" alt="Photo" />
-                <div class = "project-desc">
-                   Working under Dr. Sengupta and Dr. Mahaney with the Experimental Engineer Lab (EEL), I developed a custom Unity rendering script to visualize Hierarchical 3D Gaussians throught a VR device.
-                </div>
-                <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-            </div>
-        </div>
-        <div class="project-row">
-            <div class="project-card">
-                <span><strong>UNC Landmark Classifier</strong></span>
-                <img src="assets/old-well.jpg" class="project-photo" alt="Photo" />
-                <div class = "project-desc">
-                    Created an image classifier for five of UNC-CH’s most famous landmarks. Trained a convolutional neural network with twelve layers and achieved an 85% accuracy on the test set.
-                </div>
-                <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-            </div>
-            <div class="project-card">
-                <span><strong>Blank Project</strong></span>
-                <img src="" class="project-photo" alt="Photo" />
-                <div class = "project-desc">
-                    This is a description of a blank project that is yet to be filled in.
-                </div>
-                <a class = "view-project" href="https://github.com/bkedwards/asl_detector" target="_blank">View Project</a>
-            </div>
-        </div>
-    </div>
-
-
+<div class=container>
+  <div class="slider-container">
+      @for (project of projects; track project.title; let i = $index)
+      {
+          <div class="slider-item"
+            [ngClass]="{
+              'selected':i===selectedIndex,
+              'prev':i===selectedIndex - 1,
+              'next':i===selectedIndex + 1,
+              'hideLeft':i <selectedIndex - 1,
+              'hideRight':i > selectedIndex + 1,
+            }"
+          >
+            <img 
+            [src]="project.image" 
+            alt="Project Photo" 
+            class="slider-img"
+            (panright)="showPrev(i)"
+            (panleft)="showNext(i)"
+            >
+          </div>
+      }
+  </div>
 </div>
+

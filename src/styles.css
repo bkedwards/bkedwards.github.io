@@ -8,11 +8,13 @@
 /* Base Styles */
 html {
   font-size: 16px;
-
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-y: auto;
 }
 
 body {
-  background-color: #001d42;
+  background-color: #001737;
   font-family: 'Cormorant Garamond', serif;
 }
 
