@@ -5,6 +5,7 @@ import { ExperiencesComponent } from './experiences/experiences.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ResumeComponent } from './resume/resume.component';
 import { SkillsComponent } from './skills/skills.component';
+import { WorkComponent } from './work/work.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'about', pathMatch: 'full' },
@@ -12,5 +13,6 @@ export const routes: Routes = [
   {path: 'experiences', component: ExperiencesComponent},
   {path: 'projects', component: ProjectsComponent},
   {path: 'resume', component: ResumeComponent},
-  {path: 'skills', component: SkillsComponent}
+  {path: 'skills', component: SkillsComponent},
+  {path: 'work', component: WorkComponent}
 ];

@@ -24,6 +24,7 @@ import { CardModule } from 'primeng/card';
 import { PrimeIcons } from 'primeng/api';
 import { ProjectsComponent } from '../projects/projects.component';
 import { SkillsComponent } from '../skills/skills.component';
+import { WorkComponent } from '../work/work.component';
 
 export interface Event {
   status: string;
@@ -42,7 +43,8 @@ export interface Event {
     TimelineModule,
     CardModule,
     ProjectsComponent,
-    SkillsComponent
+    SkillsComponent,
+    WorkComponent
   ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
