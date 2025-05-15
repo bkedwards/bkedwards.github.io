@@ -21,10 +21,6 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TimelineModule } from 'primeng/timeline';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
-import { PrimeIcons } from 'primeng/api';
-import { ProjectsComponent } from '../projects/projects.component';
-import { SkillsComponent } from '../skills/skills.component';
-import { WorkComponent } from '../work/work.component';
 
 export interface Event {
   status: string;
@@ -42,9 +38,6 @@ export interface Event {
     ButtonModule,
     TimelineModule,
     CardModule,
-    ProjectsComponent,
-    SkillsComponent,
-    WorkComponent
   ],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
@@ -59,9 +52,7 @@ export class AboutComponent implements AfterViewInit {
   isFading = false;
 
   ngAfterViewInit(): void {
-    this.initHeader();
     this.initAbout();
-    Promise.resolve().then(() => this.initWork());
     window.addEventListener('resize', this.onResize);
   }
 
@@ -71,26 +62,6 @@ export class AboutComponent implements AfterViewInit {
     this.renderer.dispose();
   }
 
-  initHeader(): void {
-    const obs = new IntersectionObserver(
-      (entries) => {
-        // find the one most in view
-        const visible = entries
-          .filter((e) => e.isIntersecting)
-          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) {
-          this.isFading = true;
-          setTimeout(() => {
-            this.currentSectionId = visible.target.id;
-            this.isFading = false;
-          }, 300);
-        }
-      },
-      { threshold: [0.5] }
-    );
-
-    this.sections.forEach((sec) => obs.observe(sec.nativeElement));
-  }
   /**
    * This group of functions/variables handles text and button functionality for the ABOUT section
    */
@@ -119,6 +90,7 @@ export class AboutComponent implements AfterViewInit {
     this.simMaterial.uniforms['uShiftScene'].value = true;
     this.shiftScene();
   }
+
   /**
    * This group of functions/variables handles the particle rendering for the ABOUT Section
    */
@@ -705,134 +677,4 @@ export class AboutComponent implements AfterViewInit {
       this.camera.updateProjectionMatrix();
     }
   };
-
-  /**
-   * This section handles all functionality for the WORK section
-   */
-  @ViewChildren('card') cards!: QueryList<ElementRef>;
-  @ViewChildren('timelineDot') dots!: QueryList<ElementRef>;
-  @ViewChild('container', { static: false }) containerRef!: ElementRef;
-
-  gfg = [
-    {
-      title: 'Babar',
-      Date: '1526–1530',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#9C27B0',
-    },
-    {
-      title: 'Humayun',
-      Date: 'I- 1530–1540, II – 1555–1556',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#673AB7',
-    },
-    {
-      title: 'Akbar ',
-      Date: '1556–1605',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#FF9800',
-    },
-    {
-      title: 'Jahangir',
-      Date: '1605–1627',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#607D8B',
-    },
-    {
-      title: 'Shah Jahan',
-      Date: '1628–1658',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#99e2ff',
-    },
-    {
-      title: 'Aurangzeb',
-      Date: '1658–1707',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#99e200',
-    },
-    {
-      title: 'Bahadur Shah',
-      Date: '1707–1712',
-      Icon: PrimeIcons.SORT_DOWN,
-      color: '#990000',
-    },
-  ];
-
-  private initWork() {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('in-view');
-            observer.unobserve(entry.target); // optional: animate only once
-          }
-        });
-      },
-      {
-        threshold: 0.2,
-      }
-    );
-
-    this.cards.forEach((card) => {
-      observer.observe(card.nativeElement);
-    });
-
-    setTimeout(() => {
-      const cardEls = this.cards.toArray();
-      const dotEls = this.dots.toArray();
-
-      // Get container's position
-      const container = document.querySelector('.container');
-      if (!container) {
-        console.error('Container element not found');
-        return;
-      }
-
-      const containerRect = container.getBoundingClientRect();
-
-      for (let i = 0; i < dotEls.length; i++) {
-        if (i >= cardEls.length) break; // Safety check
-
-        const card = cardEls[i].nativeElement;
-        const dot = dotEls[i].nativeElement;
-
-        // Get the card's position relative to the viewport
-        const cardRect = card.getBoundingClientRect();
-
-        // Calculate center of the card
-        const cardCenter = cardRect.top + cardRect.height / 2;
-
-        // Calculate dot position relative to container
-        const dotPosition = cardCenter - containerRect.top;
-
-        // Set dot position
-        dot.style.top = `${dotPosition}px`;
-
-        card.addEventListener('mouseenter', () => {
-          dot.classList.add('enlarged');
-        });
-
-        // Add mouseleave event to shrink the dot back
-        card.addEventListener('mouseleave', () => {
-          dot.classList.remove('enlarged');
-        });
-      }
-    }, 100);
-  }
-
-  /**
-   * This section handles all functionality for the PROJECTS section
-   */
-
-  /**
-   * This section handles all functionality for the SKILLS section
-   */
-
-  /**
-   * This section handles all functionality for the IDEAS section
-   */
-
-  /**
-   * This section handles all functionality for the CONTACT section
-   */
 }

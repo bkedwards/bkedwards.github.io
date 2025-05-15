@@ -21,6 +21,9 @@
               <img [src]="project.image" alt="Project Photo" class="slider-image">
               <span class="slider-title"><strong>{{project.title}}</strong></span>
               <p class="slider-description">{{project.description}}</p>
+              <div class="project-skills-container">
+                <i class="fa-solid fa-gears experience-skills-icon"></i><span class="project-skills">{{project.skills}}</span>
+              </div>
               <a [href]="project.link" target="_blank" class="slider-button">View Project</a>
             </div>
           </div>

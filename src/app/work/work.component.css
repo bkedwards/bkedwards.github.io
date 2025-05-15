@@ -1,221 +1,220 @@
 .container {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  min-height: 100vh;
-  align-items: stretch;
-  justify-content: center;
-  height: 100%;
-  width: 100%;
+  color: white;
+  padding: 2rem, 5rem;
   margin-top: 2rem;
-  perspective: 1000px;
-  position: relative; /* required for absolute ::before positioning */
+  margin-bottom: 2rem;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 
-.container::before {
-  content: '';
-  position: absolute;
-  top: 5%;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 4px;
-  background-color: white;
-  z-index: 0;
-}
-
-.container::after {
-  content: '';
-  position: absolute;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, white 45%, #f7cd83 45%);
-  z-index: 1;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-}
-
-.container-endpoint {
-  content: '';
-  position: absolute;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, white 45%, #f7cd83 45%);
-  z-index: 1;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-}
-
-.timeline-dot {
-  position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%); /* Changed from translate(-50%, -50%) */
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: radial-gradient(circle, white 45%, #f7cd83 55%);
-  z-index: 1;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
-}
-
-.timeline-dot {
-  transition: width 0.3s ease, height 0.3s ease, transform 0.3s ease;
-}
-
-/* Class for the enlarged state */
-.timeline-dot.enlarged {
-  width: 32px;
-  height: 32px;
-  transform: translate(-50%, -50%);
-}
-
-.timeline-connector {
-  position: absolute;
-  height: 4px; /* Same thickness as the vertical timeline */
-  background-color: #f7cd83; /* Golden color to match theme */
-  top: 50%; /* Center vertically relative to its parent (the card) */
-  transform: translateY(-50%);
-  z-index: 0;
-  transition: width 0.3s ease; /* Smooth animation */
-}
-
-/* Left side connector (for cards on the right) */
-.timeline-connector.to-left {
-  right: 100%; /* Start from the left edge of the card */
-  width: 10rem; /* Initial width - adjust as needed */
-}
-
-/* Right side connector (for cards on the left) */
-.timeline-connector.to-right {
-  left: 100%; /* Start from the right edge of the card */
-  width: 10rem; /* Initial width - adjust as needed */
-}
-
-/* Style for when card is hovered */
-.experience-card:hover .timeline-connector {
-  background-color: #f7cd83; /* Brighter gold on hover */
-  box-shadow: 0 0 8px rgba(247, 205, 131, 0.6); /* Glow effect */
+.timeline {
+  position: relative;
+  margin: 10rem auto;
 }
 
 .experience-card {
-  position: relative;
-  width: 25vw;
   background: linear-gradient(to right, #96B6FC, #03215E);
-  border: 1px solid #f7cd83;
+  padding: 1rem 2rem;
+  position: relative;
+  border: 1px solid #f0ffff;
+  border-radius: 0.5rem;
+  font-size: 1.0rem;
+  transition: transform 0.3s ease;
+  top: -1.25rem;
   display: flex;
-  flex-direction: row;
-  align-items: top;
-  justify-content: left;
-  font-size: 20px;
-  padding: 1rem;
-  transform-style: preserve-3d;
+  flex-direction: column;
+
+}
+
+.experience-container {
+  padding: 2.5rem 5rem;
+  position: relative;
+  width: 50%;
+  opacity: 1;
+  filter: brightness(90%);
+} 
+
+.experience-container:hover {
+  filter: brightness(100%);
+}
+
+
+@keyframes moveright {
+  0% {
+    opacity: 0;
+    transform: translateX(-30rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes moveleft {
+  0% {
+    opacity: 0;
+    transform: translateX(30rem);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.experience-container.left {
+  left: 0;
+  padding-left: 20rem;
+}
+
+.experience-container.left .experience-card {
   opacity: 0;
-  transform: translateX(100px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
+  transform: translateX(-30rem);
 }
 
-.experience-card:not(:hover) {
-  border-color: #5c4a2b; /* darker muted gold when not hovered */
+.experience-container.right .experience-card {
+  opacity: 0;
+  transform: translateX(30rem);
 }
 
-.experience-card:hover::before {
-  background: rgba(0, 0, 0, 0); /* fade out overlay on hover */
+
+.experience-container.left.in-view .experience-card {
+  animation: moveright 1s linear forwards;
 }
 
-.experience-card::before {
+.experience-container.right.in-view .experience-card {
+  animation: moveleft 1s linear forwards;
+}
+
+.experience-container.right {
+  left: 50%;
+  padding-right: 20rem;
+}
+
+.experience-container .experience-img {
+  position: absolute;
+  width: 5rem;
+  height: 5rem;
+  right: -2.5rem;
+  top: 1rem;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid #f0ffff;
+}
+
+.right img {
+  left:-2.5rem;
+}
+
+.timeline::after {
   content: '';
   position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-  transition: background 0.4s ease;
+  width: 0.75rem;
+  height: 100%;
+  background: white;
+  top: 5%;
+  left: 50%;
+  margin-left: -.375rem;
+  z-index: -1;
+  border-radius: 0.5rem;
 }
 
-.experience-card.from-left {
-  align-self: flex-start;
-  margin-left: calc(50% - 25vw - 10rem);
-  transform: translateX(-60px);
+.experience-company {
+  font-size: 1.25rem;
+  margin-top: 0.1rem;
 }
 
-.experience-card.from-right {
-  align-self: flex-end;
-  margin-right: calc(50% - 25vw - 10rem);
-  transform: translateX(60px);
+.experience-description {
+  margin-top: 1rem;
+  font-size: 1.25rem;
 }
 
-.experience-card.in-view {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.experience-card:hover {
-  border-color: #f7cd83;
-  transform: scale(1.05);
-  transition: transform 0.4s ease;
-}
-
-.experience-photo {
-    background-color: white;
-    height: 96px;
-    width: 96px;
-    margin-right: 1rem;
-    border: 2px solid white;
-}
-
-.experience-title {
-    font-size: 22px;
-    padding-bottom: 0.25rem;
-}
-
-.experience-title {
-    display: flex;
-    flex-direction: column;
-}
-
-.experience-text {
-    margin-bottom: 0.25rem;
-}
-
-.experience-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    color: white;
-    font-size: 20px;
-    width: 100%;
-    margin-bottom: 0.25rem;
-}
-
-.experience-date {
-    display: flex;
-    flex-direction: column;
-    text-align: right;
-    align-self: flex-start;
-}
-
-.experience-column {
-    display: flex;
-    flex-direction: column;
-    font-size: 20px;
-    color: white;
+.experience-skills-icon {
+  font-size: 1.5rem;
+  margin-top: 1.5rem;
 }
 
 .experience-skills {
-    margin-top: 1rem;
-    font-size: 20px;
+  margin-top: 1.5rem;
+  margin-left: 0.5rem;
+  font-size: 1.25rem;
+  font-weight: bold;
 }
 
-ul {
-  padding-left: 2rem;
+.experience-skills-container {
+  display: flex;
+  flex-direction: row;
 }
 
-.page-section {
-  min-height: 100vh;
-  padding: 4rem 2rem;
+.experience-date {
+  position: relative;
+  top: 1rem;
+  padding: 1.5rem 5rem;
+  width: 50%;
+  font-size: 1.5rem;
+  font-style: italic;
+  opacity: 0;
+  /* background: rgba(255,0,0,0.2); */
+}
+
+.experience-date.right {
+  left: -50%;
+  text-align: right;
+} 
+.experience-date.left {
+  left: 0%;
+}
+
+.experience-date.left.in-view{
+  animation: appear 2s ease forwards;
+}
+
+.experience-date.right.in-view{
+  animation: appear 2s ease forwards;
+}
+
+@keyframes appear {
+  0% {
+    opacity: 0
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.time-line-event {
+  display: flex;
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+@media screen and (max-wdith: 400px){
+  .timeline {
+    margin: 0.5rem auto;
+  }
+  .timeline::after {
+    left: 0.5rem;
+  }
+
+  .experience-container{
+    width: 100%;
+    padding-left: 3rem;
+    padding-right: 1rem;
+  }
+
+  .experience-card{
+    font-size: 13px;
+  }
+
+  .experience-card small {
+    margin-bottom: 0.5rem;
+  }
+
+
+  .right {
+    left: 0;
+  }
+
+
 }

@@ -83,7 +83,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
       baseY: 0,
     },
     {
-      icon: '/assets/skills/tensorflow.png',
+      icon: '/assets/skills/python.png',
       hoverRotation: 0,
       isHovered: false,
       idleRotationY: 0,
@@ -93,15 +93,6 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/skills/psql.png',
-      hoverRotation: 0,
-      isHovered: false,
-      idleRotationY: 0,
-      spinRotationY: 0,
-      spinRemaining: 0,
-      baseY: 0,
-    },
-    {
-      icon: '/assets/skills/git.png',
       hoverRotation: 0,
       isHovered: false,
       idleRotationY: 0,
@@ -130,6 +121,10 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('container', { static: true })
+  containerRef!: ElementRef<HTMLElement>;
+  private skillsVisible: boolean = false;
+  private skillsObserver!: IntersectionObserver;
   private frameId = 0;
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
@@ -193,6 +188,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
       new THREE.PlaneGeometry(baseSize * imageAspect, baseSize),
       new THREE.MeshBasicMaterial({
         map: texture,
+        color: new THREE.Color(1.5, 1.5, 1.5),
         transparent: true,
         side: THREE.DoubleSide,
         toneMapped: false,
@@ -235,21 +231,26 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
   };
 
   async initSkills() {
-    // this.sectionObserver = new IntersectionObserver(
-    //   (entries) => {
-    //     this.sectionVisible = entries[0].isIntersecting;
-    //   },
-    //   { threshold: 0.1 }
-    // );
+    this.skillsObserver = new IntersectionObserver(
+      ([entry]) => {
+        this.skillsVisible = entry.isIntersecting;
+        if (entry.isIntersecting) {
+          this.animateSkills(); // start or resume animation
+        } else {
+          cancelAnimationFrame(this.frameId); // pause animation
+        }
+      },
+      { threshold: 0.2 } // trigger when 20% visible
+    );
 
-    // this.sectionObserver.observe(this.sectionRef.nativeElement);
+    this.skillsObserver.observe(this.containerRef.nativeElement);
     const canvas = this.canvasRef.nativeElement;
     this.renderer = new THREE.WebGLRenderer({
       canvas,
       antialias: true,
       alpha: true,
     });
-    this.renderer.setPixelRatio(2);
+    this.renderer.setPixelRatio(1);
     this.renderer.setClearColor(0x000000, 0);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.toneMappingExposure = 1.0;
@@ -265,10 +266,6 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
 
     this.scene = new THREE.Scene();
 
-    // HDR Environment map (equirectangular)
-    const pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-    pmremGenerator.compileEquirectangularShader();
-
     // Lights
     const hemi = new THREE.HemisphereLight(0xffffff, 0x444444, 5);
     hemi.position.set(0, 20, 0);
@@ -283,8 +280,8 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
     let angle = 0;
     this.skills.forEach((skill, i) => {
       angle += (2 * Math.PI) / this.skills.length;
-      const x = 3 * Math.cos(angle);
-      const y = 3 * Math.sin(angle);
+      const x = 2 * (i - (this.skills.length - 1) / 2);
+      const y = 0;
       const texture = this.decals.get(skill.icon);
       if (texture) {
         const coinGroup = this.createCoinWithDecal(
@@ -292,6 +289,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
           new THREE.Vector3(x, y, 0)
         );
         this.scene.add(coinGroup);
+
         skill.mesh = coinGroup;
         skill.baseY = skill.mesh.position.y;
         skill.hoverRotation = 0;
@@ -325,7 +323,6 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
         skill.spinRemaining -= step;
         skill.hoverRotation += step;
       } else if (skill.hoverRotation > 0) {
-        // ✅ Clean up after spin is done
         skill.hoverRotation = 0;
         skill.spinRotationY = 0;
         skill.isHovered = false;

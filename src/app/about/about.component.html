@@ -1,41 +1,24 @@
-<section id="about" #about #sectionRef class="page-section">
-  <div class="three-container">
-    <canvas class="fly-in" #canvas></canvas>
+<div class="three-container" #about>
+  <canvas class="fly-in" #canvas></canvas>
 
-    @if (!buttonClicked()) {
-      <div class="centered-text">
-        <h1 [ngClass]="{'small-text': (typedText$ | async)}">
-          {{ (typedText$ | async)?.text }}
-        </h1>
+  @if (!buttonClicked()) {
+    <div class="centered-text">
+      <h1 [ngClass]="{'small-text': (typedText$ | async)}">
+        {{ (typedText$ | async)?.text }}
+      </h1>
 
-        @if (showButton()) {
-          <button class="action-button" (click)="handleClick()">
-            <i class="fa-regular fa-circle-play"></i> 
-          </button>
-        }
-      </div>
-    }
-    <div class="about-text" [ngClass]="showText() ? 'fade-in' : 'hidden'">
-      <p><strong class="passion">Passion.</strong> <br /><br />  It’s the driving force behind everything I do — from building immersive interfaces to 
-        exploring new technologies just for the thrill of learning.</p>
-      <p> <br /> I approach each project with creativity and curiosity, constantly seeking better ways to express ideas through code. 
-        My journey is defined by a relentless desire to learn, grow, and create with purpose.</p>
-      <p> <br /> I'm deeply passionate about using technology as a medium for creativity and problem-solving. Whether I'm exploring new frameworks, building interactive visual experiences, or diving into complex systems, I thrive on turning ideas into something tangible. I approach every project with curiosity and an eagerness to learn, constantly pushing myself to grow both technically and creatively. For me, the process of learning isn’t a task — it's a mindset that fuels everything I do.</p>
+      @if (showButton()) {
+        <button class="action-button" (click)="handleClick()">
+          <i class="fa-regular fa-circle-play"></i> 
+        </button>
+      }
     </div>
+  }
+  <div class="about-text" [ngClass]="showText() ? 'fade-in' : 'hidden'">
+    <p><strong class="passion">Passion.</strong> <br /><br />  It’s the driving force behind everything I do — from building immersive interfaces to 
+      exploring new technologies just for the thrill of learning.</p>
+    <p> <br /> I approach each project with creativity and curiosity, constantly seeking better ways to express ideas through code. 
+      My journey is defined by a relentless desire to learn, grow, and create with purpose.</p>
+    <p> <br /> I'm deeply passionate about using technology as a medium for creativity and problem-solving. Whether I'm exploring new frameworks, building interactive visual experiences, or diving into complex systems, I thrive on turning ideas into something tangible. I approach every project with curiosity and an eagerness to learn, constantly pushing myself to grow both technically and creatively. For me, the process of learning isn’t a task — it's a mindset that fuels everything I do.</p>
   </div>
-</section>
-<section id="work" #sectionRef class="page-section">
-<app-work></app-work>
-</section>
-<section id="projects" #sectionRef class="page-section">
-<app-projects></app-projects>
-</section>
-<section id="skills" #sectionRef class="page-section">
-<app-skills></app-skills>
-</section>
-<section id="ideas" #sectionRef class="page-section">
-
-</section>
-<section id="contact" #sectionRef class="page-section">
-
-</section>
+</div>
