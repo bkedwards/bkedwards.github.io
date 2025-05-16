@@ -1,26 +1,18 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-  AfterViewInit,
-  ElementRef,
-  OnDestroy,
-  QueryList,
-  ViewChildren,
-  ViewChild,
-} from '@angular/core';
-import { TypewriterService } from '../typewriter.service';
-import { AsyncPipe, NgClass } from '@angular/common';
-import { map, tap } from 'rxjs/operators';
+import {AsyncPipe, NgClass} from '@angular/common';
+import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, QueryList, signal, ViewChild, ViewChildren,} from '@angular/core';
+import {ButtonModule} from 'primeng/button';
+import {CardModule} from 'primeng/card';
+import {TimelineModule} from 'primeng/timeline';
+import {map, tap} from 'rxjs/operators';
 import * as THREE from 'three';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { TimelineModule } from 'primeng/timeline';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
+import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
+import {FontLoader} from 'three/addons/loaders/FontLoader.js';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import {MeshSurfaceSampler} from 'three/examples/jsm/math/MeshSurfaceSampler.js';
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { Mesh, EdgesGeometry } from 'three';
+
+import {TypewriterService} from '../typewriter.service';
 
 export interface Event {
   status: string;
@@ -32,20 +24,15 @@ export interface Event {
 
 @Component({
   selector: 'app-about',
-  imports: [
-    AsyncPipe,
-    NgClass,
-    ButtonModule,
-    TimelineModule,
-    CardModule,
-  ],
+  imports: [AsyncPipe, NgClass, ButtonModule, TimelineModule, CardModule],
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AboutComponent implements AfterViewInit {
   /**
-   * These are the important ng-related functions for component initialization and destruction
+   * These are the important ng-related functions for component initialization
+   * and destruction
    */
   @ViewChildren('sectionRef') sections!: QueryList<ElementRef<HTMLElement>>;
   currentSectionId = '';
@@ -63,7 +50,8 @@ export class AboutComponent implements AfterViewInit {
   }
 
   /**
-   * This group of functions/variables handles text and button functionality for the ABOUT section
+   * This group of functions/variables handles text and button functionality for
+   * the ABOUT section
    */
 
   titles = ['Hello.', "I'm Ben.", 'Want to learn\nmore about me?'];
@@ -86,13 +74,14 @@ export class AboutComponent implements AfterViewInit {
 
   handleClick() {
     this.buttonClicked.set(true);
-    //this.pointsMaterial.uniforms['textPoints'].value=true;
+    // this.pointsMaterial.uniforms['textPoints'].value=true;
     this.simMaterial.uniforms['uShiftScene'].value = true;
     this.shiftScene();
   }
 
   /**
-   * This group of functions/variables handles the particle rendering for the ABOUT Section
+   * This group of functions/variables handles the particle rendering for the
+   * ABOUT Section
    */
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -148,7 +137,7 @@ export class AboutComponent implements AfterViewInit {
       );
       if (this.uShiftProgress < 1.0) requestAnimationFrame(shiftMorph);
       else {
-        //this.simMaterial.uniforms['uShiftScene'].value = false;
+        // this.simMaterial.uniforms['uShiftScene'].value = false;
         this.morphToText();
       }
     };
@@ -570,7 +559,7 @@ export class AboutComponent implements AfterViewInit {
       1000
     );
     this.camera.position.set(0, 0, 6);
-    //this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.onResize();
 
     this.scene = new THREE.Scene();
@@ -647,7 +636,21 @@ export class AboutComponent implements AfterViewInit {
       this.pointsMaterial = this.getPointsMaterial();
 
       this.points = new THREE.Points(geom, this.pointsMaterial);
-      this.scene.add(this.points);
+      //this.scene.add(this.points);
+
+      /*let minTarget = new THREE.Vector2();
+      let maxTarget = new THREE.Vector2();
+      this.camera.getViewBounds(6, minTarget, maxTarget);
+
+      const rings = this.createRings(
+        [0.5, 0.7, 0.9, 1.1],
+        [0.6, 0.8, 1.0, 1.2],
+        1000
+      );
+
+      rings.position.copy(new THREE.Vector3(minTarget.x, maxTarget.y, 0));
+      this.scene.add(rings);*/
+      this.createColumn(this.simSize * this.simSize);
 
       this.animate();
     });
@@ -657,7 +660,7 @@ export class AboutComponent implements AfterViewInit {
     this.frameId = requestAnimationFrame(this.animate);
 
     if (!this.aboutVisible) return;
-    //this.controls.update();
+    // this.controls.update();
     const t = performance.now() * 0.001;
     this.simMaterial.uniforms['uTime'].value = t * 15;
     this.pointsMaterial.uniforms['uTime'].value = t;
@@ -677,4 +680,136 @@ export class AboutComponent implements AfterViewInit {
       this.camera.updateProjectionMatrix();
     }
   };
+
+  createRings(
+    innerRadius: any,
+    outerRadius: any,
+    count = 250,
+    center = new THREE.Vector3(0, 0, 0)
+  ): THREE.Points {
+    const geometry = new THREE.BufferGeometry();
+    const positions = [];
+    for (let j = 0; j < innerRadius.length; j++) {
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.random() * Math.PI) / 2;
+        const radius =
+          innerRadius[j] + Math.random() * (outerRadius[j] - innerRadius[j]);
+
+        const x = Math.cos(angle) * radius;
+        const y = (Math.random() - 0.5) * 0.1; // keep it mostly flat
+        const z = Math.sin(angle) * radius;
+
+        positions.push(center.x + x, center.y + y, center.z + z);
+      }
+    }
+
+    const colors = this.getColors(innerRadius.length, count);
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    geometry.setAttribute(
+      'position',
+      new THREE.Float32BufferAttribute(positions, 3)
+    );
+
+    const material = new THREE.PointsMaterial({
+      size: 0.01,
+      vertexColors: true,
+    });
+    let points = new THREE.Points(geometry, material);
+    points.rotation.z = Math.PI / 8;
+    points.rotation.x = Math.PI / 2;
+    return points;
+  }
+
+  fbxLoader = new FBXLoader();
+  createColumn(samples: number) {
+    this.fbxLoader.load('/assets/about/column.fbx', (column) => {
+      column.traverse((child) => {
+        // if (child instanceof Mesh) {
+        //   // Extract visible edges
+        //   const edgesGeometry = new THREE.EdgesGeometry(child.geometry);
+        //   const edgePos = edgesGeometry.attributes['position'].array;
+
+        //   const positions: number[] = [];
+        //   const tempA = new THREE.Vector3();
+        //   const tempB = new THREE.Vector3();
+        //   const temp = new THREE.Vector3();
+
+        //   const edgeCount = edgePos.length / 6;
+        //   const samplesPerEdge = Math.max(1, Math.floor(samples / edgeCount));
+
+        //   for (let i = 0; i < edgePos.length; i += 6) {
+        //     tempA.set(edgePos[i], edgePos[i + 1], edgePos[i + 2]);
+        //     tempB.set(edgePos[i + 3], edgePos[i + 4], edgePos[i + 5]);
+
+        //     for (let j = 0; j < samplesPerEdge; j++) {
+        //       const t = Math.random();
+        //       temp.lerpVectors(tempA, tempB, t);
+        //       positions.push(temp.x, temp.y, temp.z);
+        //     }
+        //   }
+
+        //   // Build BufferGeometry from edge-sampled positions
+        //   const geometry = new THREE.BufferGeometry();
+        //   geometry.setAttribute(
+        //     'position',
+        //     new THREE.Float32BufferAttribute(positions, 3)
+        //   );
+
+        //   const color = this.getColors(positions.length / 3, 1);
+        //   geometry.setAttribute(
+        //     'color',
+        //     new THREE.Float32BufferAttribute(color, 3)
+        //   );
+
+        //   const material = new THREE.PointsMaterial({
+        //     size: 0.001,
+        //     vertexColors: true,
+        //   });
+
+        //   const points = new THREE.Points(geometry, material);
+        //   points.rotation.z = -Math.PI / 2;
+        //   points.rotation.y = Math.PI / 8;
+        //   points.rotation.x = Math.PI / 12;
+        //   points.position.copy(new THREE.Vector3(0, -1.5, 1));
+        //   this.scene.add(points);
+        // }
+        if (child instanceof Mesh) {
+          // Generate edge geometry from mesh geometry
+          const edgeGeometry = new THREE.EdgesGeometry(child.geometry, 1); // 1 = thresholdAngle in degrees
+
+          // Use a basic line material
+          const material = new THREE.LineBasicMaterial({
+            color: 0xffffff,
+          });
+
+          // Create line segments from edges
+          const edges = new THREE.LineSegments(edgeGeometry, material);
+          edges.rotation.z = -Math.PI / 2;
+          edges.rotation.y = Math.PI / 8;
+          edges.rotation.x = Math.PI / 12;
+          edges.position.copy(new THREE.Vector3(0, -1.5, 3));
+
+          this.scene.add(edges);
+        }
+      });
+    });
+  }
+
+  getColors(n: number, c: number): Float32Array {
+    const colors = new Float32Array(c * n * 3);
+    for (let i = 0; i < c * n; i++) {
+      const i3 = i * 3;
+      const useGold = Math.random() < 0.7;
+      if (useGold) {
+        colors[i3 + 0] = 0.9686;
+        colors[i3 + 1] = 0.8039;
+        colors[i3 + 2] = 0.5137;
+      } else {
+        colors[i3 + 0] = 0.2; // R
+        colors[i3 + 1] = 0.6; // G
+        colors[i3 + 2] = 1.0; // B
+      }
+    }
+    return colors;
+  }
 }
