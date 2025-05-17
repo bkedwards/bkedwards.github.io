@@ -25,12 +25,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Extract repo name
-        id: extract
-        run: echo "REPO=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
+      - name: Extract GitHub username
+        id: extract-username
+        run: |
+          REPO_NAME=${GITHUB_REPOSITORY#*/}
+          USERNAME=${REPO_NAME#}
+          echo "USERNAME=$USERNAME" >> $GITHUB_OUTPUT
+          echo "Repository name: $REPO_NAME"
+          echo "Extracted username: $USERNAME"
 
       - name: Build
-        run: npm run build -- --base-href="/${{ steps.extract.outputs.REPO }}/" --configuration=production
+        run: |
+          npm run build -- --base-href="/bkedwards4/" --configuration=production
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
