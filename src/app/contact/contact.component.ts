@@ -303,7 +303,7 @@ export class ContactComponent {
             vec3 offset = normalize(delta) * strength * 0.15; // scale down for subtle effect
             morphBase += offset;
           }
-          vec3 translate = vec3(-0.2,0.0,0.0);
+          vec3 translate = vec3(0,0.0,0.0);
           morphBase += translate;
 
           gl_FragColor = vec4(morphBase, 1.0);

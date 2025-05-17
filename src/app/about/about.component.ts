@@ -85,11 +85,11 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
   paths = [
     {
-      path: 'assets/about/old-well.obj',
+      path: 'assets/about/globe.obj',
       transform: this.composeTransform(
-        new THREE.Vector3(0.25, -0.2, 0),
-        new THREE.Euler(Math.PI / 10, 0, 0),
-        new THREE.Vector3(0.75, 0.75, 0.75)
+        new THREE.Vector3(0.0, 0.0, 0),
+        new THREE.Euler(0, 0, 0),
+        new THREE.Vector3(1, 1, 1)
       ),
     },
     {
@@ -103,9 +103,9 @@ export class AboutComponent implements AfterViewInit, OnInit {
     {
       path: 'assets/about/old-well.obj',
       transform: this.composeTransform(
-        new THREE.Vector3(0, -0.1, 0),
-        new THREE.Euler((6.8 * Math.PI) / 8, 0, Math.PI / 56),
-        new THREE.Vector3(0.09, 0.09, 0.09)
+        new THREE.Vector3(0.25, -0.2, 0),
+        new THREE.Euler(Math.PI / 10, 0, 0),
+        new THREE.Vector3(0.75, 0.75, 0.75)
       ),
     },
   ];
@@ -138,7 +138,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
   private targetTexture!: THREE.DataTexture;
   private controls!: OrbitControls;
   private textMesh!: THREE.Mesh;
-
+  private positionsTexture!: THREE.DataTexture;
   private globeTexture!: THREE.DataTexture;
   private uncTexture!: THREE.DataTexture;
   private helmetTexture!: THREE.DataTexture;
@@ -167,23 +167,45 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
     if (section.name === 'Introduction') {
       this.simMaterial.uniforms['targetPositions'].value = this.globeTexture;
-      this.morphObject();
     } else if (section.name === 'About Me') {
       this.simMaterial.uniforms['targetPositions'].value = this.uncTexture;
-      this.morphObject();
     } else if (section.name === 'Hobbies') {
       this.simMaterial.uniforms['targetPositions'].value = this.helmetTexture;
-      this.morphObject();
     }
+    this.morphObject(section.name);
     this.currentSection.set(section.paragraph);
     this.currentSectionName.set(section.name);
   }
 
-  morphObject() {
-    this.simMaterial.uniforms['isMorphing'].value=true;
-    function morphing()=>{
-      this.simMaterial.uniforms['uProgress'].value+=0.01;
-    }
+  morphObject(name: string) {
+    this.simMaterial.uniforms['isMorphing'].value = true;
+    this.uProgress = 0;
+
+    const animateMorph = () => {
+      this.uProgress += 0.01;
+
+      this.simMaterial.uniforms['uProgress'].value = Math.min(
+        this.uProgress,
+
+        1.0
+      );
+
+      if (this.uProgress < 1.0) requestAnimationFrame(animateMorph);
+      else {
+        if (name === 'Introduction') {
+          this.simRenderTarget.texture = this.globeTexture;
+        } else if (name === 'About Me') {
+          this.simRenderTarget.texture = this.uncTexture;
+        } else if (name === 'Hobbies') {
+          this.simRenderTarget.texture = this.helmetTexture;
+        }
+        this.simRenderTarget.texture.needsUpdate = true;
+        this.simMaterial.uniforms['positions'].value = this.simRenderTarget.texture;
+        this.simMaterial.uniforms['isMorphing'].value = false;
+      }
+    };
+
+    animateMorph();
   }
 
   composeTransform(
@@ -298,7 +320,10 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.uncTexture.needsUpdate = true;
       this.helmetTexture.needsUpdate = true;
 
-      this.simMaterial = this.getSimMaterial(this.globeTexture);
+      this.positionsTexture = this.globeTexture;
+      this.positionsTexture.needsUpdate = true;
+
+      this.simMaterial = this.getSimMaterial(this.positionsTexture);
       const simMesh = new THREE.Mesh(simGeom, this.simMaterial);
       this.simScene.add(simMesh);
 
@@ -307,6 +332,13 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
       geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       geom.setAttribute('position', new THREE.BufferAttribute(particles, 3));
+
+      const uvs = new Float32Array(this.simSize * this.simSize * 2);
+      for (let i = 0; i < this.simSize * this.simSize; i++) {
+        uvs[i * 2 + 0] = (i % this.simSize) / this.simSize;
+        uvs[i * 2 + 1] = Math.floor(i / this.simSize) / this.simSize;
+      }
+      geom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
       this.pointsMaterial = this.getPointsMaterial();
 
@@ -321,28 +353,25 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
   getSimMaterial(positionsTexture: THREE.DataTexture): THREE.ShaderMaterial {
     return new THREE.ShaderMaterial({
-      vertexShader: `varying vec2 vUv;
-          void main() {
-            vUv = uv;
-            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-          }`,
+      vertexShader: `
+      void main() {
+        gl_Position = vec4(position.xy, 0.0, 1.0);
+      }
+    `,
       fragmentShader: `
-        uniform sampler2D positions;
-        uniform float uProgress;
-        uniform sampler2D targetPositions;
-        uniform bool isMorphing;
-        varying vec2 vUv;  
-            
-        void main() {
-          vec3 pos = texture2D(positions, vUv).rgb;
-          vec3 finalPos = pos;
-          if (isMorphing) {
-            vec3 target = texture2D(targetPositions, vUv).rgb;
-            finalPos = mix(pos, target, uProgress);
-          }
-          gl_FragColor = vec4(finalPos, 1.0);
-        }
-        `,
+      uniform sampler2D positions;
+      uniform sampler2D targetPositions;
+      uniform float uProgress;
+      uniform bool isMorphing;
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / vec2(textureSize(positions, 0));
+        vec3 pos = texture2D(positions, uv).rgb;
+        vec3 target = texture2D(targetPositions, uv).rgb;
+        vec3 finalPos = isMorphing ? mix(pos, target, uProgress) : pos;
+        gl_FragColor = vec4(finalPos, 1.0);
+      }
+    `,
       uniforms: {
         positions: { value: positionsTexture },
         uProgress: { value: 0 },
@@ -363,17 +392,15 @@ export class AboutComponent implements AfterViewInit, OnInit {
       vertexColors: true,
       vertexShader: `
           uniform sampler2D positions;
-          uniform float uTime;
-          uniform float uFocus;
-          uniform float uFov;
-          uniform float uBlur;
-          varying float vDistance;
+
           varying vec3 vColor;
 
-          void main() { 
-            vec3 pos = texture2D(positions, position.xy).xyz;
+          void main() {
+            vec3 pos = texture2D(positions, uv).xyz;
+
             vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
             gl_Position = projectionMatrix * mvPosition;
+
             gl_PointSize = 2.0;
             vColor = color;
           }`,

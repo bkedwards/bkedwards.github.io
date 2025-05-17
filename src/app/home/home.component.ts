@@ -18,5 +18,10 @@ import { ContactComponent } from '../contact/contact.component';
   styleUrl: './home.component.css',
 })
 export class HomeComponent {
-  
+  scrollToSection(id: string) {
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
 }
