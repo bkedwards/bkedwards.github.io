@@ -158,7 +158,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
     const group = new THREE.Group();
 
     const coinMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xffffff, // no tint
+      color: 0xaaaaaa, // no tint
       metalness: 0.0, // dielectric
       roughness: 0.0, // razor‑sharp highlights
       transmission: 1.0, // full refraction

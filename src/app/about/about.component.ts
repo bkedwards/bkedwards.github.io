@@ -1,97 +1,127 @@
-import {AsyncPipe, NgClass} from '@angular/common';
-import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, inject, OnDestroy, QueryList, signal, ViewChild, ViewChildren,} from '@angular/core';
-import {ButtonModule} from 'primeng/button';
-import {CardModule} from 'primeng/card';
-import {TimelineModule} from 'primeng/timeline';
-import {map, tap} from 'rxjs/operators';
+import { AsyncPipe, NgClass } from '@angular/common';
+import {
+  AfterViewInit,
+  OnInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  OnDestroy,
+  QueryList,
+  signal,
+  ViewChild,
+  WritableSignal,
+  ViewChildren,
+} from '@angular/core';
+import { ButtonModule } from 'primeng/button';
+import { CardModule } from 'primeng/card';
+import { TimelineModule } from 'primeng/timeline';
+import { map, tap } from 'rxjs/operators';
 import * as THREE from 'three';
-import {TextGeometry} from 'three/addons/geometries/TextGeometry.js';
-import {FontLoader} from 'three/addons/loaders/FontLoader.js';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
-import {MeshSurfaceSampler} from 'three/examples/jsm/math/MeshSurfaceSampler.js';
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader.js';
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { Mesh, EdgesGeometry } from 'three';
 
-import {TypewriterService} from '../typewriter.service';
+import { TypewriterService } from '../typewriter.service';
 
-export interface Event {
-  status: string;
-  date: string;
-  image: string;
+export interface AboutSections {
   name: string;
-  color: string;
+  paragraph: string;
 }
 
 @Component({
   selector: 'app-about',
-  imports: [AsyncPipe, NgClass, ButtonModule, TimelineModule, CardModule],
+  imports: [NgClass, ButtonModule, TimelineModule, CardModule],
+  standalone: true,
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AboutComponent implements AfterViewInit {
-  /**
-   * These are the important ng-related functions for component initialization
-   * and destruction
-   */
-  @ViewChildren('sectionRef') sections!: QueryList<ElementRef<HTMLElement>>;
-  currentSectionId = '';
-  isFading = false;
+export class AboutComponent implements AfterViewInit, OnInit {
+  sections: AboutSections[] = [
+    {
+      name: 'Introduction',
+      paragraph: `I'm a driven engineer and innovator passionate about shaping the future of technology. 
+                  My work spans fields such as artificial intelligence, computer graphics, and finance. 
+                  <br><br>
+                  Whether developing geospatial localization without GPS for my college campus at UNC or 
+                  building advanced VR/AR visualizations using hierarchical 3D Gaussians, I'm always 
+                  pushing boundaries and creating impactful, forward-thinking solutions.`,
+    },
+    {
+      name: 'About Me',
+      paragraph: `I'm a senior at the University of North Carolina at Chapel Hill, Class of 2026, pursuing 
+                  a dual degree in Computer Science and Mathematics with a 3.96 GPA. I'm actively involved 
+                  in several student organizations, including the Carolina Analytics & Data Science (CADS) 
+                  club, the Carolina Augmented and Virtual Reality (CARVR) group, and the Sustainable 
+                  Business Club. <br><br>
+                  
+                  These experiences reflect my passion for technology, data-driven innovation, and sustainability.`,
+    },
+    {
+      name: 'Passions',
+      paragraph: `I'm passionate about building innovative solutions at the intersection of artificial 
+                  intelligence, machine learning, and design. Whether crafting intuitive user interfaces 
+                  or experimenting with large language model frameworks, I enjoy exploring creative, 
+                  nontraditional approaches that push technical and visual boundaries. <br><br>
+                  
+                  My interests span graphics programming, financial systems, and data visualizations—areas 
+                  where I can combine analytical thinking with visual storytelling to deliver insightful, 
+                  impactful experiences.`,
+    },
+    {
+      name: 'Hobbies',
+      paragraph: `Outside of academics, I enjoy drawing and painting, and I also value time spent connecting 
+                  with friends, whether through shared projects or casual hangouts. <br><br>
+                  
+                  A lifelong hockey fan, I love both playing the game and watching my favorite team, the 
+                  Carolina Hurricanes. From 2022 to 2025, I was a proud member of the UNC Ice Hockey team, 
+                  where I built lasting friendships and developed a strong sense of teamwork and discipline`,
+    },
+  ];
 
-  ngAfterViewInit(): void {
-    this.initAbout();
-    window.addEventListener('resize', this.onResize);
-  }
+  paths = [
+    {
+      path: 'assets/about/old-well.obj',
+      transform: this.composeTransform(
+        new THREE.Vector3(0.25, -0.2, 0),
+        new THREE.Euler(Math.PI / 10, 0, 0),
+        new THREE.Vector3(0.75, 0.75, 0.75)
+      ),
+    },
+    {
+      path: 'assets/about/helmet.obj',
+      transform: this.composeTransform(
+        new THREE.Vector3(0, 0, 0),
+        new THREE.Euler(0, 0, 0),
+        new THREE.Vector3(0.8, 0.8, 0.8)
+      ),
+    },
+    {
+      path: 'assets/about/old-well.obj',
+      transform: this.composeTransform(
+        new THREE.Vector3(0, -0.1, 0),
+        new THREE.Euler((6.8 * Math.PI) / 8, 0, Math.PI / 56),
+        new THREE.Vector3(0.09, 0.09, 0.09)
+      ),
+    },
+  ];
 
-  ngOnDestroy(): void {
-    cancelAnimationFrame(this.frameId);
-    window.removeEventListener('resize', this.onResize);
-    this.renderer.dispose();
-  }
-
-  /**
-   * This group of functions/variables handles text and button functionality for
-   * the ABOUT section
-   */
-
-  titles = ['Hello.', "I'm Ben.", 'Want to learn\nmore about me?'];
-  private typewriterService = inject(TypewriterService);
-
-  showText = signal(false);
-  showButton = signal(false);
-  buttonClicked = signal(false);
-
-  typedText$ = this.typewriterService.getTypewriterEffect(this.titles).pipe(
-    tap((text) => {
-      if (text === this.titles[this.titles.length - 1]) {
-        this.showButton.set(true);
-      }
-    }),
-    map((text) => ({
-      text,
-    }))
-  );
-
-  handleClick() {
-    this.buttonClicked.set(true);
-    // this.pointsMaterial.uniforms['textPoints'].value=true;
-    this.simMaterial.uniforms['uShiftScene'].value = true;
-    this.shiftScene();
-  }
-
-  /**
-   * This group of functions/variables handles the particle rendering for the
-   * ABOUT Section
-   */
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
-
   @ViewChild('about', { static: false }) aboutRef!: ElementRef;
   loader = new FontLoader();
+
+  currentSection: WritableSignal<string> = signal('');
+  currentSectionName: WritableSignal<string> = signal('');
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private points!: THREE.Points;
+  private globePoints!: THREE.Points;
   private frameId = 0;
 
   private aboutObserver!: IntersectionObserver;
@@ -109,430 +139,65 @@ export class AboutComponent implements AfterViewInit {
   private controls!: OrbitControls;
   private textMesh!: THREE.Mesh;
 
-  private morphToText() {
-    this.uProgress = 0;
-    const animateMorph = () => {
-      this.uProgress += 0.01;
+  private globeTexture!: THREE.DataTexture;
+  private uncTexture!: THREE.DataTexture;
+  private helmetTexture!: THREE.DataTexture;
+  private codingTexture!: THREE.DataTexture;
 
-      this.simMaterial.uniforms['uProgress'].value = Math.min(
-        this.uProgress,
-        1.0
-      );
-      if (this.uProgress < 1.0) requestAnimationFrame(animateMorph);
-      else {
-        this.showText.set(true);
-      }
-    };
-    animateMorph();
+  ngOnInit(): void {
+    this.currentSection.set(this.sections[0].paragraph);
+    this.currentSectionName.set(this.sections[0].name);
   }
 
-  private shiftScene() {
-    this.uShiftProgress = 0;
-    const shiftMorph = () => {
-      this.uShiftProgress += 0.02;
-
-      this.simMaterial.uniforms['uShiftProgress'].value = Math.min(
-        this.uShiftProgress,
-        1.0
-      );
-      if (this.uShiftProgress < 1.0) requestAnimationFrame(shiftMorph);
-      else {
-        // this.simMaterial.uniforms['uShiftScene'].value = false;
-        this.morphToText();
-      }
-    };
-    shiftMorph();
+  ngAfterViewInit(): void {
+    this.initAbout();
+    window.addEventListener('resize', this.onResize);
   }
 
-  private getText(count: number): Promise<Float32Array> {
-    return new Promise((resolve, reject) => {
-      const data = new Float32Array(this.simSize * this.simSize * 4);
-      this.loader.load(
-        '../assets/Cormorant Garamond Light_Regular.json',
-        (font) => {
-          const geometry = new TextGeometry('Passion.', {
-            font: font,
-            size: 0.3,
-            depth: 0,
-            curveSegments: 8,
-            bevelEnabled: false,
-            bevelThickness: 0.125,
-            bevelSize: 0.025,
-            bevelOffset: 0,
-            bevelSegments: 4,
-          });
-
-          geometry.computeBoundingBox();
-          const bbox = geometry.boundingBox!;
-          const size = new THREE.Vector3();
-          bbox.getSize(size);
-
-          geometry.translate(-bbox.min.x, -bbox.max.y, -bbox.min.z);
-
-          const material = new THREE.MeshBasicMaterial({ color: 0xffffff });
-          const mesh = new THREE.Mesh(geometry, material);
-
-          const sampler = new MeshSurfaceSampler(mesh).build();
-
-          const offsetX = -3.8;
-          const offsetY = 1.0;
-          const offsetZ = -0.75;
-
-          for (let i = 0; i < count; i++) {
-            const position = new THREE.Vector3();
-            sampler.sample(position);
-
-            const idx = i * 4;
-            data[idx] = position.x + offsetX;
-            data[idx + 1] = position.y + offsetY;
-            data[idx + 2] = position.z + offsetZ;
-            data[idx + 3] = 1.0;
-          }
-
-          for (let i = count; i < this.simSize * this.simSize; i++) {
-            data[i * 4] = 0;
-            data[i * 4 + 1] = 0;
-            data[i * 4 + 2] = 0;
-            data[i * 4 + 3] = 0.0;
-          }
-          resolve(data);
-        },
-        undefined,
-        (err) => reject(err)
-      );
-    });
+  ngOnDestroy(): void {
+    cancelAnimationFrame(this.frameId);
+    window.removeEventListener('resize', this.onResize);
+    this.renderer.dispose();
   }
 
-  getPoint(
-    v: THREE.Vector3,
-    size: number,
-    data: Float32Array,
-    offset: number
-  ): any {
-    v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
-    if (v.length() > 1) return this.getPoint(v, size, data, offset);
-    return v.normalize().multiplyScalar(size).toArray(data, offset);
-  }
+  changeSection(index: number) {
+    const section = this.sections[index];
 
-  getSphere(count: number, size: number): Float32Array {
-    const data = new Float32Array(count * 4); // x, y, z only
-    const p = new THREE.Vector3();
-    for (let i = 0; i < count * 4; i += 4) {
-      this.getPoint(p, size, data, i);
+    if (section.name === this.currentSectionName()) return;
+
+    if (section.name === 'Introduction') {
+      this.simMaterial.uniforms['targetPositions'].value = this.globeTexture;
+      this.morphObject();
+    } else if (section.name === 'About Me') {
+      this.simMaterial.uniforms['targetPositions'].value = this.uncTexture;
+      this.morphObject();
+    } else if (section.name === 'Hobbies') {
+      this.simMaterial.uniforms['targetPositions'].value = this.helmetTexture;
+      this.morphObject();
     }
-    return data;
+    this.currentSection.set(section.paragraph);
+    this.currentSectionName.set(section.name);
   }
 
-  getSimMaterial(positionsTexture: THREE.DataTexture): THREE.ShaderMaterial {
-    return new THREE.ShaderMaterial({
-      vertexShader: `varying vec2 vUv;
-        void main() {
-          vUv = uv;
-          gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-        }`,
-      fragmentShader: `
-      uniform sampler2D positions;
-      uniform float uTime;
-      uniform float uCurlFreq;
-      varying vec2 vUv;
-      uniform sampler2D targetPositions;
-      uniform float uProgress;
-      uniform float uShiftProgress;
-      uniform bool uShiftScene;
-
-      vec3 mod289(vec3 x) {
-        return x - floor(x * (1.0 / 289.0)) * 289.0;
-      }
-
-      vec4 mod289(vec4 x) {
-        return x - floor(x * (1.0 / 289.0)) * 289.0;
-      }
-
-      vec4 permute(vec4 x) {
-          return mod289(((x*34.0)+1.0)*x);
-      }
-
-      vec4 taylorInvSqrt(vec4 r)
-      {
-        return 1.79284291400159 - 0.85373472095314 * r;
-      }
-
-      float snoise(vec3 v)
-        {
-        const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
-        const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
-
-      // First corner
-        vec3 i  = floor(v + dot(v, C.yyy) );
-        vec3 x0 =   v - i + dot(i, C.xxx) ;
-
-      // Other corners
-        vec3 g = step(x0.yzx, x0.xyz);
-        vec3 l = 1.0 - g;
-        vec3 i1 = min( g.xyz, l.zxy );
-        vec3 i2 = max( g.xyz, l.zxy );
-
-        //   x0 = x0 - 0.0 + 0.0 * C.xxx;
-        //   x1 = x0 - i1  + 1.0 * C.xxx;
-        //   x2 = x0 - i2  + 2.0 * C.xxx;
-        //   x3 = x0 - 1.0 + 3.0 * C.xxx;
-        vec3 x1 = x0 - i1 + C.xxx;
-        vec3 x2 = x0 - i2 + C.yyy; // 2.0*C.x = 1/3 = C.y
-        vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y
-
-      // Permutations
-        i = mod289(i);
-        vec4 p = permute( permute( permute(
-                  i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
-                + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))
-                + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
-
-      // Gradients: 7x7 points over a square, mapped onto an octahedron.
-      // The ring size 17*17 = 289 is close to a multiple of 49 (49*6 = 294)
-        float n_ = 0.142857142857; // 1.0/7.0
-        vec3  ns = n_ * D.wyz - D.xzx;
-
-        vec4 j = p - 49.0 * floor(p * ns.z * ns.z);  //  mod(p,7*7)
-
-        vec4 x_ = floor(j * ns.z);
-        vec4 y_ = floor(j - 7.0 * x_ );    // mod(j,N)
-
-        vec4 x = x_ *ns.x + ns.yyyy;
-        vec4 y = y_ *ns.x + ns.yyyy;
-        vec4 h = 1.0 - abs(x) - abs(y);
-
-        vec4 b0 = vec4( x.xy, y.xy );
-        vec4 b1 = vec4( x.zw, y.zw );
-
-        //vec4 s0 = vec4(lessThan(b0,0.0))*2.0 - 1.0;
-        //vec4 s1 = vec4(lessThan(b1,0.0))*2.0 - 1.0;
-        vec4 s0 = floor(b0)*2.0 + 1.0;
-        vec4 s1 = floor(b1)*2.0 + 1.0;
-        vec4 sh = -step(h, vec4(0.0));
-
-        vec4 a0 = b0.xzyw + s0.xzyw*sh.xxyy ;
-        vec4 a1 = b1.xzyw + s1.xzyw*sh.zzww ;
-
-        vec3 p0 = vec3(a0.xy,h.x);
-        vec3 p1 = vec3(a0.zw,h.y);
-        vec3 p2 = vec3(a1.xy,h.z);
-        vec3 p3 = vec3(a1.zw,h.w);
-
-      //Normalise gradients
-        vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2, p2), dot(p3,p3)));
-        p0 *= norm.x;
-        p1 *= norm.y;
-        p2 *= norm.z;
-        p3 *= norm.w;
-
-      // Mix final noise value
-        vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
-        m = m * m;
-        return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
-                                      dot(p2,x2), dot(p3,x3) ) );
-        }
-
-      vec3 fade(vec3 t) {
-        return t*t*t*(t*(t*6.0-15.0)+10.0);
-      }
-
-      // Classic Perlin noise
-      float cnoise(vec3 P)
-      {
-        vec3 Pi0 = floor(P); // Integer part for indexing
-        vec3 Pi1 = Pi0 + vec3(1.0); // Integer part + 1
-        Pi0 = mod289(Pi0);
-        Pi1 = mod289(Pi1);
-        vec3 Pf0 = fract(P); // Fractional part for interpolation
-        vec3 Pf1 = Pf0 - vec3(1.0); // Fractional part - 1.0
-        vec4 ix = vec4(Pi0.x, Pi1.x, Pi0.x, Pi1.x);
-        vec4 iy = vec4(Pi0.yy, Pi1.yy);
-        vec4 iz0 = Pi0.zzzz;
-        vec4 iz1 = Pi1.zzzz;
-
-        vec4 ixy = permute(permute(ix) + iy);
-        vec4 ixy0 = permute(ixy + iz0);
-        vec4 ixy1 = permute(ixy + iz1);
-
-        vec4 gx0 = ixy0 * (1.0 / 7.0);
-        vec4 gy0 = fract(floor(gx0) * (1.0 / 7.0)) - 0.5;
-        gx0 = fract(gx0);
-        vec4 gz0 = vec4(0.5) - abs(gx0) - abs(gy0);
-        vec4 sz0 = step(gz0, vec4(0.0));
-        gx0 -= sz0 * (step(0.0, gx0) - 0.5);
-        gy0 -= sz0 * (step(0.0, gy0) - 0.5);
-
-        vec4 gx1 = ixy1 * (1.0 / 7.0);
-        vec4 gy1 = fract(floor(gx1) * (1.0 / 7.0)) - 0.5;
-        gx1 = fract(gx1);
-        vec4 gz1 = vec4(0.5) - abs(gx1) - abs(gy1);
-        vec4 sz1 = step(gz1, vec4(0.0));
-        gx1 -= sz1 * (step(0.0, gx1) - 0.5);
-        gy1 -= sz1 * (step(0.0, gy1) - 0.5);
-
-        vec3 g000 = vec3(gx0.x,gy0.x,gz0.x);
-        vec3 g100 = vec3(gx0.y,gy0.y,gz0.y);
-        vec3 g010 = vec3(gx0.z,gy0.z,gz0.z);
-        vec3 g110 = vec3(gx0.w,gy0.w,gz0.w);
-        vec3 g001 = vec3(gx1.x,gy1.x,gz1.x);
-        vec3 g101 = vec3(gx1.y,gy1.y,gz1.y);
-        vec3 g011 = vec3(gx1.z,gy1.z,gz1.z);
-        vec3 g111 = vec3(gx1.w,gy1.w,gz1.w);
-
-        vec4 norm0 = taylorInvSqrt(vec4(dot(g000, g000), dot(g010, g010), dot(g100, g100), dot(g110, g110)));
-        g000 *= norm0.x;
-        g010 *= norm0.y;
-        g100 *= norm0.z;
-        g110 *= norm0.w;
-        vec4 norm1 = taylorInvSqrt(vec4(dot(g001, g001), dot(g011, g011), dot(g101, g101), dot(g111, g111)));
-        g001 *= norm1.x;
-        g011 *= norm1.y;
-        g101 *= norm1.z;
-        g111 *= norm1.w;
-
-        float n000 = dot(g000, Pf0);
-        float n100 = dot(g100, vec3(Pf1.x, Pf0.yz));
-        float n010 = dot(g010, vec3(Pf0.x, Pf1.y, Pf0.z));
-        float n110 = dot(g110, vec3(Pf1.xy, Pf0.z));
-        float n001 = dot(g001, vec3(Pf0.xy, Pf1.z));
-        float n101 = dot(g101, vec3(Pf1.x, Pf0.y, Pf1.z));
-        float n011 = dot(g011, vec3(Pf0.x, Pf1.yz));
-        float n111 = dot(g111, Pf1);
-
-        vec3 fade_xyz = fade(Pf0);
-        vec4 n_z = mix(vec4(n000, n100, n010, n110), vec4(n001, n101, n011, n111), fade_xyz.z);
-        vec2 n_yz = mix(n_z.xy, n_z.zw, fade_xyz.y);
-        float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x);
-        return 2.2 * n_xyz;
-      }
-        
-      vec3 snoiseVec3(vec3 x) {
-          float s  = snoise(x);
-          float s1 = snoise(vec3(x.y - 19.1, x.z + 33.4, x.x + 47.2));
-          float s2 = snoise(vec3(x.z + 74.2, x.x - 124.5, x.y + 99.4));
-          return vec3(s, s1, s2);
-        }
-        
-      vec3 curl(vec3 p) {
-        float e = 0.1;
-        vec3 dx = vec3(e, 0.0, 0.0);
-        vec3 dy = vec3(0.0, e, 0.0);
-        vec3 dz = vec3(0.0, 0.0, e);
-
-        vec3 p_x0 = snoiseVec3(p - dx);
-        vec3 p_x1 = snoiseVec3(p + dx);
-        vec3 p_y0 = snoiseVec3(p - dy);
-        vec3 p_y1 = snoiseVec3(p + dy);
-        vec3 p_z0 = snoiseVec3(p - dz);
-        vec3 p_z1 = snoiseVec3(p + dz);
-
-        float x = p_y1.z - p_y0.z - p_z1.y + p_z0.y;
-        float y = p_z1.x - p_z0.x - p_x1.z + p_x0.z;
-        float z = p_x1.y - p_x0.y - p_y1.x + p_y0.x;
-
-        return normalize(vec3(x, y, z) / (2.0 * e));
-      }
-          
-      void main() {
-        float t = uTime * 0.015;
-        vec3 pos = texture2D(positions, vUv).rgb; // basic simulation: displays the particles in place.
-        vec3 curlPos = texture2D(positions, vUv).rgb;
-        pos = curl(pos * uCurlFreq + t);
-        curlPos = curl(curlPos * uCurlFreq + t);
-        curlPos += curl(curlPos * uCurlFreq * 2.0) * 0.5;
-        curlPos += curl(curlPos * uCurlFreq * 4.0) * 0.25;
-        curlPos += curl(curlPos * uCurlFreq * 8.0) * 0.125;
-        curlPos += curl(pos * uCurlFreq * 16.0) * 0.0625;
-        
-        vec4 target = texture2D(targetPositions, vUv);
-        float morphFlag = target.a;
-        vec3 targetPos = target.rgb;
-
-        targetPos += 0.02 * curl(curl(targetPos * uCurlFreq + t) * uCurlFreq * 2.0) * 0.3;
-        targetPos += curl(target.rgb * uCurlFreq * 2.0) * 0.01;
-
-        vec3 shiftTarget = vec3(1.25,0,0);
-        vec3 morphBase = mix(pos, curlPos, cnoise(pos + t));
-
-        vec3 finalPos = morphFlag==1.0 ? mix(morphBase, targetPos, uProgress) : morphBase;
-        //finalPos = uProgress==1.0 && morphFlag==1.0 ? mix(morphBase, )
-
-        finalPos = uShiftScene ? mix(finalPos, finalPos + shiftTarget, uShiftProgress) : finalPos;
-
-        gl_FragColor = vec4(finalPos, 1.0);
-      }
-      `,
-      uniforms: {
-        positions: { value: positionsTexture },
-        targetPositions: { value: this.targetTexture },
-        uTime: { value: 0 },
-        uCurlFreq: { value: 0.31 },
-        uProgress: { value: 0.0 },
-        uShiftProgress: { value: 0.0 },
-        uShiftScene: { value: false },
-      },
-    });
-  }
-
-  getColorArray(): Float32Array {
-    const colors = new Float32Array(this.simSize * this.simSize * 3);
-    for (let i = 0; i < this.simSize * this.simSize; i++) {
-      const i3 = i * 3;
-      const useGold = Math.random() < 0.7;
-      if (useGold) {
-        colors[i3 + 0] = 0.9686;
-        colors[i3 + 1] = 0.8039;
-        colors[i3 + 2] = 0.5137;
-      } else {
-        colors[i3 + 0] = 0.2; // R
-        colors[i3 + 1] = 0.6; // G
-        colors[i3 + 2] = 1.0; // B
-      }
+  morphObject() {
+    this.simMaterial.uniforms['isMorphing'].value=true;
+    function morphing()=>{
+      this.simMaterial.uniforms['uProgress'].value+=0.01;
     }
-    return colors;
   }
 
-  getPointsMaterial(): THREE.ShaderMaterial {
-    return new THREE.ShaderMaterial({
-      uniforms: {
-        positions: { value: this.simRenderTarget.texture },
-        uTime: { value: 0 },
-        uFocus: { value: 7 },
-        uFov: { value: 14 },
-        uBlur: { value: 8.1 },
-        textPoints: { value: false },
-      },
-      blending: THREE.NormalBlending,
-      depthWrite: false,
-      transparent: true,
-      vertexColors: true,
-      vertexShader: `
-        uniform bool textPoints;
-        uniform sampler2D positions;
-        uniform float uTime;
-        uniform float uFocus;
-        uniform float uFov;
-        uniform float uBlur;
-        varying float vDistance;
-        varying vec3 vColor;
-        void main() { 
-          vec3 pos = texture2D(positions, position.xy).xyz;
-          vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-          gl_Position = projectionMatrix * mvPosition;
-          vDistance = abs(uFocus - -mvPosition.z);
-          float factor = textPoints ? 1.0 :  (step(1.0 - (1.0 / uFov), position.x));
-          gl_PointSize = factor * vDistance * uBlur * 3.0;
-          vColor = color;
-        }`,
-      fragmentShader: `uniform float uOpacity;
-        varying float vDistance;
-        varying vec3 vColor;
-        void main() {
-          vec2 cxy = 2.0 * gl_PointCoord - 1.0;
-          if (dot(cxy, cxy) > 1.0) discard;
-          gl_FragColor = vec4(vColor, (1.04 - clamp(vDistance * 1.5, 0.0, 1.0)));
-        }`,
-    });
+  composeTransform(
+    position?: THREE.Vector3,
+    rotation?: THREE.Euler,
+    scale?: THREE.Vector3
+  ): THREE.Matrix4 {
+    const matrix = new THREE.Matrix4();
+    const obj = new THREE.Object3D();
+    if (position) obj.position.copy(position);
+    if (rotation) obj.rotation.copy(rotation);
+    if (scale) obj.scale.copy(scale);
+    obj.updateMatrix();
+    return obj.matrix.clone();
   }
 
   private initAbout() {
@@ -540,10 +205,11 @@ export class AboutComponent implements AfterViewInit {
       (entries) => {
         this.aboutVisible = entries[0].isIntersecting;
       },
-      { threshold: 0.1 }
+      { threshold: 0.2 }
     );
 
     this.aboutObserver.observe(this.aboutRef.nativeElement);
+
     const canvas = this.canvasRef.nativeElement;
     this.renderer = new THREE.WebGLRenderer({
       canvas,
@@ -553,13 +219,13 @@ export class AboutComponent implements AfterViewInit {
     this.renderer.setPixelRatio(2);
     this.renderer.setClearColor(0x000000, 0);
     this.camera = new THREE.PerspectiveCamera(
-      25, // Match React camera FOV
+      25,
       canvas.clientWidth / canvas.clientHeight,
       0.1,
       1000
     );
     this.camera.position.set(0, 0, 6);
-    // this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.onResize();
 
     this.scene = new THREE.Scene();
@@ -599,31 +265,40 @@ export class AboutComponent implements AfterViewInit {
 
     this.simScene = new THREE.Scene();
 
-    const sphereData = this.getSphere(
-      this.simSize * this.simSize,
-      this.simSize / 4
-    );
-
-    const positionsTexture = new THREE.DataTexture(
-      sphereData,
-      this.simSize,
-      this.simSize,
-      THREE.RGBAFormat,
-      THREE.FloatType
-    );
-    positionsTexture.needsUpdate = true;
-
-    this.getText(128 * 128).then((data) => {
-      this.targetTexture = new THREE.DataTexture(
-        data,
+    Promise.all(
+      this.paths.map(({ path, transform }) =>
+        this.createObjTexture(path, this.simSize * this.simSize, transform)
+      )
+    ).then(([data1, data2, data3]) => {
+      this.globeTexture = new THREE.DataTexture(
+        data1,
         this.simSize,
         this.simSize,
         THREE.RGBAFormat,
         THREE.FloatType
       );
-      this.targetTexture.needsUpdate = true;
 
-      this.simMaterial = this.getSimMaterial(positionsTexture);
+      this.uncTexture = new THREE.DataTexture(
+        data2,
+        this.simSize,
+        this.simSize,
+        THREE.RGBAFormat,
+        THREE.FloatType
+      );
+
+      this.helmetTexture = new THREE.DataTexture(
+        data3,
+        this.simSize,
+        this.simSize,
+        THREE.RGBAFormat,
+        THREE.FloatType
+      );
+
+      this.globeTexture.needsUpdate = true;
+      this.uncTexture.needsUpdate = true;
+      this.helmetTexture.needsUpdate = true;
+
+      this.simMaterial = this.getSimMaterial(this.globeTexture);
       const simMesh = new THREE.Mesh(simGeom, this.simMaterial);
       this.simScene.add(simMesh);
 
@@ -636,23 +311,168 @@ export class AboutComponent implements AfterViewInit {
       this.pointsMaterial = this.getPointsMaterial();
 
       this.points = new THREE.Points(geom, this.pointsMaterial);
-      //this.scene.add(this.points);
-
-      /*let minTarget = new THREE.Vector2();
-      let maxTarget = new THREE.Vector2();
-      this.camera.getViewBounds(6, minTarget, maxTarget);
-
-      const rings = this.createRings(
-        [0.5, 0.7, 0.9, 1.1],
-        [0.6, 0.8, 1.0, 1.2],
-        1000
-      );
-
-      rings.position.copy(new THREE.Vector3(minTarget.x, maxTarget.y, 0));
-      this.scene.add(rings);*/
-      this.createColumn(this.simSize * this.simSize);
+      this.scene.add(this.points);
 
       this.animate();
+    });
+  }
+
+  objLoader = new OBJLoader();
+
+  getSimMaterial(positionsTexture: THREE.DataTexture): THREE.ShaderMaterial {
+    return new THREE.ShaderMaterial({
+      vertexShader: `varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+          }`,
+      fragmentShader: `
+        uniform sampler2D positions;
+        uniform float uProgress;
+        uniform sampler2D targetPositions;
+        uniform bool isMorphing;
+        varying vec2 vUv;  
+            
+        void main() {
+          vec3 pos = texture2D(positions, vUv).rgb;
+          vec3 finalPos = pos;
+          if (isMorphing) {
+            vec3 target = texture2D(targetPositions, vUv).rgb;
+            finalPos = mix(pos, target, uProgress);
+          }
+          gl_FragColor = vec4(finalPos, 1.0);
+        }
+        `,
+      uniforms: {
+        positions: { value: positionsTexture },
+        uProgress: { value: 0 },
+        targetPositions: { value: positionsTexture },
+        isMorphing: { value: false },
+      },
+    });
+  }
+
+  getPointsMaterial(): THREE.ShaderMaterial {
+    return new THREE.ShaderMaterial({
+      uniforms: {
+        positions: { value: this.simRenderTarget.texture },
+      },
+      blending: THREE.NormalBlending,
+      depthWrite: false,
+      transparent: true,
+      vertexColors: true,
+      vertexShader: `
+          uniform sampler2D positions;
+          uniform float uTime;
+          uniform float uFocus;
+          uniform float uFov;
+          uniform float uBlur;
+          varying float vDistance;
+          varying vec3 vColor;
+
+          void main() { 
+            vec3 pos = texture2D(positions, position.xy).xyz;
+            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+            gl_Position = projectionMatrix * mvPosition;
+            gl_PointSize = 2.0;
+            vColor = color;
+          }`,
+      fragmentShader: `
+          varying vec3 vColor;
+          void main() {
+            gl_FragColor = vec4(1.0,1.0,1.0, 1.0);
+          }`,
+    });
+  }
+
+  getColorArray(): Float32Array {
+    const colors = new Float32Array(this.simSize * this.simSize * 3);
+    for (let i = 0; i < this.simSize * this.simSize; i++) {
+      const i3 = i * 3;
+      const useGold = Math.random() < 0.25;
+      if (useGold) {
+        colors[i3 + 0] = 0.0;
+        colors[i3 + 1] = 1.0;
+        colors[i3 + 2] = 1.0;
+      } else {
+        colors[i3 + 0] = 1.0; // R
+        colors[i3 + 1] = 1.0; // G
+        colors[i3 + 2] = 1.0; // B
+      }
+    }
+    return colors;
+  }
+
+  createObjTexture(
+    file: string,
+    samples: number,
+    transform?: THREE.Matrix4
+  ): Promise<Float32Array> {
+    return new Promise((resolve, reject) => {
+      const data = new Float32Array(samples * 4);
+      const allEdges: [THREE.Vector3, THREE.Vector3][] = [];
+
+      this.objLoader.load(file, (globe) => {
+        globe.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            const scale = 1.4;
+            child.geometry.computeBoundingBox();
+            child.geometry.applyMatrix4(
+              new THREE.Matrix4().makeScale(scale, scale, scale)
+            );
+
+            const edgeGeometry = new THREE.EdgesGeometry(child.geometry, 1);
+            const edgePos = edgeGeometry.attributes['position'].array;
+
+            for (let i = 0; i < edgePos.length; i += 6) {
+              const a = new THREE.Vector3(
+                edgePos[i],
+                edgePos[i + 1],
+                edgePos[i + 2]
+              );
+              const b = new THREE.Vector3(
+                edgePos[i + 3],
+                edgePos[i + 4],
+                edgePos[i + 5]
+              );
+              allEdges.push([a, b]);
+            }
+          }
+        });
+
+        const allPositions: number[] = [];
+
+        for (let i = allEdges.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [allEdges[i], allEdges[j]] = [allEdges[j], allEdges[i]];
+        }
+
+        const totalEdges = allEdges.length;
+        const samplesPerEdge = Math.max(1, Math.floor(samples / totalEdges));
+        let totalSampled = 0;
+
+        for (const [a, b] of allEdges) {
+          const count = Math.min(samplesPerEdge, samples - totalSampled);
+          for (let j = 0; j < count; j++) {
+            const t = Math.random();
+            const point = new THREE.Vector3().lerpVectors(a, b, t);
+            if (transform) point.applyMatrix4(transform);
+            allPositions.push(point.x, point.y, point.z);
+            totalSampled++;
+            if (totalSampled >= samples) break;
+          }
+          if (totalSampled >= samples) break;
+        }
+
+        for (let i = 0; i < totalSampled; i++) {
+          data[i * 4 + 0] = allPositions[i * 3 + 0];
+          data[i * 4 + 1] = allPositions[i * 3 + 1];
+          data[i * 4 + 2] = allPositions[i * 3 + 2];
+          data[i * 4 + 3] = 1.0;
+        }
+
+        resolve(data);
+      });
     });
   }
 
@@ -660,11 +480,11 @@ export class AboutComponent implements AfterViewInit {
     this.frameId = requestAnimationFrame(this.animate);
 
     if (!this.aboutVisible) return;
-    // this.controls.update();
+    this.controls.update();
     const t = performance.now() * 0.001;
-    this.simMaterial.uniforms['uTime'].value = t * 15;
-    this.pointsMaterial.uniforms['uTime'].value = t;
-
+    if (this.points) {
+      this.points.rotation.y += 0.002;
+    }
     this.renderer.setRenderTarget(this.simRenderTarget);
     this.renderer.render(this.simScene, this.simCamera);
     this.renderer.setRenderTarget(null);
@@ -672,144 +492,13 @@ export class AboutComponent implements AfterViewInit {
   };
 
   private onResize = () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
+    const canvas = this.canvasRef.nativeElement;
+    const width = canvas.clientWidth;
+    const height = canvas.clientHeight;
     this.renderer.setSize(width, height, false);
     if (this.camera instanceof THREE.PerspectiveCamera) {
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }
   };
-
-  createRings(
-    innerRadius: any,
-    outerRadius: any,
-    count = 250,
-    center = new THREE.Vector3(0, 0, 0)
-  ): THREE.Points {
-    const geometry = new THREE.BufferGeometry();
-    const positions = [];
-    for (let j = 0; j < innerRadius.length; j++) {
-      for (let i = 0; i < count; i++) {
-        const angle = (Math.random() * Math.PI) / 2;
-        const radius =
-          innerRadius[j] + Math.random() * (outerRadius[j] - innerRadius[j]);
-
-        const x = Math.cos(angle) * radius;
-        const y = (Math.random() - 0.5) * 0.1; // keep it mostly flat
-        const z = Math.sin(angle) * radius;
-
-        positions.push(center.x + x, center.y + y, center.z + z);
-      }
-    }
-
-    const colors = this.getColors(innerRadius.length, count);
-    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    geometry.setAttribute(
-      'position',
-      new THREE.Float32BufferAttribute(positions, 3)
-    );
-
-    const material = new THREE.PointsMaterial({
-      size: 0.01,
-      vertexColors: true,
-    });
-    let points = new THREE.Points(geometry, material);
-    points.rotation.z = Math.PI / 8;
-    points.rotation.x = Math.PI / 2;
-    return points;
-  }
-
-  fbxLoader = new FBXLoader();
-  createColumn(samples: number) {
-    this.fbxLoader.load('/assets/about/column.fbx', (column) => {
-      column.traverse((child) => {
-        // if (child instanceof Mesh) {
-        //   // Extract visible edges
-        //   const edgesGeometry = new THREE.EdgesGeometry(child.geometry);
-        //   const edgePos = edgesGeometry.attributes['position'].array;
-
-        //   const positions: number[] = [];
-        //   const tempA = new THREE.Vector3();
-        //   const tempB = new THREE.Vector3();
-        //   const temp = new THREE.Vector3();
-
-        //   const edgeCount = edgePos.length / 6;
-        //   const samplesPerEdge = Math.max(1, Math.floor(samples / edgeCount));
-
-        //   for (let i = 0; i < edgePos.length; i += 6) {
-        //     tempA.set(edgePos[i], edgePos[i + 1], edgePos[i + 2]);
-        //     tempB.set(edgePos[i + 3], edgePos[i + 4], edgePos[i + 5]);
-
-        //     for (let j = 0; j < samplesPerEdge; j++) {
-        //       const t = Math.random();
-        //       temp.lerpVectors(tempA, tempB, t);
-        //       positions.push(temp.x, temp.y, temp.z);
-        //     }
-        //   }
-
-        //   // Build BufferGeometry from edge-sampled positions
-        //   const geometry = new THREE.BufferGeometry();
-        //   geometry.setAttribute(
-        //     'position',
-        //     new THREE.Float32BufferAttribute(positions, 3)
-        //   );
-
-        //   const color = this.getColors(positions.length / 3, 1);
-        //   geometry.setAttribute(
-        //     'color',
-        //     new THREE.Float32BufferAttribute(color, 3)
-        //   );
-
-        //   const material = new THREE.PointsMaterial({
-        //     size: 0.001,
-        //     vertexColors: true,
-        //   });
-
-        //   const points = new THREE.Points(geometry, material);
-        //   points.rotation.z = -Math.PI / 2;
-        //   points.rotation.y = Math.PI / 8;
-        //   points.rotation.x = Math.PI / 12;
-        //   points.position.copy(new THREE.Vector3(0, -1.5, 1));
-        //   this.scene.add(points);
-        // }
-        if (child instanceof Mesh) {
-          // Generate edge geometry from mesh geometry
-          const edgeGeometry = new THREE.EdgesGeometry(child.geometry, 1); // 1 = thresholdAngle in degrees
-
-          // Use a basic line material
-          const material = new THREE.LineBasicMaterial({
-            color: 0xffffff,
-          });
-
-          // Create line segments from edges
-          const edges = new THREE.LineSegments(edgeGeometry, material);
-          edges.rotation.z = -Math.PI / 2;
-          edges.rotation.y = Math.PI / 8;
-          edges.rotation.x = Math.PI / 12;
-          edges.position.copy(new THREE.Vector3(0, -1.5, 3));
-
-          this.scene.add(edges);
-        }
-      });
-    });
-  }
-
-  getColors(n: number, c: number): Float32Array {
-    const colors = new Float32Array(c * n * 3);
-    for (let i = 0; i < c * n; i++) {
-      const i3 = i * 3;
-      const useGold = Math.random() < 0.7;
-      if (useGold) {
-        colors[i3 + 0] = 0.9686;
-        colors[i3 + 1] = 0.8039;
-        colors[i3 + 2] = 0.5137;
-      } else {
-        colors[i3 + 0] = 0.2; // R
-        colors[i3 + 1] = 0.6; // G
-        colors[i3 + 2] = 1.0; // B
-      }
-    }
-    return colors;
-  }
 }

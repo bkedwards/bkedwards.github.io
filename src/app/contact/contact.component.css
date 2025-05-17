@@ -1,87 +1,105 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
 .layout {
   display: flex;
   height: 100vh;
   width: 100vw;
-  color: white;
+  color: var(--color-text);
 }
 
 .contact-side {
-  width: 50%;
+  width: 45%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: red; /* for debugging layout – change if needed */
 }
 
 .contact-box {
   display: flex;
   flex-direction: column;
-  width: 65%;
-  height: 75%;
-  padding: 2.5rem;
-  border: 2px solid gold;
+  right: 0;
+  width: 75%;
+  height: auto;
+  padding: 2.0rem;
   border-radius: 2rem;
-  background: linear-gradient(to top, #96B6FC, #03215E);
+  background: var(--color-primary);
+  box-shadow: 0 1rem 2rem 0 rgba(0, 0, 0, 0.7), 0 1rem 2rem 0 rgba(0, 0, 0, 0.7);
+  filter: brightness(90%);
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.headers {
+  gap: 1rem;
+}
+
+.contact-box:hover {
+  filter: brightness(100%);
 }
 
 .contact-box h2 {
   font-size: 2rem;
-  margin-bottom: 1.5rem;
-  text-align: center;
+  color: var(--color-secondary);
+}
+
+.contact-box h3 {
+  font-size: 1.25rem;
+  color: var(--color-primary-highlight);
 }
 
 .contact-box form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  flex-grow: 1;
-  justify-content: space-between;
+  gap: 1rem
 }
 
-.contact-box input,
-.contact-box textarea {
-  padding: 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: white;
-  color: black;
+.contact-box label {
+  font-size: 1.25rem;
 }
+
+.contact-box textarea {
+  outline: none;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 1.25rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue',
+               Helvetica, Arial, sans-serif;
+  background-color: var(--color-primary-highlight);
+  color: var(--color-text);
+  resize: none;
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
+}
+
+textarea::placeholder,
+input::placeholder {
+  color: var(--color-text); /* Or any readable color */
+  opacity: 0.7; /* Optional: ensure it's fully opaque */
+}
+
+
 
 .contact-box button {
-  padding: 0.75rem;
-  font-size: 1rem;
-  background-color: #03215E;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  padding: 0.75rem 3rem;
+  font-size: 1.25rem;
+  margin-top: 1rem;
+  margin-left: 0;
+  margin-right: auto;
+  align-self: flex-start;
+  background-color: var(--color-tertiary);
+  color: var(--color-text);
+  border-radius: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
 }
 
 .contact-box button:hover {
-  background-color: #0056b3;
+  background-color: var(--color-tertiary-highlight);
 }
 
 .canvas-side {
-  width: 50%;
+  width: 55%;
   height: 100%;
   position: relative;
-  background-color: black;
 }
 
 #three-canvas {
