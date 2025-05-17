@@ -16,16 +16,11 @@ import {
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { TimelineModule } from 'primeng/timeline';
-import { map, tap } from 'rxjs/operators';
 import * as THREE from 'three';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
-import { MeshSurfaceSampler } from 'three/examples/jsm/math/MeshSurfaceSampler.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import { Mesh, EdgesGeometry } from 'three';
+import { CommonModule } from '@angular/common';
 
-import { TypewriterService } from '../typewriter.service';
 
 export interface AboutSections {
   name: string;
@@ -34,7 +29,7 @@ export interface AboutSections {
 
 @Component({
   selector: 'app-about',
-  imports: [NgClass, ButtonModule, TimelineModule, CardModule],
+  imports: [NgClass, CommonModule, ButtonModule, TimelineModule, CardModule],
   standalone: true,
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
@@ -93,7 +88,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       ),
     },
     {
-      path: 'assets/about/helmet.obj',
+      path: 'assets/about/old-well.obj',
       transform: this.composeTransform(
         new THREE.Vector3(0, 0, 0),
         new THREE.Euler(0, 0, 0),
@@ -101,7 +96,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       ),
     },
     {
-      path: 'assets/about/old-well.obj',
+      path: 'assets/about/helmet.obj',
       transform: this.composeTransform(
         new THREE.Vector3(0.25, -0.2, 0),
         new THREE.Euler(Math.PI / 10, 0, 0),
@@ -113,7 +108,6 @@ export class AboutComponent implements AfterViewInit, OnInit {
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('about', { static: false }) aboutRef!: ElementRef;
-  loader = new FontLoader();
 
   currentSection: WritableSignal<string> = signal('');
   currentSectionName: WritableSignal<string> = signal('');
@@ -121,7 +115,6 @@ export class AboutComponent implements AfterViewInit, OnInit {
   private scene!: THREE.Scene;
   private camera!: THREE.PerspectiveCamera;
   private points!: THREE.Points;
-  private globePoints!: THREE.Points;
   private frameId = 0;
 
   private aboutObserver!: IntersectionObserver;
@@ -134,19 +127,32 @@ export class AboutComponent implements AfterViewInit, OnInit {
   private pointsMaterial!: THREE.ShaderMaterial;
   private simSize = 512;
   private uProgress = 0;
-  private uShiftProgress = 0;
-  private targetTexture!: THREE.DataTexture;
   private controls!: OrbitControls;
-  private textMesh!: THREE.Mesh;
   private positionsTexture!: THREE.DataTexture;
   private globeTexture!: THREE.DataTexture;
   private uncTexture!: THREE.DataTexture;
   private helmetTexture!: THREE.DataTexture;
   private codingTexture!: THREE.DataTexture;
 
+  loadingManager = new THREE.LoadingManager();
+  loadingProgress = signal(0);
+  isLoading = signal(true);
+  objLoader = new OBJLoader(this.loadingManager);
+
+  constructor() {
+    this.loadingManager.onProgress = (url, loaded, total)=> {
+      this.loadingProgress.set((loaded / total) * 100);
+    }
+    this.loadingManager.onLoad = () => {
+      this.isLoading.set(false);
+    };
+  }
+
   ngOnInit(): void {
     this.currentSection.set(this.sections[0].paragraph);
     this.currentSectionName.set(this.sections[0].name);
+
+
   }
 
   ngAfterViewInit(): void {
@@ -200,7 +206,8 @@ export class AboutComponent implements AfterViewInit, OnInit {
           this.simRenderTarget.texture = this.helmetTexture;
         }
         this.simRenderTarget.texture.needsUpdate = true;
-        this.simMaterial.uniforms['positions'].value = this.simRenderTarget.texture;
+        this.simMaterial.uniforms['positions'].value =
+          this.simRenderTarget.texture;
         this.simMaterial.uniforms['isMorphing'].value = false;
       }
     };
@@ -348,8 +355,6 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.animate();
     });
   }
-
-  objLoader = new OBJLoader();
 
   getSimMaterial(positionsTexture: THREE.DataTexture): THREE.ShaderMaterial {
     return new THREE.ShaderMaterial({

@@ -88,6 +88,44 @@
   display: flex;
   width: 50%;
   height: auto;
+  margin: 0 auto;
+}
+
+.progress-bar-container {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+
+  padding: 1rem;
+  border-radius: 8px;
+  z-index: 10;
+  color: var(--color-text);
+}
+
+.progress-bar-container label {
+  font-size: 1.5rem;
+
+}
+
+progress::-webkit-progress-value {
+  background-color: #00fff9; /* fill color */
+}
+
+progress {
+  width: 200px;
+  height: 12px;
+  margin: 1rem;
+  border-radius: 6px;
+  overflow: hidden;
+  appearance: none;
 }
 
 canvas {

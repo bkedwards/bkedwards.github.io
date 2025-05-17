@@ -25,6 +25,12 @@
     </div>
   </div>
   <div class="canvas-container">
+    @if (isLoading()) {
+      <div class="progress-bar-container">
+        <label> Loading... ({{ loadingProgress() | number:'1.0-0' }}%)</label>
+        <progress id="progress-bar" [value]="loadingProgress()" max="100"></progress>
+      </div>
+    }
     <canvas class="fly-in" #canvas></canvas>
   </div>
 </div>
