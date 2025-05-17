@@ -36,7 +36,7 @@ jobs:
 
       - name: Build
         run: |
-          npm run build -- --base-href="/bkedwards4/" --configuration=production
+          npm run build -- --base-href="/" --configuration=production
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
