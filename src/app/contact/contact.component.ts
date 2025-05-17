@@ -1,5 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import * as THREE from 'three';
+import emailjs from 'emailjs-com';
 
 @Component({
   selector: 'app-contact',
@@ -8,6 +9,7 @@ import * as THREE from 'three';
   styleUrl: './contact.component.css',
 })
 export class ContactComponent {
+
   ngAfterViewInit(): void {
     this.initContact();
     window.addEventListener('mousemove', this.updateMousePosition);
@@ -20,6 +22,25 @@ export class ContactComponent {
     window.removeEventListener('resize', this.onResize);
     window.removeEventListener('mousemove', this.updateMousePosition);
     this.renderer.dispose();
+  }
+
+  sendEmail(event: Event): void {
+    event.preventDefault();
+    emailjs
+      .sendForm(
+        'service_5ngpf3e',
+        'template_g2rnp8p',
+        event.target as HTMLFormElement,
+        'SQCU20t7kVZpEjRV-'
+      )
+      .then(
+        () => {
+        },
+        (error) => {
+          console.error('Email failed to send:', error);
+          alert('Failed to send email. Please try again.');
+        }
+      );
   }
 
   @ViewChild('canvas', { static: true })

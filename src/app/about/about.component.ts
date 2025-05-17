@@ -1,4 +1,5 @@
 import { AsyncPipe, NgClass } from '@angular/common';
+
 import {
   AfterViewInit,
   OnInit,
@@ -13,9 +14,6 @@ import {
   WritableSignal,
   ViewChildren,
 } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
-import { CardModule } from 'primeng/card';
-import { TimelineModule } from 'primeng/timeline';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
@@ -29,7 +27,7 @@ export interface AboutSections {
 
 @Component({
   selector: 'app-about',
-  imports: [NgClass, CommonModule, ButtonModule, TimelineModule, CardModule],
+  imports: [NgClass, CommonModule],
   standalone: true,
   templateUrl: './about.component.html',
   styleUrl: './about.component.css',
@@ -90,16 +88,24 @@ export class AboutComponent implements AfterViewInit, OnInit {
     {
       path: 'assets/about/old-well.obj',
       transform: this.composeTransform(
-        new THREE.Vector3(0, 0, 0),
+        new THREE.Vector3(0, -0.2, 0),
         new THREE.Euler(0, 0, 0),
         new THREE.Vector3(0.8, 0.8, 0.8)
+      ),
+    },
+    {
+      path: 'assets/about/code.obj',
+      transform: this.composeTransform(
+        new THREE.Vector3(0.0, 0.0, 0),
+        new THREE.Euler(0, 0, 0),
+        new THREE.Vector3(0.03, 0.03, 0.03)
       ),
     },
     {
       path: 'assets/about/helmet.obj',
       transform: this.composeTransform(
         new THREE.Vector3(0.25, -0.2, 0),
-        new THREE.Euler(Math.PI / 10, 0, 0),
+        new THREE.Euler(0, 0, 0),
         new THREE.Vector3(0.75, 0.75, 0.75)
       ),
     },
@@ -109,7 +115,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
   canvasRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('about', { static: false }) aboutRef!: ElementRef;
 
-  currentSection: WritableSignal<string> = signal('');
+  currentSection: string = '';
   currentSectionName: WritableSignal<string> = signal('');
   private renderer!: THREE.WebGLRenderer;
   private scene!: THREE.Scene;
@@ -119,6 +125,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
   private aboutObserver!: IntersectionObserver;
   private aboutVisible = false;
+  isFadingOut = signal(false);
 
   private simScene!: THREE.Scene;
   private simCamera!: THREE.OrthographicCamera;
@@ -140,19 +147,17 @@ export class AboutComponent implements AfterViewInit, OnInit {
   objLoader = new OBJLoader(this.loadingManager);
 
   constructor() {
-    this.loadingManager.onProgress = (url, loaded, total)=> {
+    this.loadingManager.onProgress = (url, loaded, total) => {
       this.loadingProgress.set((loaded / total) * 100);
-    }
+    };
     this.loadingManager.onLoad = () => {
       this.isLoading.set(false);
     };
   }
 
   ngOnInit(): void {
-    this.currentSection.set(this.sections[0].paragraph);
+    this.currentSection = this.sections[0].paragraph;
     this.currentSectionName.set(this.sections[0].name);
-
-
   }
 
   ngAfterViewInit(): void {
@@ -177,10 +182,20 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.simMaterial.uniforms['targetPositions'].value = this.uncTexture;
     } else if (section.name === 'Hobbies') {
       this.simMaterial.uniforms['targetPositions'].value = this.helmetTexture;
+    } else if (section.name === 'Passions') {
+      this.simMaterial.uniforms['targetPositions'].value = this.codingTexture;
     }
-    this.morphObject(section.name);
-    this.currentSection.set(section.paragraph);
+
+    this.isFadingOut.set(true);
     this.currentSectionName.set(section.name);
+
+    setTimeout(() => {
+      this.currentSection  = section.paragraph;
+      this.currentSectionName.set(section.name);
+
+      this.isFadingOut.set(false);
+    }, 500);
+    this.morphObject(section.name);
   }
 
   morphObject(name: string) {
@@ -204,6 +219,8 @@ export class AboutComponent implements AfterViewInit, OnInit {
           this.simRenderTarget.texture = this.uncTexture;
         } else if (name === 'Hobbies') {
           this.simRenderTarget.texture = this.helmetTexture;
+        } else if (name === 'Passions') {
+          this.simRenderTarget.texture = this.codingTexture;
         }
         this.simRenderTarget.texture.needsUpdate = true;
         this.simMaterial.uniforms['positions'].value =
@@ -298,7 +315,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.paths.map(({ path, transform }) =>
         this.createObjTexture(path, this.simSize * this.simSize, transform)
       )
-    ).then(([data1, data2, data3]) => {
+    ).then(([data1, data2, data3, data4]) => {
       this.globeTexture = new THREE.DataTexture(
         data1,
         this.simSize,
@@ -315,8 +332,16 @@ export class AboutComponent implements AfterViewInit, OnInit {
         THREE.FloatType
       );
 
-      this.helmetTexture = new THREE.DataTexture(
+      this.codingTexture = new THREE.DataTexture(
         data3,
+        this.simSize,
+        this.simSize,
+        THREE.RGBAFormat,
+        THREE.FloatType
+      )
+
+      this.helmetTexture = new THREE.DataTexture(
+        data4,
         this.simSize,
         this.simSize,
         THREE.RGBAFormat,
@@ -326,6 +351,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.globeTexture.needsUpdate = true;
       this.uncTexture.needsUpdate = true;
       this.helmetTexture.needsUpdate = true;
+      this.codingTexture.needsUpdate = true;
 
       this.positionsTexture = this.globeTexture;
       this.positionsTexture.needsUpdate = true;

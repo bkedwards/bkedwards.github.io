@@ -5,7 +5,10 @@
         <h1 class="top-header">Hello!</h1>
         <h2 class="bottom-header">I'm Ben.</h2>
       </div>
-      <div class="about-content" [innerHTML]="currentSection()">
+      <div
+        class="about-content"
+        [innerHTML]="currentSection"
+        [class.fade-out]="isFadingOut()">
       </div>
 
       Learn more about me here:
