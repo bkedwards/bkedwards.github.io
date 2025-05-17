@@ -3,15 +3,15 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main # Set this to your default branch
+      - main
+  workflow_dispatch:
 
 permissions:
-  contents: write # Required to push to GitHub Pages
+  contents: write
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,21 +20,22 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
-          cache: "npm"
+          cache: npm
 
       - name: Install dependencies
         run: npm ci
 
-      - name: Extract repo name
-        id: extract
-        run: echo "REPO=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
-
-      - name: Build
+      - name: Build into browser folder
         run: |
           npm run build -- \
             --output-path=dist/ng-demo/browser \
             --base-href="/bkedwards4/" \
             --configuration=production
+
+      - name: "Debug: list built files"
+        run: |
+          echo "Contents of dist/ng-demo/browser:"
+          ls -R dist/ng-demo/browser
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
@@ -42,3 +43,4 @@ jobs:
           folder: dist/ng-demo/browser
           branch: gh-pages
           clean: true
+
