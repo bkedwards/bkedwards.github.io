@@ -12,6 +12,7 @@ permissions:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,17 +26,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build into browser folder
+      - name: Build
         run: |
           npm run build -- \
-            --output-path=dist/ng-demo/browser \
             --base-href="/bkedwards4/" \
             --configuration=production
-
-      - name: "Debug: list built files"
-        run: |
-          echo "Contents of dist/ng-demo/browser:"
-          ls -R dist/ng-demo/browser
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
