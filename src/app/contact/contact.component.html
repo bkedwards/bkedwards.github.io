@@ -1,0 +1,25 @@
+  <div #contact class="layout">
+    <div class="contact-side">
+      <div class="contact-box">
+        <div class="headers">
+          <h3>Get in Touch</h3>
+          <h2>Contact Me!</h2>
+        </div>
+        <form (submit)="sendEmail($event)">
+          <label for="name">Name</label>
+          <textarea type="text" id="name" name="name" rows=1 required placeholder="What's a good name for you?"></textarea>
+
+          <label for="email">Email</label>
+          <textarea type="email" id="email" name="email" rows=1 required placeholder="What's a good email for you?"></textarea>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="8" required placeholder="What would you like to send me?"></textarea>
+
+          <button type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    <div class="canvas-side">
+      <canvas #canvas id="three-canvas"></canvas>
+    </div>
+  </div>

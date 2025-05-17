@@ -7,8 +7,7 @@ import {routes} from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideRouter(
-        routes, withHashLocation()),  // Keep withHashLocation for GitHub Pages
+    provideRouter(routes, withHashLocation()), // Keep withHashLocation for GitHub Pages
     provideClientHydration(),
     provideHttpClient(),
   ],

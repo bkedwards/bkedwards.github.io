@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="timeline">
+        @for (experience of experiences; track experience.position)
+        {
+            <div class="time-line-event">
+                <div class="experience-container" #container [ngClass]="experience.alignment">
+                    <img class="experience-img" [src]="experience.icon">
+                    <div class="experience-card">
+                        <h2 class="experience-position">{{experience.position}}</h2>
+                        <small class="experience-company">{{experience.company}}</small>
+                        <small class="experience-company"><em>{{experience.location}}</em></small>
+                        <p class="experience-description">{{experience.description}}</p>
+                        <div class="experience-skills-container"> 
+                            <i class="fa-solid fa-gears experience-skills-icon"></i>
+                            <span class="experience-skills"><strong>{{experience.skills}}</strong></span>
+                        </div>
+                    </div>
+                </div>
+                <span class="experience-date" #date [ngClass]="experience.alignment">{{experience.date}}</span>
+            </div>
+        }
+    </div>
+</div>

@@ -1,8 +1,16 @@
+// main.ts
+import 'hammerjs'; // 1) make the global Hammer constructor available
 import { bootstrapApplication } from '@angular/platform-browser';
-import { AppComponent } from './app/app.component';
+import { importProvidersFrom } from '@angular/core'; // ← you need this
+import { HammerModule } from '@angular/platform-browser';
 import { provideRouter } from '@angular/router';
+
+import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 
 bootstrapApplication(AppComponent, {
-  providers: [provideRouter(routes)],
-});
+  providers: [
+    provideRouter(routes),
+    importProvidersFrom(HammerModule), // 2) register HammerModule’s providers
+  ],
+}).catch((err) => console.error(err));

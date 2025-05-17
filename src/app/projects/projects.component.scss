@@ -1,0 +1,233 @@
+* {
+  box-sizing: border-box
+}
+
+:host {
+  width: 100%;
+  padding-block: 10vh; /* Adds vertical breathing room */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .container {
+    width: 100%;
+  }
+}
+
+
+.slider-container {
+  display: flex;
+  position: relative;
+  color: white;
+  width: 25vw;
+  height: 75vh;
+  margin: 0 auto;
+
+  .slider-item {
+    position: absolute;
+    z-index: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    transition: z-index 250ms;
+
+    .slider-card {
+      position: relative;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      box-shadow: 0px 10px 40px rgba(0,0,0,0.6);
+      transition:
+        transform 500ms cubic-bezier(0.17, 0.67, 0.55, 1.43),
+        opacity 500ms cubic-bezier(0.17, 0.67, 0.55, 1.43),
+        filter 300ms ease,
+        border 150ms ease-in-out;
+      background: var(--color-primary);
+      color: var(--color-secondary);
+      padding: 2rem;
+      font-size: 1.35rem;
+      transform: scale(0);
+      opacity: 0;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1rem 2rem 0 rgba(0, 0, 0, 0.7), 0 1rem 2rem 0 rgba(0, 0, 0, 0.7);
+    }
+
+    &.hideLeft {
+      .slider-card {
+        transform: translateX(-100%) scale(0);
+      }
+    }
+
+    &.prev2 {
+      z-index: 1;
+
+      .slider-card {
+        opacity: 0.6;
+        transform: translateX(-75%) scale(0.6);
+        filter: brightness(50%);
+      }
+    }
+
+    &.prev {
+      z-index: 2;
+
+      .slider-card {
+        opacity: 0.95;
+        transform: translateX(-50%) scale(0.8);
+        filter: brightness(70%);
+      }
+    }
+
+    &.selected {
+      z-index: 3;
+
+      .slider-card {
+        opacity: 1;
+        transform: translateX(0%) scale(1);
+        cursor: grab;
+        filter: brightness(90%);
+      }
+
+      .slider-card:hover {
+        filter: brightness(100%);
+      }
+    }
+
+    &.next {
+      z-index: 2;
+
+      .slider-card {
+        opacity: 0.95;
+        transform: translateX(50%) scale(0.8);
+        filter: brightness(70%);
+      }
+    }
+
+    &.next2 {
+      z-index: 1;
+
+      .slider-card {
+        opacity: 0.6;
+        transform: translateX(75%) scale(0.6);
+        filter: brightness(50%);
+      }
+    }
+
+    &.hideRight {
+      .slider-card {
+        transform: translateX(100%) scale(0);
+      }
+    }
+  }
+
+
+}
+
+.slider-image {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.slider-title {
+  font-size: 2rem;
+  margin: 1rem 0 0rem;
+}
+
+.slider-description {
+  margin: 1rem 0 1rem;
+  color: var(--color-text)
+}
+
+.slider-button {
+  align-self: flex-start;;
+  background: var(--color-tertiary);
+  border-radius: 50px;
+  justify-content: center;
+  text-decoration: none;
+  color: white;
+  padding: 0.5rem 1rem;
+}
+
+.slider-button:hover {
+  background-color: var(--color-tertiary-highlight);
+}
+
+.left-arrow,
+.right-arrow {
+  position: absolute;
+  top: 50%;
+
+  color: white;
+  cursor: pointer;
+  z-index: 10;
+  width: 3rem;
+  height: 3rem;
+}
+
+
+.left-arrow svg,
+.right-arrow svg {
+  transition: filter 0.2s ease;
+}
+.left-arrow svg:hover,
+.right-arrow svg:hover {
+  filter: drop-shadow(0 0 25px rgba(0.0, 255, 255, 0.8))
+    drop-shadow(0 0 50px rgba(0, 255, 255, 0.6));
+}
+
+.left-arrow {
+  transform: translateY(-50%);
+  left: -30rem;  /* just outside the slider-container’s left */
+}
+
+.right-arrow {
+  right: -30rem; /* just outside the slider-container’s right */
+  transform: translateY(50%) rotate(180deg);
+}
+
+.project-skills-container {
+  color: var(--color-text);
+  display: flex;
+  flex-direction: row;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.project-skills {
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bolder;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 0.5rem;
+}
+
+.pagination button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: none;
+  background-color: white;
+  opacity: 0.7;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  opacity: 1;
+  transform: scale(1.5);
+  background-color: var(--color-secondary) /* active highlight */
+}
+
+.pagination button:hover {
+  opacity: 0.9;
+}

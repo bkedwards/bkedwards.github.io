@@ -5,15 +5,31 @@
   box-sizing: border-box;
 }
 
+:root {
+  --color-secondary: #00ffff;
+  --color-tertiary: #008080;
+  --color-tertiary-highlight: #00AAAA;
+  --color-accent: #e3fffe;
+  --color-primary: #333333;
+  --color-primary-highlight: #8e8e8e;
+  --color-text-dark: #b9b9b9;
+
+  /* Optional: text and background variants */
+  --color-text: white;
+  --color-bg: #121212;
+}
+
 /* Base Styles */
 html {
   font-size: 16px;
-
+  scroll-behavior: smooth;
+  height: 100%;
+  overflow-y: auto;
 }
 
 body {
-  background-color: #001d42;
-  font-family: 'Cormorant Garamond', serif;
+  background-color: var(--color-bg);
+  font-family: 'Kdam Thmor Pro', sans-serif;
 }
 
 app-root {
