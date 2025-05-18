@@ -28,8 +28,8 @@ export class WorkComponent implements AfterViewInit {
       position: 'Technology & Data Intern',
       company: 'Deutsche Bank',
       description:
-        'Incoming TDI Investmen Banking intern at Deutsche Bank for Summer 2025.',
-      skills: 'Java, JavaSpring, FastAPI',
+        'I am an incoming TDI Investmen Banking intern at Deutsche Bank for Summer 2025. I will be working in the IB Tech division with Client 360 Technologies.',
+      skills: 'Java/Spring, React, Kubernetes, OpenShift',
       location: 'Cary, NC',
       alignment: 'right',
     },
@@ -39,7 +39,7 @@ export class WorkComponent implements AfterViewInit {
       position: 'Undergraduate Research Assistant',
       company: 'Experimental Engineering Lab (EEL)',
       description:
-        'Under the direction of Dr. Roni Sengupta, developing an image processing pipeline to optimize COLMAP and photogrammetry software for the purpose of creating a photo-realistic model 3D of the input images.',
+        'Under the direction of Dr. Roni Sengupta, I am developing an AR/VR app for visualization of Hierarchical 3D Gaussians and an image processing pipeline to optimize COLMAP and photogrammetry software.',
       skills: 'Python, CUDA, Bash, Unity, C#, HLSL',
       location: 'Chapel Hill, NC',
       alignment: 'left',
@@ -50,7 +50,7 @@ export class WorkComponent implements AfterViewInit {
       position: 'President of Operations',
       company: 'UNC Ice Hockey',
       description:
-        'Work directly with Student Government and UNC Club Sports to secure program funding. Coordinate hotels, ice time, transportation, and negotiate finances.',
+        'As President, I worked directly with Student Government and UNC Club Sports to secure program funding. I also coordinated hotels, ice time, transportation, negotiated sponsorships, and facilitated the hiring of a new coach.',
       skills: 'Leadership, Fundraising, Financial Planning',
       location: 'Chapel Hill, NC',
 
@@ -62,7 +62,7 @@ export class WorkComponent implements AfterViewInit {
       position: 'Extended Reality Intern',
       company: 'Corvid Technologies',
       description:
-        'Created a Mixed Reality application using Unreal Engine and C++ for the Hololens 2 to visualize simulated physics of internal detonations inside of and around a stiffened steel structure.',
+        'In the summer of 2024, I created a Mixed Reality application using Unreal Engine and C++ for the Hololens 2 to visualize simulated physics of internal detonations inside of and around a stiffened steel structure.',
       skills: 'Python, C++, VR/AR, Unreal Engine',
       location: 'Mooresville, NC',
       alignment: 'left',

@@ -14,8 +14,25 @@
 
           <label for="message">Message</label>
           <textarea id="message" name="message" rows="8" required placeholder="What would you like to send me?"></textarea>
-
-          <button type="submit">Send</button>
+          <div class="button-error-container">
+          <button type="submit" [disabled]="isSending()">  
+            @if (isSending()) {
+              <span class="spinner"></span>
+            }
+            @else {
+              Send
+            }
+          </button>
+            @if (sendEmailTriggered())
+            {
+              @if (emailSuccess()) {
+                <div class="email-success">Message Sent!</div>
+              }
+              @else {
+                <span class="email-error">Error Sending!</span>
+              }
+            }
+          </div>
         </form>
       </div>
     </div>

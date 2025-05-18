@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, signal } from '@angular/core';
 import * as THREE from 'three';
 import emailjs from 'emailjs-com';
 
@@ -24,8 +24,13 @@ export class ContactComponent {
     this.renderer.dispose();
   }
 
+  sendEmailTriggered = signal(false);
+  emailSuccess = signal(false);
+  isSending = signal(false);
+
   sendEmail(event: Event): void {
     event.preventDefault();
+    this.isSending.set(true);
     emailjs
       .sendForm(
         'service_5ngpf3e',
@@ -35,9 +40,13 @@ export class ContactComponent {
       )
       .then(
         () => {
+          this.sendEmailTriggered.set(true);
+          this.emailSuccess.set(true);
+          this.isSending.set(false); 
         },
         (error) => {
-          console.error('Email failed to send:', error);
+          this.sendEmailTriggered.set(true);
+          this.isSending.set(false); 
           alert('Failed to send email. Please try again.');
         }
       );

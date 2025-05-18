@@ -37,42 +37,42 @@ export class AboutComponent implements AfterViewInit, OnInit {
   sections: AboutSections[] = [
     {
       name: 'Introduction',
-      paragraph: `I'm a driven engineer and innovator passionate about shaping the future of technology. 
-                  My work spans fields such as artificial intelligence, computer graphics, and finance. 
+      paragraph: `I'm an engineer and innovator passionate about shaping the future of technology. 
+                  My work spans the intersection of artificial intelligence, computer graphics, finance,
+                  and more. 
                   <br><br>
                   Whether developing geospatial localization without GPS for my college campus at UNC or 
                   building advanced VR/AR visualizations using hierarchical 3D Gaussians, I'm always 
-                  pushing boundaries and creating impactful, forward-thinking solutions.`,
+                  trying to push the boundaries and devise unique solutions.`,
     },
     {
       name: 'About Me',
-      paragraph: `I'm a senior at the University of North Carolina at Chapel Hill, Class of 2026, pursuing 
+      paragraph: `I'm currently a senior at the University of North Carolina at Chapel Hill, Class of 2026, and pursuing 
                   a dual degree in Computer Science and Mathematics with a 3.96 GPA. I'm actively involved 
                   in several student organizations, including the Carolina Analytics & Data Science (CADS) 
                   club, the Carolina Augmented and Virtual Reality (CARVR) group, and the Sustainable 
                   Business Club. <br><br>
                   
-                  These experiences reflect my passion for technology, data-driven innovation, and sustainability.`,
+                  These experiences reflect my passion for technology, data-driven innovation, and visualization.`,
     },
     {
       name: 'Passions',
-      paragraph: `I'm passionate about building innovative solutions at the intersection of artificial 
-                  intelligence, machine learning, and design. Whether crafting intuitive user interfaces 
-                  or experimenting with large language model frameworks, I enjoy exploring creative, 
-                  nontraditional approaches that push technical and visual boundaries. <br><br>
-                  
-                  My interests span graphics programming, financial systems, and data visualizations—areas 
-                  where I can combine analytical thinking with visual storytelling to deliver insightful, 
+      paragraph: `I'm passionate about building new worlds, on and off the cloud. I love building innovative
+                  solutions using creative design. I enjoy exploring unique and difficult approaches to push myself and 
+                  the code I develop. <br><br>
+
+                  My interests span computer graphics, financial modeling, and data visualizations—areas 
+                  where I combine analytical thinking with stunning visuals to form insightful and 
                   impactful experiences.`,
     },
     {
       name: 'Hobbies',
-      paragraph: `Outside of academics, I enjoy drawing and painting, and I also value time spent connecting 
-                  with friends, whether through shared projects or casual hangouts. <br><br>
+      paragraph: `Outside of academics, I enjoy drawing and painting, and spending time with friends and family. 
+                  <br><br>
                   
                   A lifelong hockey fan, I love both playing the game and watching my favorite team, the 
-                  Carolina Hurricanes. From 2022 to 2025, I was a proud member of the UNC Ice Hockey team, 
-                  where I built lasting friendships and developed a strong sense of teamwork and discipline`,
+                  Carolina Hurricanes. From 2022 to 2025, I was a member of the UNC Ice Hockey team, 
+                  serving as Fundraising Chair from 2023-2024 and President of Operations from 2024 - 2025`,
     },
   ];
 

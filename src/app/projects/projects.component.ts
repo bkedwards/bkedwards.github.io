@@ -33,9 +33,9 @@ export class ProjectsComponent {
       title: 'Portfolio Website',
       image: 'assets/projects/portfolio.png',
       description: `Developed this very website to showcase my software development 
-        skills! Implemented component-based architecture, and optimized THREE.js rendering 
+        skills! Implemented component-based Angular architecture and THREE.js rendering 
         with lazy loading. Deployed as a static web application using GitHub Pages.`,
-      link: 'https://github.com/bkedwards/bkedwards4',
+      link: 'https://github.com/bkedwards/bkedwards.github.io',
       skills: 'Angular, TypeScript, HTML, CSS',
     },
     {
@@ -58,7 +58,7 @@ export class ProjectsComponent {
       skills: 'Python, TensorFlow',
     },
     {
-      title: 'Hierarchical Splat Rendered',
+      title: 'Hierarchical Splat Renderer',
       image: 'assets/projects/gaussians.png',
       description: `Built a package in Unity to render real-time Hierarchical 3D 
         Gaussians. The package is based on the SIGGRAPH 2024 paper by Kerbl et. al
@@ -77,7 +77,7 @@ export class ProjectsComponent {
     },
   ];
 
-  selectedIndex = 2;
+  selectedIndex = 1;
   isTransitioning = false;
 
   getIndex(i: number): number {
