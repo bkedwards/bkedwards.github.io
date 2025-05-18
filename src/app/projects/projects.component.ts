@@ -26,7 +26,7 @@ export class ProjectsComponent {
       image: '/assets/projects/detonation.png',
       description: `Created a Mixed Reality application using Unreal Engine and 
         C++ for the Hololens 2 to visualize simulated physics of internal detonations.`,
-      link: 'https://github.com/bkedwards/asl_detector',
+      link: 'https://docs.google.com/presentation/d/1HnIzL86wSxwg6z3ommjDDJ8uL28oPE1M/edit?usp=sharing&ouid=117641056441104918980&rtpof=true&sd=true',
       skills: 'Unreal Engine, C++',
     },
     {
@@ -68,12 +68,13 @@ export class ProjectsComponent {
       skills: 'Unity, C#, HLSL, Python, Bash',
     },
     {
-      title: 'Semantic Trading Bot',
-      image: 'assets/projects/stock.png',
-      description: `Developed a trading bot that looks at sentiment of live news 
-        events to make appropriate trades. Used ALPACA and Lumibot libraries.`,
-      link: 'https://github.com/bkedwards/asl_detector',
-      skills: 'Python, Alpaca, Lumibot',
+      title: 'Study Buddy AI',
+      image: 'assets/projects/studybuddy.png',
+      description: `Developed a GPT-4 powered Study Buddy for the UNC CSXL Website. 
+        Able to analyze a student's notes and generate practice quizzes,
+        providing detailed feedback and quiz submission statistics for users.`,
+      link: 'https://github.com/unc-csxl/csxl.unc.edu',
+      skills: 'Angular, PostgreSQL, Node.js',
     },
   ];
 
