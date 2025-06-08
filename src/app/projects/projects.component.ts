@@ -25,7 +25,8 @@ export class ProjectsComponent {
       title: 'Mixed Reality Simulations of Internal Detonation',
       image: '/assets/projects/detonation.png',
       description: `Created a Mixed Reality application using Unreal Engine and 
-        C++ for the Hololens 2 to visualize simulated physics of internal detonations.`,
+                    C++ for the Hololens 2 to visualize simulated physics of 
+                    internal detonations.`,
       link: 'https://docs.google.com/presentation/d/1HnIzL86wSxwg6z3ommjDDJ8uL28oPE1M/edit?usp=sharing&ouid=117641056441104918980&rtpof=true&sd=true',
       skills: 'Unreal Engine, C++',
     },
@@ -33,8 +34,9 @@ export class ProjectsComponent {
       title: 'Portfolio Website',
       image: 'assets/projects/portfolio.png',
       description: `Developed this very website to showcase my software development 
-        skills! Implemented component-based Angular architecture and THREE.js rendering 
-        with lazy loading. Deployed as a static web application using GitHub Pages.`,
+                    skills! Implemented component-based Angular architecture and 
+                    THREE.js rendering with lazy loading. Deployed as a static web 
+                    application using GitHub Pages.`,
       link: 'https://github.com/bkedwards/bkedwards.github.io',
       skills: 'Angular, TypeScript, HTML, CSS',
     },
@@ -42,9 +44,9 @@ export class ProjectsComponent {
       title: 'ASL Detection Model',
       image: 'assets/projects/asl.png',
       description: `Created a real-time detector for letters of the ASL alphabet. 
-        Used OpenCV to capture and process data, MediaPipe to draw hand 
-        landmarks, and a Random Forest Classifier to train a model to 
-        predict hand gestures with 99.2% accuracy on test set.`,
+                    Used OpenCV to capture and process data, MediaPipe to draw hand 
+                    landmarks, and a Random Forest Classifier to train a model to 
+                    predict hand gestures with 99.2% accuracy on test set.`,
       link: 'https://github.com/bkedwards/asl_detector',
       skills: 'Python, OpenCV, MediaPipe',
     },
@@ -52,8 +54,8 @@ export class ProjectsComponent {
       title: 'UNC Landmark Classifier',
       image: 'assets/projects/old-well.jpg',
       description: `Created an image classifier for five of UNC-CH’s most famous 
-      landmarks. Trained a convolutional neural network with twelve layers and 
-      achieved an 85% accuracy on the test set`,
+                    landmarks. Trained a convolutional neural network with twelve 
+                    layers and achieved an 85% accuracy on the test set`,
       link: 'https://github.com/bkedwards/unc_landmark_classifier',
       skills: 'Python, TensorFlow',
     },
@@ -61,9 +63,9 @@ export class ProjectsComponent {
       title: 'Hierarchical Splat Renderer',
       image: 'assets/projects/gaussians.png',
       description: `Built a package in Unity to render real-time Hierarchical 3D 
-        Gaussians. The package is based on the SIGGRAPH 2024 paper by Kerbl et. al
-        and combines Aras-P's 3DGS package for Unity with the hierarchy selection-cut
-        algorithm. Intended for VR/AR usage.`,
+                    Gaussians. The package is based on the 2024 paper by 
+                    Kerbl et. al and combines Aras-P's 3DGS package for Unity with 
+                    the hierarchy selection-cut algorithm.`,
       link: 'https://github.com/bkedwards/hierarchical-splats-unity',
       skills: 'Unity, C#, HLSL, Python, Bash',
     },
@@ -71,8 +73,9 @@ export class ProjectsComponent {
       title: 'Study Buddy AI',
       image: 'assets/projects/studybuddy.png',
       description: `Developed a GPT-4 powered Study Buddy for the UNC CSXL Website. 
-        Able to analyze a student's notes and generate practice quizzes,
-        providing detailed feedback and quiz submission statistics for users.`,
+                    Able to analyze a student's notes and generate practice quizzes,
+                    providing detailed feedback and quiz submission statistics for 
+                    users.`,
       link: 'https://github.com/unc-csxl/csxl.unc.edu',
       skills: 'Angular, PostgreSQL, Node.js',
     },
