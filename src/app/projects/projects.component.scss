@@ -21,6 +21,7 @@
   color: white;
   width: 25vw;
   height: 75vh;
+  height: clamp(600px, 75vh, 80vh);
   margin: 0 auto;
 
   .slider-item {
@@ -47,7 +48,6 @@
       background: var(--color-primary);
       color: var(--color-secondary);
       padding: 2rem;
-      font-size: 1.35rem;
       transform: scale(0);
       opacity: 0;
       border-radius: 15px;
@@ -55,6 +55,7 @@
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 1rem 2rem 0 rgba(0, 0, 0, 0.7), 0 1rem 2rem 0 rgba(0, 0, 0, 0.7);
+      overflow: auto;
     }
 
     &.hideLeft {
@@ -134,11 +135,12 @@
 }
 
 .slider-title {
-  font-size: 2rem;
+  font-size: clamp(1.0rem, 2vw, 2rem);
   margin: 1rem 0 0rem;
 }
 
 .slider-description {
+  font-size: clamp(0.75rem, 1.35vw, 1.35rem);
   margin: 1rem 0 1rem;
   color: var(--color-text)
 }
@@ -151,6 +153,7 @@
   text-decoration: none;
   color: white;
   padding: 0.5rem 1rem;
+  font-size: clamp(0.75rem, 1.35vw, 1.35rem);
 }
 
 .slider-button:hover {
@@ -187,7 +190,7 @@
 
 .right-arrow {
   right: -30rem; /* just outside the slider-container’s right */
-  transform: translateY(50%) rotate(180deg);
+  transform: translateY(-50%) scaleX(-1);
 }
 
 .project-skills-container {
@@ -200,7 +203,7 @@
 
 .project-skills {
   margin-left: 0.5rem;
-  font-size: 1.5rem;
+  font-size: clamp(0.8rem, 1.5vw, 1.5rem);
   font-weight: bolder;
 }
 
@@ -230,4 +233,26 @@
 
 .pagination button:hover {
   opacity: 0.9;
+}
+
+
+.slider-card::-webkit-scrollbar {
+  width: 8px;
+}
+
+.slider-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.slider-card::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Firefox */
+.slider-card {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-secondary) transparent;
 }

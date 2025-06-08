@@ -15,7 +15,6 @@ import {
   ViewChildren,
 } from '@angular/core';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { CommonModule } from '@angular/common';
 
@@ -133,8 +132,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
   private simRenderTarget!: THREE.WebGLRenderTarget;
   private pointsMaterial!: THREE.ShaderMaterial;
   private simSize = 512;
-  private uProgress = 0;
-  private controls!: OrbitControls;
+  private uProgress = 0;;
   private positionsTexture!: THREE.DataTexture;
   private globeTexture!: THREE.DataTexture;
   private uncTexture!: THREE.DataTexture;
@@ -271,7 +269,6 @@ export class AboutComponent implements AfterViewInit, OnInit {
       1000
     );
     this.camera.position.set(0, 0, 6);
-    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.onResize();
 
     this.scene = new THREE.Scene();
@@ -538,7 +535,6 @@ export class AboutComponent implements AfterViewInit, OnInit {
     this.frameId = requestAnimationFrame(this.animate);
 
     if (!this.aboutVisible) return;
-    this.controls.update();
     const t = performance.now() * 0.001;
     if (this.points) {
       this.points.rotation.y += 0.002;

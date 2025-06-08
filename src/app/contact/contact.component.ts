@@ -540,7 +540,6 @@ export class ContactComponent {
 
     this.points = new THREE.Points(geom, this.pointsMaterial);
     this.scene.add(this.points);
-
     this.animate();
   }
 
