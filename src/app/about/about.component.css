@@ -9,7 +9,7 @@
 .about-container {
   display: flex;
   flex-direction: column;
-  width: 50%;
+  width: 45vw;
   height: auto;
   font-size: clamp(1.0rem, 1.5vw, 1.5rem);
   justify-content: center;
@@ -101,7 +101,7 @@
 
 .canvas-container {
   display: flex;
-  width: 50%;
+  width: 55vw;
   height: auto;
   margin: 0 auto;
 }
