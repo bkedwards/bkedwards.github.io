@@ -22,15 +22,6 @@ export interface Project {
 export class ProjectsComponent {
   projects: Project[] = [
     {
-      title: 'Mixed Reality Simulations of Internal Detonation',
-      image: '/assets/projects/detonation.png',
-      description: `Created a Mixed Reality application using Unreal Engine and 
-                    C++ for the Hololens 2 to visualize simulated physics of 
-                    internal detonations.`,
-      link: 'https://docs.google.com/presentation/d/1HnIzL86wSxwg6z3ommjDDJ8uL28oPE1M/edit?usp=sharing&ouid=117641056441104918980&rtpof=true&sd=true',
-      skills: 'Unreal Engine, C++',
-    },
-    {
       title: 'Portfolio Website',
       image: 'assets/projects/portfolio.png',
       description: `Developed this very website to showcase my software development 
@@ -39,6 +30,15 @@ export class ProjectsComponent {
                     application using GitHub Pages.`,
       link: 'https://github.com/bkedwards/bkedwards.github.io',
       skills: 'Angular, TypeScript, HTML, CSS',
+    },
+    {
+      title: 'Mixed Reality Simulations of Internal Detonation',
+      image: '/assets/projects/detonation.png',
+      description: `Created a Mixed Reality application using Unreal Engine and 
+                    C++ for the Hololens 2 to visualize simulated physics of 
+                    internal detonations.`,
+      link: 'https://docs.google.com/presentation/d/1HnIzL86wSxwg6z3ommjDDJ8uL28oPE1M/edit?usp=sharing&ouid=117641056441104918980&rtpof=true&sd=true',
+      skills: 'Unreal Engine, C++',
     },
     {
       title: 'ASL Detection Model',
@@ -81,7 +81,7 @@ export class ProjectsComponent {
     },
   ];
 
-  selectedIndex = 1;
+  selectedIndex = 0;
   isTransitioning = false;
 
   getIndex(i: number): number {

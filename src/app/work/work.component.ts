@@ -28,7 +28,7 @@ export class WorkComponent implements AfterViewInit {
       position: 'Technology & Data Intern',
       company: 'Deutsche Bank',
       description:
-        'I am an incoming TDI Investmen Banking intern at Deutsche Bank for Summer 2025. I will be working in the IB Tech division with Client 360 Technologies.',
+        'I am an incoming TDI Investment Banking intern at Deutsche Bank for Summer 2025. I will be working in the IB Tech division with Client 360 Technologies.',
       skills: 'Java/Spring, React, Kubernetes, OpenShift',
       location: 'Cary, NC',
       alignment: 'right',
