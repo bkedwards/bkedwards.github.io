@@ -70,7 +70,7 @@ export class ContactComponent {
   private simMaterial!: THREE.ShaderMaterial;
   private simRenderTarget!: THREE.WebGLRenderTarget;
   private pointsMaterial!: THREE.ShaderMaterial;
-  private simSize = 512;
+  private simSize = 256;
 
   getPoint(
     v: THREE.Vector3,
@@ -461,10 +461,12 @@ export class ContactComponent {
     const canvas = this.canvasRef.nativeElement;
     this.renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: true,
+      antialias: false,
       alpha: true,
     });
-    this.renderer.setPixelRatio(2);
+
+    const dpr = window.devicePixelRatio;
+    this.renderer.setPixelRatio(Math.min(dpr, 1));
     this.renderer.setClearColor(0x000000, 0);
     this.camera = new THREE.PerspectiveCamera(
       25, // Match React camera FOV
