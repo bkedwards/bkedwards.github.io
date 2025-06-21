@@ -301,7 +301,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
       if (!skill.mesh) return;
 
       if (skill.spinRemaining > 0) {
-        const step = 0.05;
+        const step = 0.1;
         skill.spinRotationY += step;
         skill.spinRemaining -= step;
         skill.hoverRotation += step;

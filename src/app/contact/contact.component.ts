@@ -9,7 +9,6 @@ import emailjs from 'emailjs-com';
   styleUrl: './contact.component.css',
 })
 export class ContactComponent {
-
   ngAfterViewInit(): void {
     this.initContact();
     window.addEventListener('mousemove', this.updateMousePosition);
@@ -42,11 +41,11 @@ export class ContactComponent {
         () => {
           this.sendEmailTriggered.set(true);
           this.emailSuccess.set(true);
-          this.isSending.set(false); 
+          this.isSending.set(false);
         },
         (error) => {
           this.sendEmailTriggered.set(true);
-          this.isSending.set(false); 
+          this.isSending.set(false);
           alert('Failed to send email. Please try again.');
         }
       );
@@ -474,7 +473,10 @@ export class ContactComponent {
       0.1,
       1000
     );
-    this.camera.position.set(0, 0, 6);
+
+    const aspect = canvas.clientWidth / canvas.clientHeight;
+    this.camera.position.set(0, 0, this.getAdaptiveZ(aspect));
+
     this.onResize();
 
     this.scene = new THREE.Scene();
@@ -545,6 +547,12 @@ export class ContactComponent {
     this.animate();
   }
 
+  private getAdaptiveZ(aspect: number): number {
+    const minZ = 6; // default for 16:9
+    const maxZ = 10; // fallback for very narrow screens
+    return THREE.MathUtils.clamp(6 / aspect, minZ, maxZ);
+  }
+
   private animate = () => {
     this.frameId = requestAnimationFrame(this.animate);
 
@@ -563,10 +571,15 @@ export class ContactComponent {
     const canvas = this.canvasRef.nativeElement;
     const width = canvas.clientWidth;
     const height = canvas.clientHeight;
+
     this.renderer.setSize(width, height, false);
+
     if (this.camera instanceof THREE.PerspectiveCamera) {
-      this.camera.aspect = width / height;
+      const aspect = width / height;
+      this.camera.aspect = aspect;
       this.camera.updateProjectionMatrix();
+
+      this.camera.position.z = this.getAdaptiveZ(aspect);
     }
   };
 }
