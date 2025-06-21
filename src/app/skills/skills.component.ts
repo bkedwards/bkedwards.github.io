@@ -4,6 +4,7 @@ import {
   ViewChild,
   OnDestroy,
   ElementRef,
+  ChangeDetectionStrategy
 } from '@angular/core';
 import * as THREE from 'three';
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
@@ -25,6 +26,7 @@ export interface Skill {
   imports: [],
   templateUrl: './skills.component.html',
   styleUrl: './skills.component.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SkillsComponent implements AfterViewInit, OnDestroy {
   skills: Skill[] = [
@@ -165,7 +167,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
 
     // Create coin
     const coin = new THREE.Mesh(
-      new THREE.CylinderGeometry(0.6, 0.6, 0.1, 64),
+      new THREE.CylinderGeometry(0.6, 0.6, 0.1, 24),
       coinMaterial
     );
     coin.rotation.x = Math.PI / 2; // 90 degrees
@@ -194,7 +196,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
     backPlane.position.set(0, 0, -0.1);
     group.add(backPlane);
     group.position.copy(position);
-    group.rotation.y = Math.PI/10;
+    group.rotation.y = Math.PI / 10;
     return group;
   }
 
@@ -265,8 +267,8 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
 
     const keyLight = new THREE.DirectionalLight(0xffffff, 100.0);
     keyLight.position.set(5, 10, 7.5);
-    keyLight.castShadow = true;
     this.scene.add(keyLight);
+    this.renderer.shadowMap.enabled = false;
 
     await this.preloadTextures();
     let angle = 0;
@@ -293,24 +295,13 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
   }
 
   animateSkills = () => {
-    this.frameId = requestAnimationFrame(this.animateSkills);
     const t = performance.now() * 0.001;
-
-    //if (!this.sectionVisible) return;
 
     this.skills.forEach((skill) => {
       if (!skill.mesh) return;
 
-      // 1. Bobbing (resets every frame to avoid drift)
-      //skill.mesh.position.y = skill.baseY + Math.sin(t * 2) * 0.1;
-
-      // 2. Idle rotation
-      //skill.idleRotationY = Math.sin(t) * 0.1;
-
-      // 3. Hover spin animation
       if (skill.spinRemaining > 0) {
-        console.log(skill.spinRemaining);
-        var step = 0.05;
+        const step = 0.05;
         skill.spinRotationY += step;
         skill.spinRemaining -= step;
         skill.hoverRotation += step;
@@ -318,14 +309,16 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
         skill.hoverRotation = 0;
         skill.spinRotationY = 0;
         skill.isHovered = false;
-        ``;
       }
 
-      // 4. Final rotation is idle + hover spin
       skill.mesh.rotation.y = skill.idleRotationY + skill.spinRotationY;
     });
 
     this.renderer.render(this.scene, this.camera);
+
+    if (this.skillsVisible || this.skills.some((s) => s.spinRemaining > 0)) {
+      this.frameId = requestAnimationFrame(this.animateSkills);
+    }
   };
 
   onResize = () => {
