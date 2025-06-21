@@ -548,8 +548,8 @@ export class ContactComponent {
 
     if (!this.contactVisible) return;
     const t = performance.now() * 0.001;
-    this.simMaterial.uniforms['uTime'].value = t * 15;
-    this.pointsMaterial.uniforms['uTime'].value = t * 15;
+    this.simMaterial.uniforms['uTime'].value = t * 0.2;
+    this.pointsMaterial.uniforms['uTime'].value = t * 1;
 
     this.renderer.setRenderTarget(this.simRenderTarget);
     this.renderer.render(this.simScene, this.simCamera);

@@ -157,19 +157,10 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
   ): THREE.Object3D {
     const group = new THREE.Group();
 
-    const coinMaterial = new THREE.MeshPhysicalMaterial({
-      color: 0xaaaaaa, // no tint
-      metalness: 0.0, // dielectric
-      roughness: 0.0, // razor‑sharp highlights
-      transmission: 1.0, // full refraction
-      thickness: 0.01, // thin pane
-      ior: 1.52, // crown‑glass
-
-      // → BOOST SPECULAR RESPONSE ←
-      clearcoat: 3.0, // extra glossy varnish layer
-      clearcoatRoughness: 0.0, // perfectly smooth clearcoat
-      specularIntensity: 7.0, // 3× the default dielectric F0
-      specularColor: new THREE.Color(0xffffff),
+    const coinMaterial = new THREE.MeshStandardMaterial({
+      color: 0x111111,
+      metalness: 0.0,
+      roughness: 0.1,
     });
 
     // Create coin
@@ -203,6 +194,7 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
     backPlane.position.set(0, 0, -0.1);
     group.add(backPlane);
     group.position.copy(position);
+    group.rotation.y = Math.PI/10;
     return group;
   }
 
@@ -310,15 +302,15 @@ export class SkillsComponent implements AfterViewInit, OnDestroy {
       if (!skill.mesh) return;
 
       // 1. Bobbing (resets every frame to avoid drift)
-      skill.mesh.position.y = skill.baseY + Math.sin(t * 2) * 0.1;
+      //skill.mesh.position.y = skill.baseY + Math.sin(t * 2) * 0.1;
 
       // 2. Idle rotation
-      skill.idleRotationY = Math.sin(t * 2) * 0.6;
+      //skill.idleRotationY = Math.sin(t) * 0.1;
 
       // 3. Hover spin animation
       if (skill.spinRemaining > 0) {
         console.log(skill.spinRemaining);
-        var step = 0.1;
+        var step = 0.05;
         skill.spinRotationY += step;
         skill.spinRemaining -= step;
         skill.hoverRotation += step;
