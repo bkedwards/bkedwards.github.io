@@ -31,24 +31,20 @@ export class ContactComponent {
     event.preventDefault();
     this.isSending.set(true);
     emailjs
-      .sendForm(
-        'service_5ngpf3e',
-        'template_g2rnp8p',
-        event.target as HTMLFormElement,
-        'SQCU20t7kVZpEjRV-'
-      )
-      .then(
-        () => {
-          this.sendEmailTriggered.set(true);
-          this.emailSuccess.set(true);
-          this.isSending.set(false);
-        },
-        (error) => {
-          this.sendEmailTriggered.set(true);
-          this.isSending.set(false);
-          alert('Failed to send email. Please try again.');
-        }
-      );
+        .sendForm(
+            'service_4wl205l', 'template_g2rnp8p',
+            event.target as HTMLFormElement, 'SQCU20t7kVZpEjRV-')
+        .then(
+            () => {
+              this.sendEmailTriggered.set(true);
+              this.emailSuccess.set(true);
+              this.isSending.set(false);
+            },
+            (error) => {
+              this.sendEmailTriggered.set(true);
+              this.isSending.set(false);
+              alert('Failed to send email. Please try again.');
+            });
   }
 
   @ViewChild('canvas', { static: true })
