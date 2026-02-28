@@ -85,3 +85,22 @@ footer i {
 footer i:hover {
   color: #f7cd83;
 }
+
+.theme-toggle {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 1000; /* stays above maps, panels, etc */
+}
+
+.theme-toggle button {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  border-radius: 50%;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.theme-toggle button:hover {
+  background: rgba(0, 255, 255, 0.2);
+  transform: scale(1.05);
+}

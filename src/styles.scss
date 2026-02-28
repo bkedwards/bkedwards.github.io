@@ -1,4 +1,32 @@
-/* Basic CSS Reset */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// Define themes
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$cyan-palette,
+  ),
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$cyan-palette,
+  ),
+));
+
+/* Default theme (dark) */
+body {
+  @include mat.all-component-themes($dark-theme);
+}
+
+/* Light theme override */
+body.light-theme {
+  @include mat.all-component-colors($light-theme);
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -14,9 +42,16 @@
   --color-primary-highlight: #8e8e8e;
   --color-text-dark: #b9b9b9;
 
-  /* Optional: text and background variants */
   --color-text: white;
   --color-bg: #0e0e0e;
+}
+
+/* Light Mode Overrides */
+.light-theme {
+  --color-bg: #ffffff;
+  --color-text: #111111;
+  --color-primary: #e5e5e5;
+  --color-text-dark: #444444;
 }
 
 /* Base Styles */
@@ -30,6 +65,7 @@ html {
 body {
   background-color: var(--color-bg);
   font-family: 'Kdam Thmor Pro', sans-serif;
+  color: var(--color-text);
 }
 
 app-root {
@@ -37,4 +73,10 @@ app-root {
 }
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+body {
+  margin: 0;
+  --mdc-typography-font-family: 'Kdam Thmor Pro', sans-serif;
+  font-family: 'Kdam Thmor Pro', sans-serif;
+}
+

@@ -7,6 +7,14 @@
   </div>
 </header>-->
 
+<div class="theme-toggle">
+  <button mat-icon-button (click)="toggleTheme()">
+    <mat-icon>
+      {{ isLight ? 'dark_mode' : 'light_mode' }}
+    </mat-icon>
+  </button>
+</div>
+
 <main class="content">
   <router-outlet></router-outlet>
 </main>
