@@ -16,7 +16,7 @@
 
   /* Optional: text and background variants */
   --color-text: white;
-  --color-bg: #121212;
+  --color-bg: #0e0e0e;
 }
 
 /* Base Styles */
@@ -35,3 +35,6 @@ body {
 app-root {
   width: 100%;
 }
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
