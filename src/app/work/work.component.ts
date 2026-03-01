@@ -1,5 +1,6 @@
-import { Component, ViewChild, ElementRef, ViewChildren, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, ViewChildren, AfterViewInit, OnDestroy, effect, Injector } from '@angular/core';
 import { ScrollTrapToDirective } from './scroll-trap-to.directive';
+import { ThemeService } from '../theme.service';
 
 type Camera = {
   center: [number, number];
@@ -117,15 +118,23 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
   private io?: IntersectionObserver;
   private activeIndex = 0;
 
+  constructor(private theme: ThemeService, private injector: Injector) {}
+
+  private getStyleUrl(): string {
+    return this.theme.isLight()
+      ? '/assets/work/style.light.json'
+      : '/assets/work/style.dark.json';
+  }
+
   async ngAfterViewInit() {
     const maplibregl = await import('maplibre-gl');
 
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
-      style: '/assets/work/style.json',
+      style: this.getStyleUrl(),
       center: [-77.0369, 38.9073],
       zoom: 9,
-      attributionControl: false, // remove the black-arrow attribution dropdown
+      attributionControl: false,
     });
 
     this.map.on('load', () => {
@@ -139,105 +148,34 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
       this.map.touchZoomRotate.disable();
     });
 
-    this.map.once('load', () => {
+    // IMPORTANT:
+    // Run this on every style load (initial load + after setStyle)
+    this.map.on('style.load', () => {
       this.map.resize();
-
-      const size = 300;
-
-      // pulsing dot image (StyleImageInterface)
-      const pulsingDot: any = {
-        width: size,
-        height: size,
-        data: new Uint8Array(size * size * 4),
-
-        onAdd: function () {
-          const canvas = document.createElement('canvas');
-          canvas.width = this.width;
-          canvas.height = this.height;
-          this.context = canvas.getContext('2d');
-        },
-
-        render: function () {
-          const duration = 1000;
-          const t = (performance.now() % duration) / duration;
-
-          const radius = (size / 2) * 0.3;
-          const outerRadius = (size / 2) * 0.7 * t + radius;
-          const context = this.context as CanvasRenderingContext2D;
-
-          context.clearRect(0, 0, this.width, this.height);
-
-          // outer
-          context.beginPath();
-          context.arc(
-            this.width / 2,
-            this.height / 2,
-            outerRadius,
-            0,
-            Math.PI * 2
-          );
-          context.fillStyle = `rgba(0, 255, 255, ${1 - t})`;
-          context.fill();
-
-          // inner
-          context.beginPath();
-          context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
-          context.fillStyle = 'rgba(0, 255, 255, 1)';
-          context.strokeStyle = 'white';
-          context.lineWidth = 2 + 4 * (1 - t);
-          context.fill();
-          context.stroke();
-
-          this.data = context.getImageData(0, 0, this.width, this.height).data;
-
-          // IMPORTANT: trigger repaint via your component map instance
-          // We'll bind map onto this object below.
-          this._map.triggerRepaint();
-          return true;
-        },
-      };
-
-      // Bind map into the image object so render() can repaint
-      pulsingDot._map = this.map;
-
-      // Add image (guard against hot reload calling twice)
-      if (!this.map.hasImage('pulsing-dot')) {
-        this.map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
-      }
-
-      // Source with ALL your experience points
-      const geojson = this.buildExperienceGeoJSON();
-
-      if (!this.map.getSource('experience-points')) {
-        this.map.addSource('experience-points', {
-          type: 'geojson',
-          data: geojson,
-        });
-
-        this.map.addLayer({
-          id: 'experience-points-layer',
-          type: 'symbol',
-          source: 'experience-points',
-          layout: {
-            'icon-image': 'pulsing-dot',
-            'icon-size': 0.35, // tune size on map
-            'icon-allow-overlap': true, // so dots never disappear
-          },
-        });
-      } else {
-        // if it already exists (HMR), just update the data
-        (this.map.getSource('experience-points') as any).setData(geojson);
-      }
+      this.addExperienceLayer();
     });
 
     this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
 
-    // Fix flex-layout sizing issues
-    this.map.once('load', () => this.map.resize());
+    // Resize handling
     this.ro = new ResizeObserver(() => this.map.resize());
     this.ro.observe(this.mapContainer.nativeElement);
 
     this.setupScrollObserver();
+
+    // React to theme changes
+    effect(
+      () => {
+        const styleUrl = this.getStyleUrl();
+        if (!this.map) return;
+
+        // Avoid redundant setStyle calls
+        const current = (this.map as any).getStyle?.();
+        // (MapLibre doesn't expose a simple "current style URL", so just set it.)
+        this.map.setStyle(styleUrl);
+      },
+      { injector: this.injector }
+    );
   }
 
   private setupScrollObserver() {
@@ -269,6 +207,85 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
       }
     );
     panels.forEach((p) => this.io!.observe(p));
+  }
+
+  private addExperienceLayer() {
+    const size = 300;
+
+    const pulsingDot: any = {
+      width: size,
+      height: size,
+      data: new Uint8Array(size * size * 4),
+
+      onAdd: function () {
+        const canvas = document.createElement('canvas');
+        canvas.width = this.width;
+        canvas.height = this.height;
+        this.context = canvas.getContext('2d');
+      },
+
+      render: function () {
+        const duration = 1000;
+        const t = (performance.now() % duration) / duration;
+
+        const radius = (size / 2) * 0.3;
+        const outerRadius = (size / 2) * 0.7 * t + radius;
+        const context = this.context as CanvasRenderingContext2D;
+
+        context.clearRect(0, 0, this.width, this.height);
+
+        context.beginPath();
+        context.arc(
+          this.width / 2,
+          this.height / 2,
+          outerRadius,
+          0,
+          Math.PI * 2
+        );
+        context.fillStyle = `rgba(0, 255, 255, ${1 - t})`;
+        context.fill();
+
+        context.beginPath();
+        context.arc(this.width / 2, this.height / 2, radius, 0, Math.PI * 2);
+        context.fillStyle = 'rgba(0, 255, 255, 1)';
+        context.strokeStyle = 'white';
+        context.lineWidth = 2 + 4 * (1 - t);
+        context.fill();
+        context.stroke();
+
+        this.data = context.getImageData(0, 0, this.width, this.height).data;
+        this._map.triggerRepaint();
+        return true;
+      },
+    };
+
+    pulsingDot._map = this.map;
+
+    if (!this.map.hasImage('pulsing-dot')) {
+      this.map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+    }
+
+    const geojson = this.buildExperienceGeoJSON();
+
+    if (!this.map.getSource('experience-points')) {
+      this.map.addSource('experience-points', {
+        type: 'geojson',
+        data: geojson,
+      });
+
+      this.map.addLayer({
+        id: 'experience-points-layer',
+        type: 'symbol',
+        source: 'experience-points',
+        layout: {
+          'icon-image': 'pulsing-dot',
+          'icon-size': 0.35,
+          'icon-allow-overlap': true,
+        },
+      });
+    } else {
+      (this.map.getSource('experience-points') as any).setData(geojson);
+    }
   }
 
   private setActivePanel(i: number) {

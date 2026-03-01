@@ -25,9 +25,9 @@
 }
 
 .navigation-header a:hover {
-  color: #00fff9; /* or your accent color */
+  color: var(--color-primary); /* or your accent color */
 }
 
 .navigation-header a.active {
-  color: #00fff9
+  color: var(--color-primary);
 }

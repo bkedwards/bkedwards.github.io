@@ -27,7 +27,7 @@
   top: 0;
   flex: 0 0 50%;
   height: 100%;
-  background: #0e0e0e;
+  background: var(--color-bg);
 }
 
 .map-container {
@@ -42,11 +42,7 @@
   pointer-events: none;
 
   background: 
-    radial-gradient(ellipse at center, transparent 50%, #0e0e0e 65%),
-    linear-gradient(to top,    #0e0e0e 0%, transparent 30%),
-    linear-gradient(to bottom, #0e0e0e 0%, transparent 30%),
-    linear-gradient(to left,   #0e0e0e 0%, transparent 30%),
-    linear-gradient(to right,  #0e0e0e 0%, transparent 30%);
+    radial-gradient(ellipse at center, transparent 45%, var(--color-bg) 60%);
 
 }
 
@@ -71,12 +67,12 @@
 
 .panels-wrapper::before {
   top: 0;
-  background: linear-gradient(to bottom, #0e0e0e 0%, transparent 100%);
+  background: linear-gradient(to bottom, var(--color-bg) 0%, transparent 100%);
 }
 
 .panels-wrapper::after {
   bottom: 0;
-  background: linear-gradient(to top, #0e0e0e 0%, transparent 100%);
+  background: linear-gradient(to top, var(--color-bg) 0%, transparent 100%);
 }
 
 .panels-container {
@@ -106,9 +102,9 @@
   display: flex;
   justify-content: center;
 
-  color: white;
+  color: var(--color-text);
 
-  background: #0e0e0e /* subtle glass look */
+  background: var(--color-bg);
 }
 
 .panel {
@@ -117,7 +113,7 @@
 }
 
 .panel-interior {
-  background: rgba(255,255,255,0.05);
+  background: var(--color-surface);
   width: 100%;
   padding: 0.5rem 1rem 1rem 1rem;
 }
@@ -130,9 +126,9 @@
   top: 0;
   left: 50%;
   transform: translate(-50%, -50%); /* center horizontally + lift half outside */
-  border: 2px solid cyan;
+  border: 0.3rem solid var(--color-primary);
   border-radius: 50%;
-  background: var(--icon-url) center / 70% no-repeat, #0e0e0e;
+  background: var(--icon-url) center / 70% no-repeat, var(--color-bg);
   z-index: 7;
 }
 
@@ -146,51 +142,51 @@
   background:
     /* TOP edge with a gap in the middle */
     linear-gradient(to right,
-      rgba(0,255,255,0.75) 0%,
-      rgba(0,255,255,0.75) 8%,
-      rgba(0,255,255,0.0) 8%,
-      rgba(0,255,255,0.0) 16%,
-      rgba(0,255,255,0.75) 16%,
-      rgba(0,255,255,0.75) 65%,
-      rgba(0,255,255,0.75) 65%,
-      rgba(0,255,255,0.75) 100%
-    ) top / 100% 2px no-repeat,
+      rgba(var(--color-primary-rgb), 0.75) 0%,
+      rgba(var(--color-primary-rgb), 0.75) 8%,
+      rgba(var(--color-primary-rgb), 0.0) 8%,
+      rgba(var(--color-primary-rgb), 0.0) 16%,
+      rgba(var(--color-primary-rgb), 0.75) 16%,
+      rgba(var(--color-primary-rgb), 0.75) 65%,
+      rgba(var(--color-primary-rgb), 0.75) 65%,
+      rgba(var(--color-primary-rgb), 0.75) 100%
+    ) top / 100% 0.3rem no-repeat,
 
     /* BOTTOM edge with a gap in the middle */
     linear-gradient(to right,
-      rgba(0,255,255,0.75) 0%,
-      rgba(0,255,255,0.75) 35%,
-      rgba(0,255,255,0.75) 84%,
-      rgba(0,255,255,0.0) 84%,
-      rgba(0,255,255,0.0) 92%,
-      rgba(0,255,255,0.75) 92%,
-      rgba(0,255,255,0.75) 100%
-    ) bottom / 100% 2px no-repeat,
+      rgba(var(--color-primary-rgb), 0.75) 0%,
+      rgba(var(--color-primary-rgb), 0.75) 35%,
+      rgba(var(--color-primary-rgb), 0.75) 84%,
+      rgba(var(--color-primary-rgb), 0.0) 84%,
+      rgba(var(--color-primary-rgb), 0.0) 92%,
+      rgba(var(--color-primary-rgb), 0.75) 92%,
+      rgba(var(--color-primary-rgb), 0.75) 100%
+    ) bottom / 100% 0.3rem no-repeat,
 
     /* LEFT edge with a gap in the middle */
     linear-gradient(to bottom,
-      rgba(0,255,255,0.75) 0%,
-      rgba(0,255,255,0.75) 35%,
-      rgba(0,255,255,0.75) 80%,
-      rgba(0,255,255,0.0) 80%,
-      rgba(0,255,255,0.0) 92%,
-      rgba(0,255,255,0.75) 92%,
-      rgba(0,255,255,0.75) 100%
-    ) left / 2px 100% no-repeat,
+      rgba(var(--color-primary-rgb), 0.75) 0%,
+      rgba(var(--color-primary-rgb), 0.75) 35%,
+      rgba(var(--color-primary-rgb), 0.75) 80%,
+      rgba(var(--color-primary-rgb), 0.0) 80%,
+      rgba(var(--color-primary-rgb), 0.0) 92%,
+      rgba(var(--color-primary-rgb), 0.75) 92%,
+      rgba(var(--color-primary-rgb), 0.75) 100%
+    ) left / 0.3rem 100% no-repeat,
 
     /* RIGHT edge with a gap in the middle */
     linear-gradient(to bottom,
-      rgba(0,255,255,0.75) 0%,
-      rgba(0,255,255,0.75) 8%,
-      rgba(0,255,255,0.0) 8%,
-      rgba(0,255,255,0.0) 20%,
-      rgba(0,255,255,0.75) 20%,
-      rgba(0,255,255,0.75) 65%,
-      rgba(0,255,255,0.75) 65%,
-      rgba(0,255,255,0.75) 100%
-    ) right / 2px 100% no-repeat;
+      rgba(var(--color-primary-rgb), 0.75) 0%,
+      rgba(var(--color-primary-rgb), 0.75) 8%,
+      rgba(var(--color-primary-rgb), 0.0) 8%,
+      rgba(var(--color-primary-rgb), 0.0) 20%,
+      rgba(var(--color-primary-rgb), 0.75) 20%,
+      rgba(var(--color-primary-rgb), 0.75) 65%,
+      rgba(var(--color-primary-rgb), 0.75) 65%,
+      rgba(var(--color-primary-rgb), 0.75) 100%
+    ) right / 0.3rem 100% no-repeat;
 
-  filter: drop-shadow(0 0 6px rgba(255,255,255,0.18));
+  filter: drop-shadow(0 0 6px rgba(var(--color-primary-rgb), 0.25));
 }
 
 
@@ -198,7 +194,7 @@
   position: absolute;
   width: 2px;       /* make it fat temporarily */
   height: 90vh;
-  background: gray;
+  background: var(--color-timeline);
   z-index: 0;
   left: 50%;
   top: 50%;
@@ -211,7 +207,7 @@
   transform: translateX(-50%);
   width: 14px;
   height: 0;                 /* so it doesn't stretch */
-  border-top: 2px solid gray;
+  border-top: 2px solid var(--color-timeline);
 }
 
 .thick-tick {
@@ -220,7 +216,7 @@
   transform: translateX(-50%);
   width: 28px;
   height: 0;                 /* so it doesn't stretch */
-  border-top: 2px solid gray;
+  border-top: 2px solid var(--color-timeline);
 }
 
 /* Position each tick */

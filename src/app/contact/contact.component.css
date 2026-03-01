@@ -22,9 +22,9 @@
   height: auto;
   padding: 2.0rem;
   border-radius: 2rem;
-  background: var(--color-primary);
-  box-shadow: 0 1rem 2rem 0 rgba(0, 0, 0, 0.7), 0 1rem 2rem 0 rgba(0, 0, 0, 0.7);
-  filter: brightness(90%);
+  background: var(--color-surface);
+  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.4);
+  filter: brightness(98%);
   justify-content: flex-start;
   gap: 1rem;
   overflow: auto;
@@ -40,12 +40,12 @@
 
 .contact-box h2 {
   font-size: clamp(1.0rem, 2vw, 2rem);
-  color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .contact-box h3 {
   font-size: clamp(0.75rem, 1.25vw, 1.25rem);
-  color: var(--color-primary-highlight);
+  color: var(--color-surface-highlight);
 }
 
 .contact-box form {
@@ -65,10 +65,10 @@
   font-size: clamp(0.75rem, 1.25vw, 1.25rem);
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue',
                Helvetica, Arial, sans-serif;
-  background-color: var(--color-primary-highlight);
+  background-color: var(--color-surface);
   color: var(--color-text);
   resize: none;
-  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
 }
 
 textarea::placeholder,
@@ -90,7 +90,7 @@ input::placeholder {
   margin-right: auto;
   align-self: flex-start;
   justify-content: center;
-  color: var(--color-secondary);
+  color: var(--color-primary);
   border-radius: 1rem;
   transition: background-color 0.2s ease;
   border: none;
@@ -104,7 +104,7 @@ input::placeholder {
   margin-right: auto;
   align-self: flex-start;
   justify-content: center;
-  color: red;
+  color: var(--color-error);
   border-radius: 1rem;
   transition: background-color 0.2s ease;
   border: none;
@@ -114,8 +114,8 @@ input::placeholder {
   display: inline-block;
   width: clamp(0.75rem, 1.25vw, 1.25rem);
   height: clamp(0.75rem, 1.25vw, 1.25rem);
-  border: 3px solid rgba(255, 255, 255, 0.3);
-  border-top: 3px solid white;
+  border: 3px solid var(--color-text);
+  border-top: 3px solid var(--color-text);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   vertical-align: middle;
@@ -137,18 +137,18 @@ input::placeholder {
   margin-left: 0;
   margin-right: auto;
   align-self: flex-start;
-  background-color: var(--color-tertiary);
-  color: var(--color-text);
+  background-color: var(--color-primary);
+  color: var(--color-button);
   border-radius: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
   border: none;
   min-width: 4rem;
-  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
 }
 
 .contact-box button:hover {
-  background-color: var(--color-tertiary-highlight);
+  filter: brightness(90%);
 }
 
 .canvas-side {
