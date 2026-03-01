@@ -26,7 +26,6 @@ export class ScrollTrapToDirective implements AfterViewInit, OnDestroy {
         ([entry]) =>
           {
             this.active = entry.intersectionRatio >= this.trapThreshold;
-            console.log(this.active);
           },
         { threshold: [0.80,0.85,0.90, 0.95, 1] }
       );
