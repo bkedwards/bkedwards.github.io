@@ -3,6 +3,7 @@ import {AfterViewInit, Component, effect, ElementRef, Injector, OnDestroy, ViewC
 import {ThemeService} from '../theme.service';
 
 import {ScrollTrapToDirective} from './scroll-trap-to.directive';
+import * as maplibregl from 'maplibre-gl';
 
 type Camera = {
   center: [number, number]; zoom: number;
@@ -127,14 +128,12 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
   private mapReady = false;
 
   async ngAfterViewInit() {
-    const maplibregl = await import('maplibre-gl');
 
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
-      style: '/assets/work/style.base.json',  // base map style
-      center: [-77.0369, 38.9073],  // Initial camera is Washington D.C.
+      style: 'assets/work/style.base.json',
+      center: [-77.0369, 38.9073],
       zoom: 9,
-      attributionControl: false,
     });
 
     this.map.on('load', () => {
