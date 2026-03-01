@@ -1,6 +1,5 @@
 import { Component, AfterViewInit, ViewChildren, ElementRef, QueryList} from '@angular/core';
 import { ProjectsComponent } from '../projects/projects.component';
-import { SkillsComponent } from '../skills/skills.component';
 import { WorkComponent } from '../work/work.component';
 import { AboutComponent } from '../about/about.component';
 import { ContactComponent } from '../contact/contact.component';
@@ -9,7 +8,6 @@ import { ContactComponent } from '../contact/contact.component';
   selector: 'app-home',
   imports: [
     ProjectsComponent,
-    SkillsComponent,
     WorkComponent,
     AboutComponent,
     ContactComponent,
@@ -31,10 +29,6 @@ export class HomeComponent implements AfterViewInit {
       name: 'Projects',
       active: false,
     },
-    // {
-    //   name: 'Skills',
-    //   active: false,
-    // },
     {
       name: 'Contact',
       active: false,

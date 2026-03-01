@@ -173,6 +173,20 @@ export class AboutComponent implements AfterViewInit, OnInit {
     this.renderer.dispose();
   }
 
+  composeTransform(
+    position?: THREE.Vector3,
+    rotation?: THREE.Euler,
+    scale?: THREE.Vector3,
+  ): THREE.Matrix4 {
+    const matrix = new THREE.Matrix4();
+    const obj = new THREE.Object3D();
+    if (position) obj.position.copy(position);
+    if (rotation) obj.rotation.copy(rotation);
+    if (scale) obj.scale.copy(scale);
+    obj.updateMatrix();
+    return obj.matrix.clone();
+  }
+
   changeSection(index: number) {
     const section = this.sections[index];
 
@@ -232,20 +246,6 @@ export class AboutComponent implements AfterViewInit, OnInit {
     };
 
     animateMorph();
-  }
-
-  composeTransform(
-    position?: THREE.Vector3,
-    rotation?: THREE.Euler,
-    scale?: THREE.Vector3,
-  ): THREE.Matrix4 {
-    const matrix = new THREE.Matrix4();
-    const obj = new THREE.Object3D();
-    if (position) obj.position.copy(position);
-    if (rotation) obj.rotation.copy(rotation);
-    if (scale) obj.scale.copy(scale);
-    obj.updateMatrix();
-    return obj.matrix.clone();
   }
 
   private initAbout() {
@@ -421,7 +421,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
   getPointsMaterial(isLight: boolean): THREE.ShaderMaterial {
     const color = isLight
-      ? new THREE.Color('#29C2C2') // dark grey for light mode
+      ? new THREE.Color('#58807f') // dark grey for light mode
       : new THREE.Color('#FFFFFF'); // white for dark mode
 
     return new THREE.ShaderMaterial({
@@ -448,7 +448,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       fragmentShader: `
       uniform vec3 uColor;
       void main() {
-        gl_FragColor = vec4(uColor, 1.0);
+        gl_FragColor = vec4(uColor, 0.8);
       }
     `,
     });
@@ -457,10 +457,8 @@ export class AboutComponent implements AfterViewInit, OnInit {
   private applyThemeToPoints(isLight: boolean) {
     if (!this.pointsMaterial) return;
     this.pointsMaterial.uniforms['uColor'].value.set(
-      isLight ? '#2B2F36' : '#FFFFFF',
+      isLight ? '#58807f' : '#FFFFFF',
     );
-    // optional but safe:
-    this.pointsMaterial.needsUpdate = false; // uniforms don't require recompilation
   }
 
   createObjTexture(
