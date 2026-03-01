@@ -132,7 +132,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
 
     this.map = new maplibregl.Map({
       container: this.mapContainer.nativeElement,
-      style: 'assets/work/style.dark.json',
+      style: 'assets/work/style.base.json',
       center: [-77.0369, 38.9073],
       zoom: 9,
       attributionControl: false,
