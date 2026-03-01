@@ -32,11 +32,17 @@
       @for (experience of experiences; track experience.position; let i = $index) {
 
         <section class="panel" [attr.data-index]="i" [style.--icon-url]="'url(' + experience.icon + ')'">
+          <div class="panel-icon"></div>
           <div class="panel-interior">
-            <h3>{{ experience.position }}</h3>
-            <p><strong>{{ experience.company }}</strong> — {{ experience.location }}</p>
-            <p>{{ experience.description }}</p>
-            <p>{{ experience.date }}</p>
+            <div class="panel-header">
+              <h3 class="panel-title">{{ experience.position }}</h3>
+              <span class="panel-date">{{ experience.date }}</span>
+            </div>
+            <p class="panel-company">
+              <strong>{{ experience.company }}</strong>
+              <span class="panel-location">— {{ experience.location }}</span>
+            </p>
+            <p class="panel-description">{{ experience.description }}</p>
           </div>
         </section>
       }

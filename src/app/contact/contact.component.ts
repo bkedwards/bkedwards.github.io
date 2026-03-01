@@ -349,15 +349,15 @@ export class ContactComponent {
     const colors = new Float32Array(this.simSize * this.simSize * 3);
     for (let i = 0; i < this.simSize * this.simSize; i++) {
       const i3 = i * 3;
-      const useGold = Math.random() < 0.25;
-      if (useGold) {
-        colors[i3 + 0] = 0.0;
-        colors[i3 + 1] = 1.0;
-        colors[i3 + 2] = 1.0;
+      const useCyan = Math.random() < 0.25;
+      if (useCyan) {
+        colors[i3 + 0] = 0.16; //0.0;
+        colors[i3 + 1] = 0.76; //1.0;
+        colors[i3 + 2] = 0.76; //1.0;
       } else {
-        colors[i3 + 0] = 1.0; // R
-        colors[i3 + 1] = 1.0; // G
-        colors[i3 + 2] = 1.0; // B
+        colors[i3 + 0] = 0.10; // 1.0; // R
+        colors[i3 + 1] = 0.11; // 1.0; // G
+        colors[i3 + 2] = 0.14; // 1.0; // B
       }
     }
     return colors;

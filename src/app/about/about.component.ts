@@ -6,18 +6,19 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  inject,
+  Injector,
   OnDestroy,
   QueryList,
   signal,
   ViewChild,
   WritableSignal,
   ViewChildren,
+  effect,
 } from '@angular/core';
 import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { CommonModule } from '@angular/common';
-
+import { ThemeService } from '../theme.service';
 
 export interface AboutSections {
   name: string;
@@ -81,7 +82,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       transform: this.composeTransform(
         new THREE.Vector3(0.0, 0.0, 0),
         new THREE.Euler(0, 0, 0),
-        new THREE.Vector3(1, 1, 1)
+        new THREE.Vector3(1, 1, 1),
       ),
     },
     {
@@ -89,7 +90,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       transform: this.composeTransform(
         new THREE.Vector3(0, -0.2, 0),
         new THREE.Euler(0, 0, 0),
-        new THREE.Vector3(0.8, 0.8, 0.8)
+        new THREE.Vector3(0.8, 0.8, 0.8),
       ),
     },
     {
@@ -97,7 +98,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       transform: this.composeTransform(
         new THREE.Vector3(0.0, 0.0, 0),
         new THREE.Euler(0, 0, 0),
-        new THREE.Vector3(0.03, 0.03, 0.03)
+        new THREE.Vector3(0.03, 0.03, 0.03),
       ),
     },
     {
@@ -105,7 +106,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       transform: this.composeTransform(
         new THREE.Vector3(0.25, -0.2, 0),
         new THREE.Euler(0, 0, 0),
-        new THREE.Vector3(0.75, 0.75, 0.75)
+        new THREE.Vector3(0.75, 0.75, 0.75),
       ),
     },
   ];
@@ -132,7 +133,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
   private simRenderTarget!: THREE.WebGLRenderTarget;
   private pointsMaterial!: THREE.ShaderMaterial;
   private simSize = 512;
-  private uProgress = 0;;
+  private uProgress = 0;
   private positionsTexture!: THREE.DataTexture;
   private globeTexture!: THREE.DataTexture;
   private uncTexture!: THREE.DataTexture;
@@ -144,7 +145,10 @@ export class AboutComponent implements AfterViewInit, OnInit {
   isLoading = signal(true);
   objLoader = new OBJLoader(this.loadingManager);
 
-  constructor() {
+  constructor(
+    private theme: ThemeService,
+    private injector: Injector,
+  ) {
     this.loadingManager.onProgress = (url, loaded, total) => {
       this.loadingProgress.set((loaded / total) * 100);
     };
@@ -188,7 +192,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
     this.currentSectionName.set(section.name);
 
     setTimeout(() => {
-      this.currentSection  = section.paragraph;
+      this.currentSection = section.paragraph;
       this.currentSectionName.set(section.name);
 
       this.isFadingOut.set(false);
@@ -206,7 +210,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.simMaterial.uniforms['uProgress'].value = Math.min(
         this.uProgress,
 
-        1.0
+        1.0,
       );
 
       if (this.uProgress < 1.0) requestAnimationFrame(animateMorph);
@@ -233,7 +237,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
   composeTransform(
     position?: THREE.Vector3,
     rotation?: THREE.Euler,
-    scale?: THREE.Vector3
+    scale?: THREE.Vector3,
   ): THREE.Matrix4 {
     const matrix = new THREE.Matrix4();
     const obj = new THREE.Object3D();
@@ -249,7 +253,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       (entries) => {
         this.aboutVisible = entries[0].isIntersecting;
       },
-      { threshold: 0.2 }
+      { threshold: 0.2 },
     );
 
     this.aboutObserver.observe(this.aboutRef.nativeElement);
@@ -266,7 +270,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       25,
       canvas.clientWidth / canvas.clientHeight,
       0.1,
-      1000
+      1000,
     );
     this.camera.position.set(0, 0, 6);
     this.onResize();
@@ -278,7 +282,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       1,
       -1,
       1 / Math.pow(2, 53),
-      1
+      1,
     );
     const positions = new Float32Array([
       -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
@@ -299,7 +303,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
         format: THREE.RGBAFormat,
         type: THREE.FloatType,
         depthBuffer: false,
-      }
+      },
     );
 
     const simGeom = new THREE.BufferGeometry();
@@ -310,15 +314,15 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
     Promise.all(
       this.paths.map(({ path, transform }) =>
-        this.createObjTexture(path, this.simSize * this.simSize, transform)
-      )
+        this.createObjTexture(path, this.simSize * this.simSize, transform),
+      ),
     ).then(([data1, data2, data3, data4]) => {
       this.globeTexture = new THREE.DataTexture(
         data1,
         this.simSize,
         this.simSize,
         THREE.RGBAFormat,
-        THREE.FloatType
+        THREE.FloatType,
       );
 
       this.uncTexture = new THREE.DataTexture(
@@ -326,7 +330,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
         this.simSize,
         this.simSize,
         THREE.RGBAFormat,
-        THREE.FloatType
+        THREE.FloatType,
       );
 
       this.codingTexture = new THREE.DataTexture(
@@ -334,15 +338,15 @@ export class AboutComponent implements AfterViewInit, OnInit {
         this.simSize,
         this.simSize,
         THREE.RGBAFormat,
-        THREE.FloatType
-      )
+        THREE.FloatType,
+      );
 
       this.helmetTexture = new THREE.DataTexture(
         data4,
         this.simSize,
         this.simSize,
         THREE.RGBAFormat,
-        THREE.FloatType
+        THREE.FloatType,
       );
 
       this.globeTexture.needsUpdate = true;
@@ -358,9 +362,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       this.simScene.add(simMesh);
 
       const geom = new THREE.BufferGeometry();
-      const colors = this.getColorArray();
 
-      geom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       geom.setAttribute('position', new THREE.BufferAttribute(particles, 3));
 
       const uvs = new Float32Array(this.simSize * this.simSize * 2);
@@ -370,10 +372,18 @@ export class AboutComponent implements AfterViewInit, OnInit {
       }
       geom.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
 
-      this.pointsMaterial = this.getPointsMaterial();
+      this.pointsMaterial = this.getPointsMaterial(this.theme.isLight());
 
       this.points = new THREE.Points(geom, this.pointsMaterial);
       this.scene.add(this.points);
+
+      effect(
+        () => {
+          const isLight = this.theme.isLight();
+          this.applyThemeToPoints(isLight);
+        },
+        { injector: this.injector },
+      );
 
       this.animate();
     });
@@ -409,59 +419,54 @@ export class AboutComponent implements AfterViewInit, OnInit {
     });
   }
 
-  getPointsMaterial(): THREE.ShaderMaterial {
+  getPointsMaterial(isLight: boolean): THREE.ShaderMaterial {
+    const color = isLight
+      ? new THREE.Color('#29C2C2') // dark grey for light mode
+      : new THREE.Color('#FFFFFF'); // white for dark mode
+
     return new THREE.ShaderMaterial({
       uniforms: {
         positions: { value: this.simRenderTarget.texture },
+        uColor: { value: color },
       },
       blending: THREE.NormalBlending,
       depthWrite: false,
       transparent: true,
       vertexColors: true,
       vertexShader: `
-          uniform sampler2D positions;
+      uniform sampler2D positions;
+      varying vec3 vColor;
 
-          varying vec3 vColor;
-
-          void main() {
-            vec3 pos = texture2D(positions, uv).xyz;
-
-            vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-            gl_Position = projectionMatrix * mvPosition;
-
-            gl_PointSize = 2.0;
-            vColor = color;
-          }`,
+      void main() {
+        vec3 pos = texture2D(positions, uv).xyz;
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+        gl_Position = projectionMatrix * mvPosition;
+        gl_PointSize = 2.0;
+        vColor = color;
+      }
+    `,
       fragmentShader: `
-          varying vec3 vColor;
-          void main() {
-            gl_FragColor = vec4(1.0,1.0,1.0, 1.0);
-          }`,
+      uniform vec3 uColor;
+      void main() {
+        gl_FragColor = vec4(uColor, 1.0);
+      }
+    `,
     });
   }
 
-  getColorArray(): Float32Array {
-    const colors = new Float32Array(this.simSize * this.simSize * 3);
-    for (let i = 0; i < this.simSize * this.simSize; i++) {
-      const i3 = i * 3;
-      const useGold = Math.random() < 0.25;
-      if (useGold) {
-        colors[i3 + 0] = 0.0;
-        colors[i3 + 1] = 1.0;
-        colors[i3 + 2] = 1.0;
-      } else {
-        colors[i3 + 0] = 1.0; // R
-        colors[i3 + 1] = 1.0; // G
-        colors[i3 + 2] = 1.0; // B
-      }
-    }
-    return colors;
+  private applyThemeToPoints(isLight: boolean) {
+    if (!this.pointsMaterial) return;
+    this.pointsMaterial.uniforms['uColor'].value.set(
+      isLight ? '#2B2F36' : '#FFFFFF',
+    );
+    // optional but safe:
+    this.pointsMaterial.needsUpdate = false; // uniforms don't require recompilation
   }
 
   createObjTexture(
     file: string,
     samples: number,
-    transform?: THREE.Matrix4
+    transform?: THREE.Matrix4,
   ): Promise<Float32Array> {
     return new Promise((resolve, reject) => {
       const data = new Float32Array(samples * 4);
@@ -473,7 +478,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
             const scale = 1.4;
             child.geometry.computeBoundingBox();
             child.geometry.applyMatrix4(
-              new THREE.Matrix4().makeScale(scale, scale, scale)
+              new THREE.Matrix4().makeScale(scale, scale, scale),
             );
 
             const edgeGeometry = new THREE.EdgesGeometry(child.geometry, 1);
@@ -483,12 +488,12 @@ export class AboutComponent implements AfterViewInit, OnInit {
               const a = new THREE.Vector3(
                 edgePos[i],
                 edgePos[i + 1],
-                edgePos[i + 2]
+                edgePos[i + 2],
               );
               const b = new THREE.Vector3(
                 edgePos[i + 3],
                 edgePos[i + 4],
-                edgePos[i + 5]
+                edgePos[i + 5],
               );
               allEdges.push([a, b]);
             }

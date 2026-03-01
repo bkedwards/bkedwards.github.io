@@ -116,20 +116,11 @@
   background: var(--color-surface);
   width: 100%;
   padding: 0.5rem 1rem 1rem 1rem;
+  filter: brightness(98%);
 }
 
-.panel::after {
-  content: "";
-  position: absolute;
-  width: 4rem;
-  height: 4rem;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%); /* center horizontally + lift half outside */
-  border: 0.3rem solid var(--color-primary);
-  border-radius: 50%;
-  background: var(--icon-url) center / 70% no-repeat, var(--color-bg);
-  z-index: 7;
+.panel-interior:hover {
+  filter: brightness(100%);
 }
 
 .panel::before {
@@ -142,53 +133,84 @@
   background:
     /* TOP edge with a gap in the middle */
     linear-gradient(to right,
-      rgba(var(--color-primary-rgb), 0.75) 0%,
-      rgba(var(--color-primary-rgb), 0.75) 8%,
+      rgba(var(--color-primary-rgb), 1.00) 0%,
+      rgba(var(--color-primary-rgb), 1.00) 8%,
       rgba(var(--color-primary-rgb), 0.0) 8%,
       rgba(var(--color-primary-rgb), 0.0) 16%,
-      rgba(var(--color-primary-rgb), 0.75) 16%,
-      rgba(var(--color-primary-rgb), 0.75) 65%,
-      rgba(var(--color-primary-rgb), 0.75) 65%,
-      rgba(var(--color-primary-rgb), 0.75) 100%
+      rgba(var(--color-primary-rgb), 1.00) 16%,
+      rgba(var(--color-primary-rgb), 1.00) 65%,
+      rgba(var(--color-primary-rgb), 1.00) 65%,
+      rgba(var(--color-primary-rgb), 1.00) 100%
     ) top / 100% 0.3rem no-repeat,
 
     /* BOTTOM edge with a gap in the middle */
     linear-gradient(to right,
-      rgba(var(--color-primary-rgb), 0.75) 0%,
-      rgba(var(--color-primary-rgb), 0.75) 35%,
-      rgba(var(--color-primary-rgb), 0.75) 84%,
+      rgba(var(--color-primary-rgb), 1.00) 0%,
+      rgba(var(--color-primary-rgb), 1.00) 35%,
+      rgba(var(--color-primary-rgb), 1.00) 84%,
       rgba(var(--color-primary-rgb), 0.0) 84%,
       rgba(var(--color-primary-rgb), 0.0) 92%,
-      rgba(var(--color-primary-rgb), 0.75) 92%,
-      rgba(var(--color-primary-rgb), 0.75) 100%
+      rgba(var(--color-primary-rgb), 1.00) 92%,
+      rgba(var(--color-primary-rgb), 1.00) 100%
     ) bottom / 100% 0.3rem no-repeat,
 
     /* LEFT edge with a gap in the middle */
     linear-gradient(to bottom,
-      rgba(var(--color-primary-rgb), 0.75) 0%,
-      rgba(var(--color-primary-rgb), 0.75) 35%,
-      rgba(var(--color-primary-rgb), 0.75) 80%,
+      rgba(var(--color-primary-rgb), 1.00) 0%,
+      rgba(var(--color-primary-rgb), 1.00) 35%,
+      rgba(var(--color-primary-rgb), 1.00) 80%,
       rgba(var(--color-primary-rgb), 0.0) 80%,
       rgba(var(--color-primary-rgb), 0.0) 92%,
-      rgba(var(--color-primary-rgb), 0.75) 92%,
-      rgba(var(--color-primary-rgb), 0.75) 100%
+      rgba(var(--color-primary-rgb), 1.00) 92%,
+      rgba(var(--color-primary-rgb), 1.00) 100%
     ) left / 0.3rem 100% no-repeat,
 
     /* RIGHT edge with a gap in the middle */
     linear-gradient(to bottom,
-      rgba(var(--color-primary-rgb), 0.75) 0%,
-      rgba(var(--color-primary-rgb), 0.75) 8%,
+      rgba(var(--color-primary-rgb), 1.00) 0%,
+      rgba(var(--color-primary-rgb), 1.00) 8%,
       rgba(var(--color-primary-rgb), 0.0) 8%,
       rgba(var(--color-primary-rgb), 0.0) 20%,
-      rgba(var(--color-primary-rgb), 0.75) 20%,
-      rgba(var(--color-primary-rgb), 0.75) 65%,
-      rgba(var(--color-primary-rgb), 0.75) 65%,
-      rgba(var(--color-primary-rgb), 0.75) 100%
+      rgba(var(--color-primary-rgb), 1.00) 20%,
+      rgba(var(--color-primary-rgb), 1.00) 65%,
+      rgba(var(--color-primary-rgb), 1.00) 65%,
+      rgba(var(--color-primary-rgb), 1.00) 100%
     ) right / 0.3rem 100% no-repeat;
 
   filter: drop-shadow(0 0 6px rgba(var(--color-primary-rgb), 0.25));
 }
 
+/* Icon container — positioned at the top-center of the panel */
+.panel-icon {
+  position: absolute;
+  width: 4rem;
+  height: 4rem;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  z-index: 7;
+}
+
+/* Border circle — no mask so it stays visible */
+.panel-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 0.3rem solid var(--color-primary);
+  background: var(--color-bg);
+}
+
+/* Masked icon on top — uses color-text so it flips with light/dark mode */
+.panel-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-text);
+  -webkit-mask: var(--icon-url) center / 70% no-repeat;
+  mask: var(--icon-url) center / 70% no-repeat;
+}
 
 .timeline {
   position: absolute;
@@ -250,4 +272,44 @@
 
 .panels-container::-webkit-scrollbar {
   display: none; /* Chrome/Safari */
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.panel-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.panel-date {
+  font-size: clamp(0.75rem, 2vw, 1.25rem);
+  color: var(--color-primary);
+  white-space: nowrap;
+}
+
+.panel-company {
+  margin: 0;
+  font-size: clamp(1.0rem, 2vw, 1.25rem);
+  color: var(--color-text);
+}
+
+.panel-location {
+  opacity: 0.6;
+  font-weight: 400;
+}
+
+.panel-description {
+  margin: 1rem 0 0 0;
+  font-size: 1.25rem;
+  line-height: 1.5;
+  opacity: 0.75;
+  color: var(--color-text);
 }

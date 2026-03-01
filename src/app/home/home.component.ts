@@ -31,10 +31,10 @@ export class HomeComponent implements AfterViewInit {
       name: 'Projects',
       active: false,
     },
-    {
-      name: 'Skills',
-      active: false,
-    },
+    // {
+    //   name: 'Skills',
+    //   active: false,
+    // },
     {
       name: 'Contact',
       active: false,
