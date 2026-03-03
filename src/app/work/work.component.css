@@ -20,6 +20,7 @@
   display: flex;
   min-height: 0;   /* keep */
   height: 0;       /* IMPORTANT: forces it to take remaining height in some layouts */
+    overflow: hidden;       /* ADD: contains the scroll within this element */
 }
 
 .map-wrapper {
@@ -103,7 +104,8 @@
   position: relative;
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  overflow-y: auto;   /* was: overflow: hidden */
+  overflow-x: hidden;
 
   padding: 35vh 0;
   box-sizing: border-box;
@@ -121,17 +123,15 @@
   width: var(--panel-col);
   max-width: none; /* handled by --panel-col */
 
-  min-height: 28vh;
+  min-width: 0;         /* ADD: prevents flex blowout */
+  height: auto;  
   padding: 1rem;
-  display: flex;
+  display: block;
   justify-content: center;
 
   color: var(--color-text);
 
   background: var(--color-bg);
-}
-
-.panel {
   position: relative;
   z-index: 2;                
 }
@@ -141,6 +141,9 @@
   width: 100%;
   padding: 0.5rem 1rem 1rem 1rem;
   filter: brightness(98%);
+
+  height: auto;          /* ADD: explicit auto height */
+  overflow: visible;     /* ADD: ensure nothing clips children */
 }
 
 .panel-interior:hover {
