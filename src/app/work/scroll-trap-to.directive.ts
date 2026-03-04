@@ -13,7 +13,7 @@ import {
 })
 export class ScrollTrapToDirective implements AfterViewInit, OnDestroy {
   @Input('scrollTrapTo') target!: HTMLElement; // the inner scroller (panels-container)
-  @Input() trapThreshold = 0.90; // “fully in view” tuning
+  @Input() trapThreshold = 0.95; // “fully in view” tuning
 
   private active = false;
   private io?: IntersectionObserver;
@@ -27,7 +27,7 @@ export class ScrollTrapToDirective implements AfterViewInit, OnDestroy {
           {
             this.active = entry.intersectionRatio >= this.trapThreshold;
           },
-        { threshold: [0.80,0.85,0.90, 0.95, 1] }
+        { threshold: [0.90,0.92, 0.97, 0.99, 1] }
       );
       this.io.observe(this.host.nativeElement);
 

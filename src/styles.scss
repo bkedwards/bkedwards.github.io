@@ -36,6 +36,7 @@ body.light-theme {
 :root {
   --color-bg: #121212;
   --color-text: #E6F7FF;
+  --color-text-rgb: 230, 247, 255;
   --color-surface: #333333;
   --color-primary: #00EFFF;
   --color-primary-rgb: 0, 255, 255;
@@ -46,12 +47,16 @@ body.light-theme {
   --color-error: #FF0000;
   --color-button: #1A1D23;
   --color-timeline: gray;
+
+  --cube-size: clamp(12rem, 20vw, 20rem);
+  --cube-half: calc(var(--cube-size) / 2);
 }
 
 /* Light Mode Overrides */
 .light-theme {
   --color-bg: #e6f8ffff;
   --color-text: #1A1D23;
+  --color-text-rgb: 26, 29, 35;
   --color-primary: #29C2C2; 
   --color-primary-rgb: 41, 194, 194;
   --color-surface: #FFFFFF;

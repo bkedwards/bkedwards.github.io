@@ -1,6 +1,14 @@
 import { Component, ViewChild, ElementRef, signal } from '@angular/core';
 import * as THREE from 'three';
 import emailjs from 'emailjs-com';
+import {
+  faAngular,
+  faHtml5,
+  faCss3,
+  faReact,
+  faJs,
+  faGitAlt,
+} from '@fortawesome/free-brands-svg-icons';
 
 @Component({
   selector: 'app-contact',
@@ -9,6 +17,13 @@ import emailjs from 'emailjs-com';
   styleUrl: './contact.component.css',
 })
 export class ContactComponent {
+  faAngular = faAngular;
+  faHtml5 = faHtml5;
+  faCss3 = faCss3;
+  faReact = faReact;
+  faJs = faJs;
+  faGitAlt = faGitAlt;
+
   ngAfterViewInit(): void {
     this.initContact();
     window.addEventListener('mousemove', this.updateMousePosition);
@@ -31,20 +46,24 @@ export class ContactComponent {
     event.preventDefault();
     this.isSending.set(true);
     emailjs
-        .sendForm(
-            'service_4wl205l', 'template_g2rnp8p',
-            event.target as HTMLFormElement, 'SQCU20t7kVZpEjRV-')
-        .then(
-            () => {
-              this.sendEmailTriggered.set(true);
-              this.emailSuccess.set(true);
-              this.isSending.set(false);
-            },
-            (error) => {
-              this.sendEmailTriggered.set(true);
-              this.isSending.set(false);
-              alert('Failed to send email. Please try again.');
-            });
+      .sendForm(
+        'service_4wl205l',
+        'template_g2rnp8p',
+        event.target as HTMLFormElement,
+        'SQCU20t7kVZpEjRV-',
+      )
+      .then(
+        () => {
+          this.sendEmailTriggered.set(true);
+          this.emailSuccess.set(true);
+          this.isSending.set(false);
+        },
+        (error) => {
+          this.sendEmailTriggered.set(true);
+          this.isSending.set(false);
+          alert('Failed to send email. Please try again.');
+        },
+      );
   }
 
   @ViewChild('canvas', { static: true })
@@ -71,7 +90,7 @@ export class ContactComponent {
     v: THREE.Vector3,
     size: number,
     data: Float32Array,
-    offset: number
+    offset: number,
   ): any {
     v.set(Math.random() * 2 - 1, Math.random() * 2 - 1, Math.random() * 2 - 1);
     if (v.length() > 1) return this.getPoint(v, size, data, offset);
@@ -355,7 +374,7 @@ export class ContactComponent {
         colors[i3 + 1] = 0.76; //1.0;
         colors[i3 + 2] = 0.76; //1.0;
       } else {
-        colors[i3 + 0] = 0.10; // 1.0; // R
+        colors[i3 + 0] = 0.1; // 1.0; // R
         colors[i3 + 1] = 0.11; // 1.0; // G
         colors[i3 + 2] = 0.14; // 1.0; // B
       }
@@ -437,10 +456,10 @@ export class ContactComponent {
     this.mouseRayDirection.copy(this.raycaster.ray.direction);
 
     this.simMaterial.uniforms['uMouseRayOrigin'].value.copy(
-      this.mouseRayOrigin
+      this.mouseRayOrigin,
     );
     this.simMaterial.uniforms['uMouseRayDir'].value.copy(
-      this.mouseRayDirection
+      this.mouseRayDirection,
     );
   };
 
@@ -449,7 +468,7 @@ export class ContactComponent {
       (entries) => {
         this.contactVisible = entries[0].isIntersecting;
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     this.contactObserver.observe(this.contactRef.nativeElement);
@@ -467,7 +486,7 @@ export class ContactComponent {
       25, // Match React camera FOV
       canvas.clientWidth / canvas.clientHeight,
       0.1,
-      1000
+      1000,
     );
 
     const aspect = canvas.clientWidth / canvas.clientHeight;
@@ -482,7 +501,7 @@ export class ContactComponent {
       1,
       -1,
       1 / Math.pow(2, 53),
-      1
+      1,
     );
     const positions = new Float32Array([
       -1, -1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, 1, 0, -1, 1, 0,
@@ -503,7 +522,7 @@ export class ContactComponent {
         format: THREE.RGBAFormat,
         type: THREE.FloatType,
         depthBuffer: false,
-      }
+      },
     );
 
     const simGeom = new THREE.BufferGeometry();
@@ -514,7 +533,7 @@ export class ContactComponent {
 
     const sphereData = this.getSphere(
       this.simSize * this.simSize,
-      this.simSize / 4
+      this.simSize / 4,
     );
 
     const positionsTexture = new THREE.DataTexture(
@@ -522,7 +541,7 @@ export class ContactComponent {
       this.simSize,
       this.simSize,
       THREE.RGBAFormat,
-      THREE.FloatType
+      THREE.FloatType,
     );
     positionsTexture.needsUpdate = true;
 

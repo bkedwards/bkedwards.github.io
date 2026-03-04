@@ -200,3 +200,86 @@ input::placeholder {
   aspect-ratio: 1; /* Forces square ratio */
   display: block;
 }
+
+.stage-cube-cont {
+  width: 60%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1000px;
+}
+
+.cubespinner {
+  position: relative;
+  width: var(--cube-size);
+  height: var(--cube-size);
+
+  transform-style: preserve-3d;
+
+  animation: cubeRotate 12s linear infinite;
+
+  will-change: transform;
+}
+
+/* cube faces */
+
+.cubespinner div {
+  position: absolute;
+  width: var(--cube-size);
+  height: var(--cube-size);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border: 1px solid rgba(var(--color-text-rgb), 0.15);
+  background: rgba(255,255,255,0.05);
+
+
+  box-shadow: 0 0 10px rgba(var(--color-text-rgb), 0.60);
+}
+
+/* icon size */
+
+.cubespinner i {
+  font-size: calc(3 * var(--cube-half) / 4);
+}
+
+/* faces */
+
+.face1 { transform: translateZ(var(--cube-half)); }
+
+.face2 { transform: rotateY(90deg) translateZ(var(--cube-half)); }
+
+.face3 { transform: rotateY(180deg) translateZ(var(--cube-half)); }
+
+.face4 { transform: rotateY(-90deg) translateZ(var(--cube-half)); }
+
+.face5 { transform: rotateX(90deg) translateZ(var(--cube-half)); }
+
+.face6 { transform: rotateX(-90deg) translateZ(var(--cube-half)); }
+
+/* smooth continuous spin */
+
+@keyframes cubeRotate {
+  0% {
+    transform: rotateX(-20deg) rotateY(0deg);
+  }
+
+  25% {
+    transform: rotateX(20deg) rotateY(90deg);
+  }
+
+  50% {
+    transform: rotateX(-20deg) rotateY(180deg);
+  }
+
+  75% {
+    transform: rotateX(20deg) rotateY(270deg);
+  }
+
+  100% {
+    transform: rotateX(-20deg) rotateY(360deg);
+  }
+}
