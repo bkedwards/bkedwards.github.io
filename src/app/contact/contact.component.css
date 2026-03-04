@@ -23,7 +23,7 @@
   padding: 2.0rem;
   border-radius: 2rem;
   background: var(--color-surface);
-  box-shadow: 0 0 2rem rgba(0, 0, 0, 0.4);
+  box-shadow: var(--shadow-card);
   filter: brightness(98%);
   justify-content: flex-start;
   gap: 1rem;
@@ -76,11 +76,6 @@
   color: var(--color-primary);
 }
 
-.contact-box h3 {
-  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
-  color: var(--color-surface-highlight);
-}
-
 .contact-box form {
   display: flex;
   flex-direction: column;
@@ -92,16 +87,21 @@
 }
 
 .contact-box textarea {
+  border: none;
   outline: none;
   padding: 0.75rem;
-  border-radius: 0.5rem;
+  border-radius: 0.8rem;
   font-size: clamp(0.75rem, 1.25vw, 1.25rem);
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue',
                Helvetica, Arial, sans-serif;
-  background-color: var(--color-surface);
+  background-color: var(--color-bg);
   color: var(--color-text);
   resize: none;
-  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-inset);
+}
+
+.contact-box textarea:hover {
+  scale: 1.01;
 }
 
 textarea::placeholder,
@@ -164,7 +164,7 @@ input::placeholder {
 }
 
 .contact-box button {
-  padding: 0.75rem 3rem;
+  padding: 0.5rem 2.5rem;
   font-size: clamp(0.75rem, 1.25vw, 1.25rem);
   margin-top: 1rem;
   margin-left: 0;
@@ -172,16 +172,18 @@ input::placeholder {
   align-self: flex-start;
   background-color: var(--color-primary);
   color: var(--color-button);
-  border-radius: 1rem;
+  border-radius: 2rem;
   cursor: pointer;
+  font-family: 'Kdam Thmor Pro', sans-serif;
   transition: background-color 0.2s ease;
   border: none;
   min-width: 4rem;
-  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1), 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-button);
 }
 
 .contact-box button:hover {
-  filter: brightness(90%);
+  scale: 1.03;
+  filter: brightness(105%);
 }
 
 .canvas-side {

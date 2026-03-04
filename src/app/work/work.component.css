@@ -132,21 +132,22 @@
 
   background: var(--color-bg);
   position: relative;
-  z-index: 2;                
+  z-index: 2;              
+}
+
+.panel:hover {
+  filter: brightness(100%);
+  scale: 1.03;
 }
 
 .panel-interior {
   background: var(--color-surface);
   width: 100%;
-  padding: 0.5rem 1rem 1rem 1rem;
+  padding: 2rem 1rem 1rem 1rem;
   filter: brightness(98%);
 
   height: auto;          /* ADD: explicit auto height */
   overflow: visible;     /* ADD: ensure nothing clips children */
-}
-
-.panel-interior:hover {
-  filter: brightness(100%);
 }
 
 .panel::before {
@@ -209,8 +210,8 @@
 /* Icon container — positioned at the top-center of the panel */
 .panel-icon {
   position: absolute;
-  width: 4rem;
-  height: 4rem;
+  width: 5rem;
+  height: 5rem;
   top: 0;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -311,13 +312,12 @@
 .panel-title {
   margin: 0;
   font-size: clamp(1.5rem, 2vw, 2rem);
-  font-weight: 700;
-  color: var(--color-text);
+  color: var(--color-primary);
 }
 
 .panel-date {
   font-size: clamp(0.75rem, 2vw, 1.25rem);
-  color: var(--color-primary);
+  color: var(--color-text);
   white-space: nowrap;
 }
 
@@ -334,8 +334,8 @@
 
 .panel-description {
   margin: 1rem 0 0 0;
-  font-size: 1.25rem;
+  font-size: clamp(0.75rem, 1.35vw, 1.35rem);
   line-height: 1.5;
-  opacity: 0.75;
+  opacity: 0.8;
   color: var(--color-text);
 }

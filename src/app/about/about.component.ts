@@ -41,19 +41,18 @@ export class AboutComponent implements AfterViewInit, OnInit {
                   My work spans the intersection of artificial intelligence, computer graphics, finance,
                   and more. 
                   <br><br>
-                  Whether developing geospatial localization without GPS for my college campus at UNC or 
+                  Whether developing an interactive financial planning tool using AI-powered insights or 
                   building advanced VR/AR visualizations using hierarchical 3D Gaussians, I'm always 
                   trying to push the boundaries and devise unique solutions.`,
     },
     {
-      name: 'About Me',
+      name: 'About',
       paragraph: `I'm currently a senior at the University of North Carolina at Chapel Hill, Class of 2026, and pursuing 
-                  a dual degree in Computer Science and Mathematics with a 3.96 GPA. I'm actively involved 
-                  in several student organizations, including the Carolina Analytics & Data Science (CADS) 
-                  club, the Carolina Augmented and Virtual Reality (CARVR) group, and the Sustainable 
-                  Business Club. <br><br>
-                  
-                  These experiences reflect my passion for technology, data-driven innovation, and visualization.`,
+                  a dual degree in Computer Science and Mathematics with a 3.96 GPA.
+                  <br><br>
+                  After graduation, I will be working as a Forward Deployed Software Engineer for Palantir Technologies 
+                  in Washington D.C.
+                  `,
     },
     {
       name: 'Passions',
@@ -67,7 +66,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
     },
     {
       name: 'Hobbies',
-      paragraph: `Outside of academics, I enjoy drawing and painting, and spending time with friends and family. 
+      paragraph: `Outside of academics, I enjoy reading, and spending time with friends and family. 
                   <br><br>
                   
                   A lifelong hockey fan, I love both playing the game and watching my favorite team, the 
@@ -194,7 +193,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
 
     if (section.name === 'Introduction') {
       this.simMaterial.uniforms['targetPositions'].value = this.globeTexture;
-    } else if (section.name === 'About Me') {
+    } else if (section.name === 'About') {
       this.simMaterial.uniforms['targetPositions'].value = this.uncTexture;
     } else if (section.name === 'Hobbies') {
       this.simMaterial.uniforms['targetPositions'].value = this.helmetTexture;
@@ -231,7 +230,7 @@ export class AboutComponent implements AfterViewInit, OnInit {
       else {
         if (name === 'Introduction') {
           this.simRenderTarget.texture = this.globeTexture;
-        } else if (name === 'About Me') {
+        } else if (name === 'About') {
           this.simRenderTarget.texture = this.uncTexture;
         } else if (name === 'Hobbies') {
           this.simRenderTarget.texture = this.helmetTexture;

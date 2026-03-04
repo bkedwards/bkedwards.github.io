@@ -37,10 +37,10 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
   experiences: Experience[] = [
     {
       icon: '/assets/work/pltr.png',
-      date: 'Incoming - July 2026',
+      date: 'Incoming - 07/2026',
       position: 'Forward Deployed Engineer',
       company: 'Palantir Technologies',
-      description: 'I am an incoming US-GOV FDSE for Palantir',
+      description: 'I am an incoming US-GOV FDSE for Palantir.',
       skills: 'Software Engineering, Problem Decomposition',
       location: 'Washington-DC',
       camera: {
@@ -52,7 +52,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/deutsche.png',
-      date: 'June 2025 - August 2025',
+      date: '06/25 - 08/25',
       position: 'Technology & Data Intern',
       company: 'Deutsche Bank',
       description:
@@ -68,7 +68,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/oldwell.png',
-      date: 'May 2024 - Present',
+      date: '05/24 - Present',
       position: 'Research Assistant',
       company: 'Experimental Engineering Lab (EEL)',
       description:
@@ -84,7 +84,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/carolina.png',
-      date: 'August 2022 - May 2025',
+      date: '08/22 - 05/25',
       position: 'President of Operations',
       company: 'UNC Ice Hockey',
       description:
@@ -100,7 +100,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/corvid.png',
-      date: 'May 2024 - August 2024',
+      date: '05/24 - 08/24',
       position: 'Extended Reality Intern',
       company: 'Corvid Technologies',
       description:
@@ -317,7 +317,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
           labelHalo: 'rgba(236,250,255,0.95)',
         }
       : {
-          background: '#0E0E0E',
+          background: '#1A1A1A',
           landcover: '#111418',
           water: '#346666',
           waterShadow: '#346666',

@@ -34,7 +34,7 @@ body.light-theme {
 }
 
 :root {
-  --color-bg: #121212;
+  --color-bg: #1A1A1A;
   --color-text: #E6F7FF;
   --color-text-rgb: 230, 247, 255;
   --color-surface: #333333;
@@ -48,6 +48,13 @@ body.light-theme {
   --color-button: #1A1D23;
   --color-timeline: gray;
 
+  --shadow-inset: inset 0.2rem 0.2rem 0.8rem rgba(0, 0, 0, 0.8), inset -0.2rem -0.2rem 0.8rem rgba(255, 255, 255, 0.06);
+  --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.9), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.06);
+  --shadow-card: 0.2rem 0.2rem 1rem rgba(0, 0, 0, 0.8), -0.15rem -0.15rem 0.8rem rgba(255, 255, 255, 0.04);
+  --shadow-button: 0.15rem 0.15rem 0.5rem rgba(0, 0, 0, 0.8), -0.1rem -0.1rem 0.4rem rgba(255, 255, 255, 0.02);
+
+
+
   --cube-size: clamp(12rem, 20vw, 20rem);
   --cube-half: calc(var(--cube-size) / 2);
 }
@@ -59,11 +66,16 @@ body.light-theme {
   --color-text-rgb: 26, 29, 35;
   --color-primary: #29C2C2; 
   --color-primary-rgb: 41, 194, 194;
-  --color-surface: #FFFFFF;
+  --color-surface: #f4fbff;
   --color-surface-highlight: #FFFFFF;
   --color-accent: #e3fffe;
   --color-primary-highlight: #00AAAA;
   --color-text-dark: #444444;
+
+  --shadow-inset: inset 0.2rem 0.2rem 0.8rem rgba(0, 0, 0, 0.15), inset -0.2rem -0.2rem 0.8rem rgba(255, 255, 255, 0.95);
+  --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.4), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.8);
+  --shadow-card: 0.2rem 0.2rem 1rem rgba(0, 0, 0, 0.12), -0.15rem -0.15rem 0.8rem rgba(255, 255, 255, 0.8);
+  --shadow-button: 0.15rem 0.15rem 0.5rem rgba(0, 0, 0, 0.2), -0.1rem -0.1rem 0.4rem rgba(255, 255, 255, 0.8);
 }
 
 /* Base Styles */

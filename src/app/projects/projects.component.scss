@@ -49,12 +49,12 @@
       padding: 2rem;
       transform: scale(0);
       opacity: 0;
-      border-radius: 15px;
+      border-radius: 2rem;
       display: flex;
       flex-direction: column;
       filter: brightness(98%);
       justify-content: space-between;
-      box-shadow: 0 0 2rem rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-card);
       overflow: auto;
     }
 
@@ -86,13 +86,14 @@
       z-index: 3;
 
       .slider-card {
-        opacity: 1;
+        opacity: 1.0;
         transform: translateX(0%) scale(1);
         cursor: grab;
       }
 
       .slider-card:hover {
         filter: brightness(100%);
+        scale: 1.01;
       }
     }
 
@@ -124,10 +125,29 @@
 
 }
 
+.slider-image-wrapper {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
 .slider-image {
   width: 100%;
-  border-radius: 10px;
+  display: block;
+  border-radius: 1rem;
 }
+
+.slider-image-wrapper::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-inset-image);
+  pointer-events: none; /* lets clicks pass through to the image */
+}
+
 
 .slider-title {
   font-size: clamp(1.5rem, 2vw, 2rem);
@@ -136,6 +156,7 @@
 
 .slider-description {
   font-size: clamp(0.75rem, 1.35vw, 1.35rem);
+  opacity: 0.8;
   margin: 0rem 0 1rem;
   color: var(--color-text)
 }
@@ -143,16 +164,18 @@
 .slider-button {
   align-self: flex-start;;
   background: var(--color-primary);
-  border-radius: 50px;
+  border-radius: 2rem;
   justify-content: center;
   text-decoration: none;
   color: var(--color-button);
-  padding: 0.5rem 1rem;
-  font-size: clamp(0.75rem, 1.35vw, 1.35rem);
+  padding: 0.5rem 2.5rem;
+  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
+  box-shadow: var(--shadow-button);
 }
 
 .slider-button:hover {
-  background-color: var(--color-primary-highlight);
+  scale: 1.03;
+  filter: brightness(105%);
 }
 
 .left-arrow,
@@ -202,6 +225,10 @@
   margin-left: 0.5rem;
   font-size: clamp(0.8rem, 1.5vw, 1.5rem);
   font-weight: bolder;
+}
+
+.experience-skills-icon {
+  font-size: clamp(0.8rem, 1.5vw, 1.5rem);
 }
 
 .pagination {

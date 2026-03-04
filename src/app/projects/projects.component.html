@@ -18,7 +18,9 @@
             }"
           >
             <div class="slider-card" (panright)="showPrev(i)" (panleft)="showNext(i)" >
-              <img [src]="project.image" alt="Project Photo" class="slider-image">
+              <div class="slider-image-wrapper">
+                <img [src]="project.image" alt="Project Photo" class="slider-image">
+              </div>
               <span class="slider-title"><strong>{{project.title}}</strong></span>
               <p class="slider-description">{{project.description}}</p>
               <div class="project-skills-container">

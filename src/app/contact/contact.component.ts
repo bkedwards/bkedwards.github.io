@@ -25,10 +25,10 @@ export class ContactComponent {
   faGitAlt = faGitAlt;
 
   ngAfterViewInit(): void {
-    this.initContact();
-    window.addEventListener('mousemove', this.updateMousePosition);
+    // this.initContact();
+    // window.addEventListener('mousemove', this.updateMousePosition);
 
-    window.addEventListener('resize', this.onResize);
+    // window.addEventListener('resize', this.onResize);
   }
 
   ngOnDestroy(): void {
