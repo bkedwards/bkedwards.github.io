@@ -131,34 +131,28 @@
   overflow: hidden;
   display: inline-block;
   width: 100%;
+  box-shadow: var(--shadow-button);
 }
 
 .slider-image {
   width: 100%;
   display: block;
   border-radius: 1rem;
-}
 
-.slider-image-wrapper::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 1rem;
-  box-shadow: var(--shadow-inset-image);
-  pointer-events: none; /* lets clicks pass through to the image */
 }
 
 
 .slider-title {
   font-size: clamp(1.5rem, 2vw, 2rem);
-  margin: 0rem 0 0rem;
+  margin-top: 1rem;
 }
 
 .slider-description {
   font-size: clamp(0.75rem, 1.35vw, 1.35rem);
   opacity: 0.8;
-  margin: 0rem 0 1rem;
-  color: var(--color-text)
+  margin-top: 1rem;
+  color: var(--color-text);
+  border-radius: 1rem;
 }
 
 .slider-button {
@@ -168,9 +162,10 @@
   justify-content: center;
   text-decoration: none;
   color: var(--color-button);
+  margin-top: 1rem;
   padding: 0.5rem 2.5rem;
   font-size: clamp(0.75rem, 1.25vw, 1.25rem);
-  box-shadow: var(--shadow-button);
+  box-shadow: var(--shadow-card);
 }
 
 .slider-button:hover {
@@ -183,7 +178,7 @@
   position: absolute;
   top: 50%;
 
-  color: white;
+  color: var(--color-text);
   cursor: pointer;
   z-index: 10;
   width: 3rem;
@@ -217,18 +212,20 @@
   color: var(--color-text);
   display: flex;
   flex-direction: row;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-button);
 }
 
 .project-skills {
   margin-left: 0.5rem;
-  font-size: clamp(0.8rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
   font-weight: bolder;
 }
 
 .experience-skills-icon {
-  font-size: clamp(0.8rem, 1.5vw, 1.5rem);
+  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
 }
 
 .pagination {

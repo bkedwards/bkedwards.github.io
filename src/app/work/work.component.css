@@ -76,7 +76,7 @@
   flex: 1 1 50%;
   min-width: 0;
   height: 100%;
-  --panel-col: min(700px, 35vw);
+  --panel-col: 35vw;
 }
 
 .panels-wrapper::before,
@@ -132,7 +132,7 @@
 
   background: var(--color-bg);
   position: relative;
-  z-index: 2;              
+  z-index: 2;           
 }
 
 .panel:hover {
@@ -143,11 +143,14 @@
 .panel-interior {
   background: var(--color-surface);
   width: 100%;
-  padding: 2rem 1rem 1rem 1rem;
+  padding: 2rem 2rem 2rem 2rem;
   filter: brightness(98%);
+  border-radius: 2rem;
 
   height: auto;          /* ADD: explicit auto height */
   overflow: visible;     /* ADD: ensure nothing clips children */
+
+  box-shadow: var(--shadow-card);
 }
 
 .panel::before {
@@ -157,8 +160,7 @@
   pointer-events: none;
   z-index: 3;                    /* above panel content/background */
 
-  background:
-    /* TOP edge with a gap in the middle */
+  /* background:
     linear-gradient(to right,
       rgba(var(--color-primary-rgb), 1.00) 0%,
       rgba(var(--color-primary-rgb), 1.00) 8%,
@@ -170,7 +172,6 @@
       rgba(var(--color-primary-rgb), 1.00) 100%
     ) top / 100% 0.3rem no-repeat,
 
-    /* BOTTOM edge with a gap in the middle */
     linear-gradient(to right,
       rgba(var(--color-primary-rgb), 1.00) 0%,
       rgba(var(--color-primary-rgb), 1.00) 35%,
@@ -181,7 +182,6 @@
       rgba(var(--color-primary-rgb), 1.00) 100%
     ) bottom / 100% 0.3rem no-repeat,
 
-    /* LEFT edge with a gap in the middle */
     linear-gradient(to bottom,
       rgba(var(--color-primary-rgb), 1.00) 0%,
       rgba(var(--color-primary-rgb), 1.00) 35%,
@@ -192,7 +192,6 @@
       rgba(var(--color-primary-rgb), 1.00) 100%
     ) left / 0.3rem 100% no-repeat,
 
-    /* RIGHT edge with a gap in the middle */
     linear-gradient(to bottom,
       rgba(var(--color-primary-rgb), 1.00) 0%,
       rgba(var(--color-primary-rgb), 1.00) 8%,
@@ -202,21 +201,20 @@
       rgba(var(--color-primary-rgb), 1.00) 65%,
       rgba(var(--color-primary-rgb), 1.00) 65%,
       rgba(var(--color-primary-rgb), 1.00) 100%
-    ) right / 0.3rem 100% no-repeat;
+    ) right / 0.3rem 100% no-repeat; */
 
-  filter: drop-shadow(0 0 6px rgba(var(--color-primary-rgb), 0.25));
+
+
 }
 
 /* Icon container — positioned at the top-center of the panel */
 .panel-icon {
-  position: absolute;
-  width: 5rem;
-  height: 5rem;
-  top: 0;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
   border-radius: 50%;
   z-index: 7;
+  box-shadow: var(--shadow-button);
 }
 
 /* Border circle — no mask so it stays visible */
@@ -304,9 +302,15 @@
 .panel-header {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: flex-start;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.panel-header-info {
+  display: flex;
+  flex-direction: column;
+
 }
 
 .panel-title {
@@ -316,13 +320,15 @@
 }
 
 .panel-date {
+  opacity: 0.6;
   font-size: clamp(0.75rem, 2vw, 1.25rem);
   color: var(--color-text);
   white-space: nowrap;
 }
 
 .panel-company {
-  margin: 0;
+  margin-top: 0.3rem;
+  margin-bottom: 0.1rem;
   font-size: clamp(1.0rem, 2vw, 1.25rem);
   color: var(--color-text);
 }

@@ -37,7 +37,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
   experiences: Experience[] = [
     {
       icon: '/assets/work/pltr.png',
-      date: 'Incoming - 07/2026',
+      date: 'Incoming - July 2026',
       position: 'Forward Deployed Engineer',
       company: 'Palantir Technologies',
       description: 'I am an incoming US-GOV FDSE for Palantir.',
@@ -52,7 +52,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/deutsche.png',
-      date: '06/25 - 08/25',
+      date: 'June 2025 - August 2025',
       position: 'Technology & Data Intern',
       company: 'Deutsche Bank',
       description:
@@ -68,9 +68,9 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/oldwell.png',
-      date: '05/24 - Present',
+      date: 'May 2024 - Present',
       position: 'Research Assistant',
-      company: 'Experimental Engineering Lab (EEL)',
+      company: 'Experimental Engineering Lab',
       description:
         'Under the direction of Dr. Roni Sengupta, I am developing an AR/VR app for visualization of Hierarchical 3D Gaussians and an image processing pipeline to optimize COLMAP and photogrammetry software.',
       skills: 'Python, CUDA, Bash, Unity, C#, HLSL',
@@ -84,7 +84,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/carolina.png',
-      date: '08/22 - 05/25',
+      date: 'August 2022 - May 2025',
       position: 'President of Operations',
       company: 'UNC Ice Hockey',
       description:
@@ -100,7 +100,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     },
     {
       icon: '/assets/work/corvid.png',
-      date: '05/24 - 08/24',
+      date: 'May 2024 - August 2024',
       position: 'Extended Reality Intern',
       company: 'Corvid Technologies',
       description:
