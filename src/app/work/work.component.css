@@ -202,9 +202,6 @@
       rgba(var(--color-primary-rgb), 1.00) 65%,
       rgba(var(--color-primary-rgb), 1.00) 100%
     ) right / 0.3rem 100% no-repeat; */
-
-
-
 }
 
 /* Icon container — positioned at the top-center of the panel */
@@ -235,6 +232,10 @@
   background: var(--color-text);
   -webkit-mask: var(--icon-url) center / 70% no-repeat;
   mask: var(--icon-url) center / 70% no-repeat;
+}
+
+.panel-icon:hover {
+  scale: 1.05;
 }
 
 .timeline {
