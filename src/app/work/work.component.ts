@@ -2,7 +2,6 @@ import {AfterViewInit, Component, effect, ElementRef, Injector, OnDestroy, ViewC
 
 import {ThemeService} from '../theme.service';
 
-import {ScrollTrapToDirective} from './scroll-trap-to.directive';
 
 type Camera = {
   center: [number, number]; zoom: number;
@@ -24,7 +23,7 @@ export interface Experience {
 @Component({
   selector: 'app-work',
   standalone: true,
-  imports: [ScrollTrapToDirective],
+  imports: [],
   templateUrl: './work.component.html',
   styleUrls: ['./work.component.css'],
 })
@@ -183,12 +182,14 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
   }
 
   private setupScrollObserver() {
-    const root = this.panelScroller.nativeElement;
-    const panels = Array.from(root.querySelectorAll<HTMLElement>('.panel'));
+    const panels = Array.from(
+      this.mapContainer.nativeElement
+        .closest('.experience-container')!
+        .querySelectorAll<HTMLElement>('.panel'),
+    );
 
     this.io = new IntersectionObserver(
       (entries) => {
-        // Choose most visible intersecting panel
         const best = entries
           .filter((e) => e.isIntersecting)
           .sort(
@@ -196,26 +197,23 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
           )[0];
 
         if (!best) return;
-
-        const el = best.target as HTMLElement;
-        const idx = Number(el.dataset['index']);
+        const idx = Number((best.target as HTMLElement).dataset['index']);
         if (!Number.isFinite(idx)) return;
-
         this.setActivePanel(idx);
       },
       {
-        root,
+        root: null, // viewport instead of panel scroller
         threshold: [0.25, 0.4, 0.6],
         // Make “active” when panel is near the center band of the scroll
         // viewport
         rootMargin: '-35% 0px -35% 0px',
       },
     );
+
     panels.forEach((p) => this.io!.observe(p));
   }
 
   private addExperienceLayer() {
-    const size = 300;
 
     if (this.map.hasImage('pulsing-dot')) {
       this.map.removeImage('pulsing-dot');

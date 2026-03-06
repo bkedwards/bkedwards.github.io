@@ -1,3 +1,8 @@
+:host {
+  display: block;
+  isolation: isolate;  /* contain the stacking context within app-about */
+}
+
 .container {
   width: 100vw;
   height: 100vh;
@@ -106,6 +111,8 @@
   width: 55vw;
   height: auto;
   margin: 0 auto;
+  z-index: 0;  /* pull it below the navigation header */
+  position: relative; /* needed for z-index to take effect */
 }
 
 .progress-bar-container {

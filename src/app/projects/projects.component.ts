@@ -29,7 +29,7 @@ export class ProjectsComponent {
                     THREE.js rendering with lazy loading. Deployed as a static web 
                     application using GitHub Pages.`,
       link: 'https://github.com/bkedwards/bkedwards.github.io',
-      skills: 'Angular, TypeScript, HTML, CSS',
+      skills: 'Angular, HTML, CSS',
     },
     {
       title: 'Mixed Reality Simulations of Internal Detonation',
@@ -48,7 +48,7 @@ export class ProjectsComponent {
                     landmarks, and a Random Forest Classifier to train a model to 
                     predict hand gestures with 99.2% accuracy on test set.`,
       link: 'https://github.com/bkedwards/asl_detector',
-      skills: 'Python, OpenCV, MediaPipe',
+      skills: 'Python, OpenCV',
     },
     {
       title: 'UNC Landmark Classifier',
@@ -67,7 +67,7 @@ export class ProjectsComponent {
                     Kerbl et. al and combines Aras-P's 3DGS package for Unity with 
                     the hierarchy selection-cut algorithm.`,
       link: 'https://github.com/bkedwards/hierarchical-splats-unity',
-      skills: 'Unity, C#, HLSL, Python, Bash',
+      skills: 'Unity, C#, CUDA',
     },
     {
       title: 'Study Buddy AI',
@@ -77,7 +77,7 @@ export class ProjectsComponent {
                     providing detailed feedback and quiz submission statistics for 
                     users.`,
       link: 'https://github.com/unc-csxl/csxl.unc.edu',
-      skills: 'Angular, PostgreSQL, Node.js',
+      skills: 'Angular, PostgreSQL',
     },
   ];
 

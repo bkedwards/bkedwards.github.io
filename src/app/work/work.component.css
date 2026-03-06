@@ -1,8 +1,14 @@
+:host {
+  display: block;
+  height: auto;
+  overflow: visible;
+}
+
 .container {
-  height: 100vh;
+  height: auto;
+  overflow: visible;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
 }
 
 .title-container {
@@ -16,18 +22,24 @@
 }
 
 .experience-container {
-  flex: 1 1 auto;
   display: flex;
-  min-height: 0;   /* keep */
-  height: 0;       /* IMPORTANT: forces it to take remaining height in some layouts */
-  overflow: hidden;       /* ADD: contains the scroll within this element */
+  align-items: flex-start;  /* ADD: so children align to top, not stretch */
+  min-height: 0;
+  height: auto;        /* was 0 */
+  overflow: visible;   /* was hidden */
 }
 
 .map-wrapper {
+  flex: 0 0 50%;
   position: sticky;
   top: 0;
-  flex: 0 0 50%;
-  height: 100%;
+  align-self: flex-start;
+}
+
+.map-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
   background: var(--color-bg);
 }
 
@@ -74,9 +86,10 @@
 .panels-wrapper {
   position: relative;
   flex: 1 1 50%;
-  min-width: 0;
-  height: 100%;
+  height: auto;
+  overflow: visible;
   --panel-col: 35vw;
+  align-self: stretch;
 }
 
 .panels-wrapper::before,
@@ -85,7 +98,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  height: 15%; /* size of fade zone */
+  height: 8rem;   /* fixed size instead of 15% */
   pointer-events: none;
   z-index: 6;
 }
@@ -103,8 +116,8 @@
 .panels-container {
   position: relative;
   width: 100%;
-  height: 100%;
-  overflow: hidden;
+  overflow: visible;
+  height: auto;
 
   padding: 35vh 0;
   box-sizing: border-box;
@@ -159,94 +172,19 @@
   inset: -1px;                   /* slightly outside so it’s visible */
   pointer-events: none;
   z-index: 3;                    /* above panel content/background */
-
-  /* background:
-    linear-gradient(to right,
-      rgba(var(--color-primary-rgb), 1.00) 0%,
-      rgba(var(--color-primary-rgb), 1.00) 8%,
-      rgba(var(--color-primary-rgb), 0.0) 8%,
-      rgba(var(--color-primary-rgb), 0.0) 16%,
-      rgba(var(--color-primary-rgb), 1.00) 16%,
-      rgba(var(--color-primary-rgb), 1.00) 65%,
-      rgba(var(--color-primary-rgb), 1.00) 65%,
-      rgba(var(--color-primary-rgb), 1.00) 100%
-    ) top / 100% 0.3rem no-repeat,
-
-    linear-gradient(to right,
-      rgba(var(--color-primary-rgb), 1.00) 0%,
-      rgba(var(--color-primary-rgb), 1.00) 35%,
-      rgba(var(--color-primary-rgb), 1.00) 84%,
-      rgba(var(--color-primary-rgb), 0.0) 84%,
-      rgba(var(--color-primary-rgb), 0.0) 92%,
-      rgba(var(--color-primary-rgb), 1.00) 92%,
-      rgba(var(--color-primary-rgb), 1.00) 100%
-    ) bottom / 100% 0.3rem no-repeat,
-
-    linear-gradient(to bottom,
-      rgba(var(--color-primary-rgb), 1.00) 0%,
-      rgba(var(--color-primary-rgb), 1.00) 35%,
-      rgba(var(--color-primary-rgb), 1.00) 80%,
-      rgba(var(--color-primary-rgb), 0.0) 80%,
-      rgba(var(--color-primary-rgb), 0.0) 92%,
-      rgba(var(--color-primary-rgb), 1.00) 92%,
-      rgba(var(--color-primary-rgb), 1.00) 100%
-    ) left / 0.3rem 100% no-repeat,
-
-    linear-gradient(to bottom,
-      rgba(var(--color-primary-rgb), 1.00) 0%,
-      rgba(var(--color-primary-rgb), 1.00) 8%,
-      rgba(var(--color-primary-rgb), 0.0) 8%,
-      rgba(var(--color-primary-rgb), 0.0) 20%,
-      rgba(var(--color-primary-rgb), 1.00) 20%,
-      rgba(var(--color-primary-rgb), 1.00) 65%,
-      rgba(var(--color-primary-rgb), 1.00) 65%,
-      rgba(var(--color-primary-rgb), 1.00) 100%
-    ) right / 0.3rem 100% no-repeat; */
 }
 
-/* Icon container — positioned at the top-center of the panel */
-.panel-icon {
-  position: relative;
-  width: 5.5rem;
-  height: 5.5rem;
-  border-radius: 50%;
-  z-index: 7;
-  box-shadow: var(--shadow-button);
-}
-
-/* Border circle — no mask so it stays visible */
-.panel-icon::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 50%;
-  border: 0.3rem solid var(--color-primary);
-  background: var(--color-bg);
-}
-
-/* Masked icon on top — uses color-text so it flips with light/dark mode */
-.panel-icon::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--color-text);
-  -webkit-mask: var(--icon-url) center / 70% no-repeat;
-  mask: var(--icon-url) center / 70% no-repeat;
-}
-
-.panel-icon:hover {
-  scale: 1.05;
-}
 
 .timeline {
   position: absolute;
-  width: 2px;       /* make it fat temporarily */
-  height: 90vh;
+  width: 2px;
+  top: 0;
+  bottom: 0;
+  height: 100%;        /* span full panels-wrapper height */
+  left: 50%;
+  transform: translateX(-50%);
   background: var(--color-timeline);
   z-index: 0;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .tick {
@@ -304,25 +242,26 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 1rem;
+  flex-wrap: nowrap;
 }
 
 .panel-header-info {
   display: flex;
   flex-direction: column;
-
+  flex: 0 1 auto; /* shrink if needed, but don't force-grow */
+  min-width: 0;   /* prevents text overflow from blowing out the layout */
 }
 
 .panel-title {
   margin: 0;
-  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-size: var(--font-title);
   color: var(--color-primary);
 }
 
 .panel-date {
   opacity: 0.6;
-  font-size: clamp(0.75rem, 2vw, 1.25rem);
+  font-size: var(--font-paragraph);
   color: var(--color-text);
   white-space: nowrap;
 }
@@ -330,7 +269,7 @@
 .panel-company {
   margin-top: 0.3rem;
   margin-bottom: 0.1rem;
-  font-size: clamp(1.0rem, 2vw, 1.25rem);
+  font-size: var(--font-paragraph);
   color: var(--color-text);
 }
 
@@ -341,8 +280,102 @@
 
 .panel-description {
   margin: 1rem 0 0 0;
-  font-size: clamp(0.75rem, 1.35vw, 1.35rem);
+  font-size: var(--font-paragraph);
   line-height: 1.5;
   opacity: 0.8;
   color: var(--color-text);
+}
+
+/* Icon container — positioned at the top-center of the panel */
+.panel-icon {
+  position: relative;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 50%;
+  z-index: 7;
+  box-shadow: var(--shadow-button);
+  flex-shrink: 0;
+  align-self: flex-start;
+  /* remove any margin: auto that might be pushing it */
+  margin-left: 0;
+}
+
+/* Border circle — no mask so it stays visible */
+.panel-icon::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 0.3rem solid var(--color-primary);
+  background: var(--color-bg);
+}
+
+/* Masked icon on top — uses color-text so it flips with light/dark mode */
+.panel-icon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-text);
+  -webkit-mask: var(--icon-url) center / 70% no-repeat;
+  mask: var(--icon-url) center / 70% no-repeat;
+
+}
+
+.panel-icon:hover {
+  scale: 1.05;
+}
+
+
+/* ── Responsive / Mobile ─────────────────────────────── */
+
+@media (max-width: 768px) {
+
+  .map-wrapper {
+    display: none;
+  }
+
+  .panels-wrapper {
+    flex: 1 1 100%;
+    --panel-col: 80vw;
+  }
+
+  .timeline {
+    left: 50%;
+  }
+
+  .panel + .panel {
+    margin-top: 12vh;
+  }
+
+  .panels-container {
+    padding: 20vh 0;
+  }
+
+  .panel-icon {
+    width: 4rem;
+    height: 4rem;
+  }
+}
+
+/* ── Tablet (map shrinks, panels grow) ───────────────── */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+  .map-wrapper {
+    flex: 0 0 40%;
+  }
+
+  .panels-wrapper {
+    flex: 1 1 60%;
+    --panel-col: 45vw;
+  }
+}
+
+/* ── Large screens ───────────────────────────────────── */
+
+@media (min-width: 1440px) {
+
+  .panels-wrapper {
+    --panel-col: 30vw;
+  }
 }
