@@ -15,8 +15,9 @@
 }
 
 .theme-toggle button {
-  background: var(--color-bg);
-  backdrop-filter: blur(6px);
+  background: rgba(var(--color-surface-rgb), 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 50%;
   transition: background 0.2s ease, transform 0.2s ease;
 }
