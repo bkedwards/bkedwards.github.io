@@ -1,12 +1,6 @@
-:host {
-  display: block;
-  isolation: isolate;  /* contain the stacking context within app-about */
-}
-
 .container {
   width: 100vw;
   height: 100vh;
-  overflow-x: hidden;
   display: flex;
   color: var(--color-text);
 }
@@ -16,20 +10,22 @@
   flex-direction: column;
   width: 45vw;
   height: auto;
-  font-size: clamp(1.0rem, 1.5vw, 1.5rem);
+  font-size: var(--font-paragraph);
   justify-content: center;
   align-items: center;
-
 }
 
 .about-card {
   width: 80%;
   margin-left: 25%;
   height: auto;
+  padding: 1.0rem;
 }
 
 .about-card .about-content {
-  height: 22rem; 
+  height: clamp(8rem, calc(100vh - 100vw * 0.4), 24rem);
+  min-height: 6rem;
+  max-height: 25rem;
   overflow-x: hidden;
   margin-top: 1rem;
   opacity: 0.8;
@@ -39,7 +35,6 @@
 .about-card .about-content.fade-out {
   opacity: 0;
 }
-
 
 .about-content::-webkit-scrollbar {
   width: 8px;
@@ -62,12 +57,12 @@
 }
 
 .about-headers .top-header {
-  font-size: clamp(3rem, 5vw, 5rem);
+  font-size: var(--font-header2);
 }
 
 .about-headers .bottom-header {
   color: var(--color-primary);
-  font-size: clamp(3.5rem, 6vw, 6rem);
+  font-size: var(--font-header1);
 }
 
 .about-button-container {
@@ -83,13 +78,12 @@
   align-items: center;
   justify-content: center;
   color: var(--color-text);
-  font-size: clamp(1rem, 1.35vw, 1.4rem);
+  font-size: var(--font-button);
   text-decoration: none;
   background: var(--color-surface);
   border-radius: 2rem;
   margin-top: 2rem;
   box-shadow: var(--shadow-button);
-  transform: background 0.5s ease;
   padding: 1rem 2rem;
   line-height: 1;
   filter: brightness(98%);
@@ -111,8 +105,8 @@
   width: 55vw;
   height: auto;
   margin: 0 auto;
-  z-index: 0;  /* pull it below the navigation header */
-  position: relative; /* needed for z-index to take effect */
+  z-index: 0;
+  position: relative;
 }
 
 .progress-bar-container {
@@ -121,13 +115,10 @@
   left: 50%;
   width: auto;
   transform: translate(-50%, -50%);
-
   display: flex;
   align-items: center;
   justify-content: center;
-  display: flex;
   flex-direction: column;
-
   padding: 1rem;
   border-radius: 8px;
   z-index: 10;
@@ -135,12 +126,11 @@
 }
 
 .progress-bar-container label {
-  font-size: 1.5rem;
-
+  font-size: var(--font-button);
 }
 
 progress::-webkit-progress-value {
-  background-color:  var(--color-primary);
+  background-color: var(--color-primary);
 }
 
 progress {
@@ -153,9 +143,98 @@ progress {
 }
 
 canvas {
-  aspect-ratio: 1; /* Forces square ratio */
+  aspect-ratio: 1;
   display: block;
   background: transparent;
+}
+
+/* ── Large tablets / small laptops (≤1024px) ── */
+@media (max-width: 1024px) {
+  .about-container {
+    width: 50vw;
+  }
+
+  .canvas-container {
+    width: 50vw;
+  }
+
+  .about-card {
+    margin-left: 15%;
+  }
+}
+
+/* ── Tablets (≤768px) ── */
+@media (max-width: 768px) {
+  .canvas-container {
+    display: none;
+  }
+
+  .container {
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;        /* ensures full viewport is used */
+  }
+
+  .about-container {
+    width: 100vw;
+    min-height: 100vh;        /* stretches to fill the screen */
+    padding: 2rem 1.5rem;
+    align-items: flex-start;
+    justify-content: center;
+    box-sizing: border-box;   /* padding doesn't cause overflow */
+  }
+
+  .about-card .about-content {
+    height: unset;
+    min-height: 20rem;
+  }
+
+  .about-card {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* ── Mobile (≤480px) ── */
+@media (max-width: 480px) {
+
+  .about-card .about-content {
+    height: clamp(8rem, calc(100vh - 100vw * 0.4), 24rem);
+  }
+
+  .about-button {
+    padding: 0.75rem 1rem;
+    flex: 1 1 calc(50% - 0.5rem);
+    min-width: 0;
+    justify-content: center;
+  }
+
+  .about-button-container {
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 0.75rem;  /* horizontal gap between buttons */
+    row-gap: 0rem;    /* tighter vertical gap between rows */
+    width: 100%;
+  }
+
+  progress {
+    width: 150px;
+  }
+}
+
+/* ── Very small screens (≤360px) ── */
+@media (max-width: 360px) {
+
+  .about-card .about-content {
+    height: clamp(8rem, calc(100vh - 100vw * 0.4), 24rem);
+  }
+}
+
+/* ── Large screens (≥1440px) ── */
+@media (min-width: 1440px) {
+  .about-card {
+    margin-left: 30%;
+  }
 }
 
 

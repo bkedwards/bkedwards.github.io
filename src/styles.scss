@@ -57,6 +57,8 @@ body.light-theme {
   --font-paragraph: clamp(1.125rem, 0.5rem + 1.25vw + 0.5vh, 1.25rem);
   --font-title: clamp(1.75rem, 0.5rem + 2vw + 1vh, 2rem);
   --font-button: clamp(1.125rem, 0.5rem + 1.25vw + 0.5vh, 1.25rem);
+  --font-header1: clamp(3.5rem, 6vw, 6rem);
+  --font-header2: clamp(3rem, 5vw, 5rem); 
 
   --cube-size: clamp(12rem, 20vw, 20rem);
   --cube-half: calc(var(--cube-size) / 2);
@@ -85,8 +87,8 @@ body.light-theme {
 app-root {
   display: block;
   width: 100%;
-  min-height: 100%;
-  overflow: visible;
+  max-width: 100vw;
+  overflow-x: clip;
 }
 
 html {
@@ -102,5 +104,6 @@ body {
   font-family: 'Kdam Thmor Pro', sans-serif;
   color: var(--color-text);
   --mdc-typography-font-family: 'Kdam Thmor Pro', sans-serif;
-  overflow-x: hidden;
+  overflow-x: clip;
+  max-width: 100vw;
 }
