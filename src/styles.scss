@@ -47,13 +47,16 @@ body.light-theme {
   --color-error: #FF0000;
   --color-button: #1A1D23;
   --color-timeline: gray;
+  --color-textarea: #212121;
 
   --shadow-inset: inset 0.2rem 0.2rem 0.8rem rgba(0, 0, 0, 0.8), inset -0.2rem -0.2rem 0.8rem rgba(255, 255, 255, 0.06);
-  --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.9), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.06);
+  --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.9), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.1);
   --shadow-card: 0.2rem 0.2rem 1rem rgba(0, 0, 0, 0.8), -0.15rem -0.15rem 0.8rem rgba(255, 255, 255, 0.04);
   --shadow-button: 0.15rem 0.15rem 0.5rem rgba(0, 0, 0, 0.8), -0.1rem -0.1rem 0.4rem rgba(255, 255, 255, 0.02);
 
-
+  --font-paragraph: clamp(1.125rem, 0.5rem + 1.25vw + 0.5vh, 1.25rem);
+  --font-title: clamp(1.75rem, 0.5rem + 2vw + 1vh, 2rem);
+  --font-button: clamp(1.125rem, 0.5rem + 1.25vw + 0.5vh, 1.25rem);
 
   --cube-size: clamp(12rem, 20vw, 20rem);
   --cube-half: calc(var(--cube-size) / 2);
@@ -64,13 +67,14 @@ body.light-theme {
   --color-bg: #e6f8ffff;
   --color-text: #1A1D23;
   --color-text-rgb: 26, 29, 35;
-  --color-primary: #29C2C2; 
+  --color-primary: #29C2C2;
   --color-primary-rgb: 41, 194, 194;
   --color-surface: #f4fbff;
   --color-surface-highlight: #FFFFFF;
   --color-accent: #e3fffe;
   --color-primary-highlight: #00AAAA;
-  --color-text-dark: #444444;
+  --color-text-dark: #1A1C01;
+  --color-textarea: #dedede;
 
   --shadow-inset: inset 0.2rem 0.2rem 0.8rem rgba(0, 0, 0, 0.15), inset -0.2rem -0.2rem 0.8rem rgba(255, 255, 255, 0.95);
   --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.4), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.8);
@@ -78,29 +82,25 @@ body.light-theme {
   --shadow-button: 0.15rem 0.15rem 0.5rem rgba(0, 0, 0, 0.2), -0.1rem -0.1rem 0.4rem rgba(255, 255, 255, 0.8);
 }
 
-/* Base Styles */
+app-root {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  overflow: visible;
+}
+
 html {
   font-size: 12px;
   scroll-behavior: smooth;
-  height: 100%;
-  overflow-y: auto;
+  min-height: 100%;
 }
-
-body {
-  background-color: var(--color-bg);
-  font-family: 'Kdam Thmor Pro', sans-serif;
-  color: var(--color-text);
-}
-
-app-root {
-  width: 100%;
-}
-
-html, body { height: 100%; }
 
 body {
   margin: 0;
-  --mdc-typography-font-family: 'Kdam Thmor Pro', sans-serif;
+  min-height: 100%;
+  background-color: var(--color-bg);
   font-family: 'Kdam Thmor Pro', sans-serif;
+  color: var(--color-text);
+  --mdc-typography-font-family: 'Kdam Thmor Pro', sans-serif;
+  overflow-x: hidden;
 }
-

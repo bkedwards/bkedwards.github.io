@@ -1,24 +1,32 @@
 .layout {
   display: flex;
-  height: auto;
-  width: 100vw;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 100vh;
   color: var(--color-text);
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 0;
+  box-sizing: border-box;
 }
 
 .contact-side {
-  width: 40%;
-  height: 100%;
-  min-height: 100vh;
+  flex: 1 1 300px;
+  max-width: 500px; /* was 600px — lower this to taste */
+  min-width: 280px;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-end; /* keeps box hugging the right edge */
 }
 
 .contact-box {
   display: flex;
   flex-direction: column;
-  right: 0;
-  width: 65%;
+  width: 100%;
+  max-width: 360px;
+  margin-left: auto; /* pushes it right */
   height: auto;
   padding: 2.0rem;
   border-radius: 2rem;
@@ -28,6 +36,7 @@
   justify-content: flex-start;
   gap: 1rem;
   overflow: auto;
+  box-sizing: border-box;
 }
 
 .headers {
@@ -53,12 +62,11 @@
 }
 
 .social-link:hover svg {
-  /* Individual brand colors on hover */
-  color: #58bc51; /* LinkedIn blue */
+  color: #58bc51;
 }
 
 .social-links a:nth-child(2):hover svg {
-  color: #0A66C2; /* GitHub purple */
+  color: #0A66C2;
 }
 
 .social-icon {
@@ -72,18 +80,18 @@
 }
 
 .contact-box h2 {
-  font-size: clamp(1.0rem, 2vw, 2rem);
+  font-size: var(--font-title);
   color: var(--color-primary);
 }
 
 .contact-box form {
   display: flex;
   flex-direction: column;
-  gap: 1rem
+  gap: 1rem;
 }
 
 .contact-box label {
-  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
+  font-size: var(--font-paragraph);
 }
 
 .contact-box textarea {
@@ -91,38 +99,35 @@
   outline: none;
   padding: 0.75rem;
   border-radius: 0.8rem;
-  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
+  font-size: var(--font-paragraph);
   font-family: -apple-system, BlinkMacSystemFont, 'San Francisco', 'Helvetica Neue',
                Helvetica, Arial, sans-serif;
-  background-color: var(--color-bg);
-  color: var(--color-text);
+  background-color: var(--color-textarea);
+  color: var(--color-text-dark);
   resize: none;
   box-shadow: var(--shadow-inset);
-}
-
-.contact-box textarea:hover {
-  scale: 1.01;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 textarea::placeholder,
 input::placeholder {
-  color: var(--color-text); /* Or any readable color */
-  opacity: 0.7; /* Optional: ensure it's fully opaque */
+  color: var(--color-text-dark);
+  opacity: 0.7;
 }
 
 .button-error-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .button-error-container .email-success {
   padding: 0.75rem 3rem;
-  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
+  font-size: var(--font-button);
   margin-top: 1rem;
-  margin-left: 0;
-  margin-right: auto;
-  align-self: flex-start;
-  justify-content: center;
   color: var(--color-primary);
   border-radius: 1rem;
   transition: background-color 0.2s ease;
@@ -131,12 +136,8 @@ input::placeholder {
 
 .button-error-container .email-error {
   padding: 0.75rem 3rem;
-  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
+  font-size: var(--font-button);
   margin-top: 1rem;
-  margin-left: 0;
-  margin-right: auto;
-  align-self: flex-start;
-  justify-content: center;
   color: var(--color-error);
   border-radius: 1rem;
   transition: background-color 0.2s ease;
@@ -148,28 +149,21 @@ input::placeholder {
   width: clamp(0.75rem, 1.25vw, 1.25rem);
   height: clamp(0.75rem, 1.25vw, 1.25rem);
   border: 3px solid var(--color-text);
-  border-top: 3px solid var(--color-text);
+  border-top: 3px solid transparent;
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
   vertical-align: middle;
 }
 
 @keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .contact-box button {
   padding: 0.5rem 2.5rem;
-  font-size: clamp(0.75rem, 1.25vw, 1.25rem);
+  font-size: var(--font-button);
   margin-top: 1rem;
-  margin-left: 0;
-  margin-right: auto;
-  align-self: flex-start;
   background-color: var(--color-primary);
   color: var(--color-button);
   border-radius: 2rem;
@@ -179,6 +173,7 @@ input::placeholder {
   border: none;
   min-width: 4rem;
   box-shadow: var(--shadow-button);
+  white-space: nowrap;
 }
 
 .contact-box button:hover {
@@ -186,102 +181,93 @@ input::placeholder {
   filter: brightness(105%);
 }
 
-.canvas-side {
-  width: 60%;
-  height: auto;
-  right: 0;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  display: flex;
-}
-
-#three-canvas {
-  width: min(100vw, 100vh); /* Takes smaller of container width or viewport height */
-  height: min(100vh, 100vh);
-  aspect-ratio: 1; /* Forces square ratio */
-  display: block;
-}
+/* ── Cube ─────────────────────────────────────────────── */
 
 .stage-cube-cont {
-  width: 60%;
-  height: 100vh;
+  flex: 1 1 300px;
+  max-width: 600px;
+  min-width: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
   perspective: 1000px;
+  min-height: calc(var(--cube-size) * 2.5);
 }
 
 .cubespinner {
-  position: relative;
   width: var(--cube-size);
   height: var(--cube-size);
-
   transform-style: preserve-3d;
-
   animation: cubeRotate 12s linear infinite;
-
-  will-change: transform;
 }
-
-/* cube faces */
 
 .cubespinner div {
   position: absolute;
   width: var(--cube-size);
   height: var(--cube-size);
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   border: 1px solid rgba(var(--color-text-rgb), 0.15);
   background: rgba(255,255,255,0.05);
-
-
   box-shadow: 0 0 10px rgba(var(--color-text-rgb), 0.60);
 }
-
-/* icon size */
 
 .cubespinner i {
   font-size: calc(3 * var(--cube-half) / 4);
 }
 
-/* faces */
-
 .face1 { transform: translateZ(var(--cube-half)); }
-
-.face2 { transform: rotateY(90deg) translateZ(var(--cube-half)); }
-
+.face2 { transform: rotateY(90deg)  translateZ(var(--cube-half)); }
 .face3 { transform: rotateY(180deg) translateZ(var(--cube-half)); }
-
 .face4 { transform: rotateY(-90deg) translateZ(var(--cube-half)); }
-
-.face5 { transform: rotateX(90deg) translateZ(var(--cube-half)); }
-
+.face5 { transform: rotateX(90deg)  translateZ(var(--cube-half)); }
 .face6 { transform: rotateX(-90deg) translateZ(var(--cube-half)); }
 
-/* smooth continuous spin */
-
 @keyframes cubeRotate {
-  0% {
-    transform: rotateX(-20deg) rotateY(0deg);
+  from { transform: translateZ(calc(-1 * var(--cube-half))) rotateY(0deg); }
+  to   { transform: translateZ(calc(-1 * var(--cube-half))) rotateY(360deg); }
+}
+
+/* ── Responsive breakpoints ───────────────────────────── */
+
+@media (max-width: 768px) {
+  .layout {
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    gap: 2.5rem;
   }
 
-  25% {
-    transform: rotateX(20deg) rotateY(90deg);
+  .contact-side {
+    width: 60%;
+    max-width: 60%;
   }
 
-  50% {
-    transform: rotateX(-20deg) rotateY(180deg);
+  .stage-cube-cont {
+    width: 100%;
+    max-width: 100%;
+    min-height: 220px;
   }
 
-  75% {
-    transform: rotateX(20deg) rotateY(270deg);
+  :root {
+    --cube-size: clamp(100px, 35vw, 160px);
+    --cube-half: calc(var(--cube-size) / 2);
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-box {
+    padding: 1.25rem;
+    border-radius: 1.25rem;
   }
 
-  100% {
-    transform: rotateX(-20deg) rotateY(360deg);
+  .contact-box button {
+    width: 100%;
+    text-align: center;
+  }
+
+  .button-error-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

@@ -1,7 +1,9 @@
 <div class="container" >
   <div class="experience-container">
     <div class="map-wrapper">
-      <div #mapContainer class="map-container"></div>
+      <div class="map-sticky">
+        <div #mapContainer class="map-container"></div>
+      </div>
 
       @if (isMapLoading) {
         <div class="map-loader">
@@ -10,7 +12,7 @@
       }
     </div>
 
-    <div class="panels-wrapper" [scrollTrapTo]="panelScroller">
+    <div class="panels-wrapper">
       <div class="timeline">
         <div class="tick"></div>
         <div class="thick-tick"></div>
@@ -34,7 +36,7 @@
         <div class="thick-tick"></div>
         <div class="tick"></div>
       </div>
-      <div #panelScroller class="panels-container" >
+      <div class="panels-container">
       @for (experience of experiences; track experience.position; let i = $index) {
 
         <section class="panel" [attr.data-index]="i" [style.--icon-url]="'url(' + experience.icon + ')'">

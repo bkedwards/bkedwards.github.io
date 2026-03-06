@@ -19,18 +19,16 @@
           >
             <div class="slider-card" (panright)="showPrev(i)" (panleft)="showNext(i)" >
               <div class="slider-image-wrapper">
-                <img [src]="project.image" alt="Project Photo" class="slider-image">
+                  <img [src]="project.image" alt="Project Photo" class="slider-image">
               </div>
               <span class="slider-title"><strong>{{project.title}}</strong></span>
               <div class="slider-description">
                 {{project.description}}
-
-                <div class="project-skills-container">
-                  <i class="fa-solid fa-gears experience-skills-icon"></i>
-                  <span class="project-skills">{{project.skills}}</span>
-                </div>
               </div>
-
+              <div class="project-skills-container">
+                <i class="fa-solid fa-gears experience-skills-icon"></i>
+                <span class="project-skills">{{project.skills}}</span>
+              </div>
               <a [href]="project.link" target="_blank" class="slider-button">View Project</a>
             </div>
           </div>

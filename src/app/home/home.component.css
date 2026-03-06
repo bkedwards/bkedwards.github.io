@@ -1,6 +1,3 @@
-* {
-      overflow-x: hidden;
-}
 
 .navigation-header {
   position: fixed;
@@ -13,9 +10,13 @@
   flex-direction: column;
   border-radius: 1rem;
   gap: 0.5rem;
-  z-index: 1000;
-  font-size: clamp(0.5rem, 1.5vw, 1.5rem);
+  z-index: 99999 !important;
+  isolation: isolate;
+  font-size: var(--font-button);
   border: 1px solid var(--color-text-dark);
+  background: rgba(var(--color-surface-rgb), 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .navigation-header a {
@@ -26,9 +27,15 @@
 }
 
 .navigation-header a:hover {
-  color: var(--color-primary); /* or your accent color */
+  color: var(--color-primary);
 }
 
 .navigation-header a.active {
   color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .navigation-header {
+    display: none;
+  }
 }

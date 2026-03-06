@@ -1,18 +1,17 @@
-body {
-  margin: 0;
-}
 
 .content {
-  min-height: calc(100vh - 120px); 
-  overflow-y: auto;
+  min-height: calc(100vh - 120px);
+  overflow: visible;
 }
-
 
 .theme-toggle {
   position: fixed;
   top: 16px;
   right: 16px;
-  z-index: 1000; /* stays above maps, panels, etc */
+  z-index: 99999;
+  /* prevent WebGL/transform stacking contexts from trapping it */
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .theme-toggle button {
@@ -25,4 +24,11 @@ body {
 .theme-toggle button:hover {
   background: rgba(0, 255, 255, 0.3);
   transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 8px;
+    right: 8px;
+  }
 }
