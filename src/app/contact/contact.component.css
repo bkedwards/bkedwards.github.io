@@ -37,6 +37,8 @@
   gap: 1rem;
   overflow: auto;
   box-sizing: border-box;
+
+  transition: all 0.2s ease;
 }
 
 .headers {
@@ -169,7 +171,7 @@ input::placeholder {
   border-radius: 2rem;
   cursor: pointer;
   font-family: 'Kdam Thmor Pro', sans-serif;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
   border: none;
   min-width: 4rem;
   box-shadow: var(--shadow-button);

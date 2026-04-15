@@ -87,10 +87,14 @@
   padding: 1rem 2rem;
   line-height: 1;
   filter: brightness(98%);
+  transition: all 0.5s ease;
 }
 
 .about-button:hover {
   scale: 1.05;
+  background: var(--color-primary);
+  color: var(--color-button);
+  filter: brightness(105%);
 }
 
 .about-button.active {
