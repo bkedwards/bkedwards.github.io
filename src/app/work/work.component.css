@@ -145,11 +145,14 @@
 
   background: var(--color-bg);
   position: relative;
-  z-index: 2;           
+  z-index: 2; 
+  
+  transition: all 0.2s ease;
 }
 
 .panel:hover {
   filter: brightness(100%);
+  transform: translateY(-10px);
   scale: 1.03;
 }
 
@@ -298,6 +301,7 @@
   align-self: flex-start;
   /* remove any margin: auto that might be pushing it */
   margin-left: 0;
+  transition: scale 0.2s ease;
 }
 
 /* Border circle — no mask so it stays visible */
