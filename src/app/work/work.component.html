@@ -12,7 +12,7 @@
       }
     </div>
 
-    <div class="panels-wrapper">
+    <div #fadeItem class="panels-wrapper fade-in">
       <div class="timeline">
         <div class="tick"></div>
         <div class="thick-tick"></div>
@@ -36,9 +36,8 @@
         <div class="thick-tick"></div>
         <div class="tick"></div>
       </div>
-      <div class="panels-container">
+      <div #fadeItem class="panels-container fade-in">
       @for (experience of experiences; track experience.position; let i = $index) {
-
         <section class="panel" [attr.data-index]="i" [style.--icon-url]="'url(' + experience.icon + ')'">
 
           <div class="panel-interior">

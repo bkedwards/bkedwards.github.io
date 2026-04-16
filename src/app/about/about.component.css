@@ -63,6 +63,11 @@
 .about-headers .bottom-header {
   color: var(--color-primary);
   font-size: var(--font-header1);
+  transition: transform 0.2s ease;
+}
+
+.bottom-header:hover {
+  transform: translateX(5rem);
 }
 
 .about-button-container {
@@ -77,31 +82,65 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-text);
+
+  position: relative;           /* REQUIRED for ::before */
+  overflow: hidden;             /* REQUIRED for animation */
+
+  color: var(--color-bg);
   font-size: var(--font-button);
   text-decoration: none;
-  background: var(--color-surface);
+  background: var(--color-text);
   border-radius: 2rem;
   margin-top: 2rem;
   box-shadow: var(--shadow-button);
   padding: 1rem 2rem;
   line-height: 1;
-  filter: brightness(98%);
-  transition: all 0.5s ease;
+
+  border: 1px solid transparent;
+
+  transition: transform 0.5s ease, color 0.5s ease, border-color 0.5s ease;
 }
 
-.about-button:hover {
-  scale: 1.05;
+/* sliding cyan layer */
+.about-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 160%;
+  height: 100%;
+
   background: var(--color-primary);
+
+  transform: translateX(-120%) skewX(-20deg);
+  transform-origin: left;
+
+  transition: transform 0.6s ease;
+  z-index: 0;
+}
+
+/* ensure text stays above */
+.about-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* hover effect */
+.about-button:hover {
+  transform: scale(1.05);
   color: var(--color-button);
-  filter: brightness(105%);
+  border-color: var(--color-primary);
+  cursor: pointer;
+}
+
+/* trigger animation */
+.about-button:hover::before {
+  transform: translateX(0) skewX(-20deg);
 }
 
 .about-button.active {
   background: var(--color-primary);
   color: var(--color-button);
-  filter: brightness(105%);
-  scale: 1.05;
 }
 
 .canvas-container {
@@ -242,5 +281,13 @@ canvas {
 }
 
 
+.fade-in {
+  opacity: 0;
+  transform: translateY(var(--fade-height));
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
 
-
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}

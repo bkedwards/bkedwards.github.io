@@ -133,34 +133,27 @@
 
 .panel {
   width: var(--panel-col);
-  max-width: none; /* handled by --panel-col */
-
-  min-width: 0;         /* ADD: prevents flex blowout */
-  height: auto;  
+  max-width: none;
+  min-width: 0;
+  height: auto;
   padding: 1rem;
   display: block;
   justify-content: center;
-
   color: var(--color-text);
-
   background: var(--color-bg);
   position: relative;
-  z-index: 2; 
-  
-  transition: all 0.2s ease;
+  z-index: 2;
+  transition: transform 0.5s ease, opacity 0.8s ease;
 }
 
 .panel:hover {
-  filter: brightness(100%);
-  transform: translateY(-10px);
-  scale: 1.03;
+  transform: translateY(-10px) scale(1.03);
 }
 
 .panel-interior {
   background: var(--color-surface);
   width: 100%;
   padding: 2rem 2rem 2rem 2rem;
-  filter: brightness(98%);
   border-radius: 2rem;
 
   height: auto;          /* ADD: explicit auto height */
@@ -382,4 +375,15 @@
   .panels-wrapper {
     --panel-col: 30vw;
   }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(var(--fade-height));
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

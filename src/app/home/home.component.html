@@ -1,19 +1,61 @@
+<!-- desktop nav -->
 <div class="navigation-header">
-  @for (section of sections; track section.name)
-  {
-    <a (click)="scrollToSection(section.name)" [class.active]="section.active">{{section.name}}</a>
+  @for (section of sections; track section.name) {
+    <a
+      (click)="scrollToSection(section.name)"
+      [class.active]="section.active"
+    >
+      {{ section.name }}
+    </a>
   }
 </div>
 
+<!-- mobile hamburger -->
+<div class="mobile-menu-toggle">
+  <button
+    type="button"
+    (click)="toggleMobileMenu()"
+    [attr.aria-expanded]="mobileMenuOpen"
+    aria-label="Toggle navigation menu"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+</div>
+
+<!-- mobile fullscreen menu -->
+<div class="mobile-menu-overlay" [class.open]="mobileMenuOpen">
+  <button
+    type="button"
+    class="mobile-menu-close"
+    (click)="closeMobileMenu()"
+    aria-label="Close navigation menu"
+  >
+    ✕
+  </button>
+
+  <nav class="mobile-menu-nav">
+    @for (section of sections; track section.name) {
+      <a
+        (click)="onMobileNavClick(section.name)"
+        [class.active]="section.active"
+      >
+        {{ section.name }}
+      </a>
+    }
+  </nav>
+</div>
+
 <section id="about" #about #section class="page-section">
-<app-about></app-about>
+  <app-about></app-about>
 </section>
 <section id="work" #section class="page-section">
-<app-work></app-work>
+  <app-work></app-work>
 </section>
 <section id="projects" #section class="page-section">
-<app-projects></app-projects>
+  <app-projects></app-projects>
 </section>
 <section id="contact" #section class="page-section">
-<app-contact></app-contact>
+  <app-contact></app-contact>
 </section>

@@ -19,6 +19,7 @@ import * as THREE from 'three';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { CommonModule } from '@angular/common';
 import { ThemeService } from '../theme.service';
+import { Subscription } from 'rxjs';
 
 export interface AboutSections {
   name: string;
@@ -144,6 +145,11 @@ export class AboutComponent implements AfterViewInit, OnInit {
   isLoading = signal(true);
   objLoader = new OBJLoader(this.loadingManager);
 
+  @ViewChildren('fadeItem') fadeItems!: QueryList<ElementRef>;
+
+  private fadeObserver!: IntersectionObserver;
+  private fadeItemsSub?: Subscription;
+
   constructor(
     private theme: ThemeService,
     private injector: Injector,
@@ -164,12 +170,43 @@ export class AboutComponent implements AfterViewInit, OnInit {
   ngAfterViewInit(): void {
     this.initAbout();
     window.addEventListener('resize', this.onResize);
+
+    this.fadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            this.fadeObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+
+    this.observeFadeItems();
+
+    this.fadeItemsSub = this.fadeItems.changes.subscribe(() => {
+      this.observeFadeItems();
+    });
+  }
+
+  private observeFadeItems(): void {
+    this.fadeItems.forEach((item) => {
+      const el = item.nativeElement;
+
+      if (!el.classList.contains('visible')) {
+        this.fadeObserver.observe(el);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     cancelAnimationFrame(this.frameId);
     window.removeEventListener('resize', this.onResize);
     this.renderer.dispose();
+    this.fadeObserver?.disconnect();
   }
 
   composeTransform(

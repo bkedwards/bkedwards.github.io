@@ -32,7 +32,6 @@
   border-radius: 2rem;
   background: var(--color-surface);
   box-shadow: var(--shadow-card);
-  filter: brightness(98%);
   justify-content: flex-start;
   gap: 1rem;
   overflow: auto;
@@ -64,21 +63,13 @@
 }
 
 .social-link:hover svg {
-  color: #58bc51;
-}
-
-.social-links a:nth-child(2):hover svg {
-  color: #0A66C2;
+  color: var(--color-primary);
 }
 
 .social-icon {
   width: 2.25rem;
   height: 2.25rem;
   display: block;
-}
-
-.contact-box:hover {
-  filter: brightness(100%);
 }
 
 .contact-box h2 {
@@ -163,24 +154,73 @@ input::placeholder {
 }
 
 .contact-box button {
+  position: relative;
+  overflow: hidden;
+
   padding: 0.5rem 2.5rem;
   font-size: var(--font-button);
   margin-top: 1rem;
-  background-color: var(--color-primary);
-  color: var(--color-button);
+
+  background-color: var(--color-text); /* changed from primary */
+  color: var(--color-bg);
+
   border-radius: 2rem;
   cursor: pointer;
   font-family: 'Kdam Thmor Pro', sans-serif;
-  transition: all 0.2s ease;
-  border: none;
+
+  border: 1px solid transparent;
   min-width: 4rem;
   box-shadow: var(--shadow-button);
   white-space: nowrap;
+
+  transition: transform 0.4s ease, color 0.4s ease, border-color 0.4s ease;
 }
 
-.contact-box button:hover {
-  scale: 1.03;
-  filter: brightness(105%);
+/* sliding cyan layer */
+.contact-box button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -30%;
+  width: 160%;
+  height: 100%;
+
+  background: var(--color-primary);
+
+  transform: translateX(-120%) skewX(-20deg);
+  transform-origin: left;
+
+  transition: transform 0.6s ease;
+  z-index: 0;
+}
+
+/* keep content above animation */
+.contact-box button > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* hover */
+.contact-box button:hover:not(:disabled) {
+  transform: scale(1.05);
+  color: var(--color-button);
+  border-color: var(--color-primary);
+}
+
+/* trigger animation */
+.contact-box button:hover:not(:disabled)::before {
+  transform: translateX(0) skewX(-20deg);
+}
+
+/* disabled state (important for UX) */
+.contact-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* prevent animation when disabled */
+.contact-box button:disabled::before {
+  display: none;
 }
 
 /* ── Cube ─────────────────────────────────────────────── */
@@ -272,4 +312,15 @@ input::placeholder {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(var(--fade-height));
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
 }

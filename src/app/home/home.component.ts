@@ -6,12 +6,7 @@ import { ContactComponent } from '../contact/contact.component';
 
 @Component({
   selector: 'app-home',
-  imports: [
-    ProjectsComponent,
-    WorkComponent,
-    AboutComponent,
-    ContactComponent,
-  ],
+  imports: [ProjectsComponent, WorkComponent, AboutComponent, ContactComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css',
 })
@@ -34,14 +29,20 @@ export class HomeComponent implements AfterViewInit {
       active: false,
     },
   ];
-
+  isMobile = window.matchMedia('(max-width: 768px)').matches;
   @ViewChildren('section') sectionRefs!: QueryList<ElementRef>;
 
   scrollToSection(id: string) {
     id = id.toLowerCase();
     const el = document.getElementById(id);
+
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+      el.scrollIntoView({
+        behavior: 'smooth',
+        block: isMobile ? 'start' : 'center',
+      });
     }
   }
 
@@ -73,5 +74,22 @@ export class HomeComponent implements AfterViewInit {
   ngAfterViewInit(): void {
     window.addEventListener('scroll', this.updateActiveSection.bind(this));
     this.updateActiveSection();
+  }
+
+  mobileMenuOpen = false;
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
+    document.body.style.overflow = this.mobileMenuOpen ? 'hidden' : '';
+  }
+
+  closeMobileMenu(): void {
+    this.mobileMenuOpen = false;
+    document.body.style.overflow = '';
+  }
+
+  onMobileNavClick(sectionName: string): void {
+    this.scrollToSection(sectionName);
+    this.closeMobileMenu();
   }
 }

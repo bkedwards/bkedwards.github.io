@@ -1,6 +1,6 @@
   <div #contact class="layout">
     <div class="contact-side">
-      <div class="contact-box">
+      <div #fadeItem class="contact-box fade-in">
         <div class="headers">
           <h2>Contact Me!</h2>
           <div class="social-links">
@@ -31,7 +31,7 @@
               <span class="spinner"></span>
             }
             @else {
-              Send
+              <span>Send</span>
             }
           </button>
             @if (sendEmailTriggered())
@@ -47,7 +47,7 @@
         </form>
       </div>
     </div>
-    <div class="stage-cube-cont">
+    <div #fadeItem class="stage-cube-cont fade-in">
       <div class="cubespinner">
 
       <div class="face1">
