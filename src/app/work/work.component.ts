@@ -1,5 +1,5 @@
-import {AfterViewInit, Component, effect, ElementRef, Injector, OnDestroy, ViewChild, ViewChildren} from '@angular/core';
-
+import {AfterViewInit, Component, effect, ElementRef, Injector, QueryList, OnDestroy, ViewChild, ViewChildren} from '@angular/core';
+import { Subscription } from 'rxjs';
 import {ThemeService} from '../theme.service';
 
 
@@ -125,6 +125,21 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     private injector: Injector,
   ) {}
 
+  @ViewChildren('fadeItem') fadeItems!: QueryList<ElementRef>;
+
+  private fadeObserver!: IntersectionObserver;
+  private fadeItemsSub?: Subscription;
+
+  private observeFadeItems(): void {
+    this.fadeItems.forEach((item) => {
+      const el = item.nativeElement;
+
+      if (!el.classList.contains('visible')) {
+        this.fadeObserver.observe(el);
+      }
+    });
+  }
+
   private mapReady = false;
 
   async ngAfterViewInit() {
@@ -179,6 +194,26 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
       },
       { injector: this.injector },
     );
+
+    this.fadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            this.fadeObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+
+    this.observeFadeItems();
+
+    this.fadeItemsSub = this.fadeItems.changes.subscribe(() => {
+      this.observeFadeItems();
+    });
   }
 
   private setupScrollObserver() {
@@ -214,7 +249,6 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
   }
 
   private addExperienceLayer() {
-
     if (this.map.hasImage('pulsing-dot')) {
       this.map.removeImage('pulsing-dot');
     }
@@ -315,7 +349,7 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
           labelHalo: 'rgba(236,250,255,0.95)',
         }
       : {
-          background: '#1A1A1A',
+          background: '#121417',
           landcover: '#111418',
           water: '#346666',
           waterShadow: '#346666',
@@ -448,5 +482,6 @@ export class WorkComponent implements AfterViewInit, OnDestroy {
     this.io?.disconnect();
     this.ro?.disconnect();
     this.map?.remove?.();
+    this.fadeObserver?.disconnect();
   }
 }

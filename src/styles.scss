@@ -34,20 +34,26 @@ body.light-theme {
 }
 
 :root {
-  --color-bg: #1A1A1A;
-  --color-text: #E6F7FF;
-  --color-text-rgb: 230, 247, 255;
-  --color-surface: #333333;
-  --color-primary: #00EFFF;
-  --color-primary-rgb: 0, 255, 255;
-  --color-primary-highlight: #00AAAA;
-  --color-accent: #e3fffe;
-  --color-surface-highlight: #8e8e8e;
-  --color-text-dark: #b9b9b9;
-  --color-error: #FF0000;
-  --color-button: #1A1D23;
-  --color-timeline: gray;
-  --color-textarea: #212121;
+  --color-bg: #121417;                 /* deeper, less flat than #1A1A1A */
+  --color-text: #EAFBFF;              /* slightly brighter, less blue tint */
+  --color-text-rgb: 234, 251, 255;
+
+  --color-surface: #1E2228;           /* more “UI surface” than gray */
+  --color-surface-highlight: #2A3038;
+
+  --color-primary: #00E6F0;           /* slightly softened cyan */
+  --color-primary-rgb: 0, 230, 240;
+  --color-primary-highlight: #00B8C4; /* richer hover/active */
+
+  --color-accent: #D9FEFF;            /* subtle glow accent */
+
+  --color-text-dark: #9AA4AE;         /* better muted text contrast */
+
+  --color-error: #FF4D4D;             /* less harsh than pure red */
+
+  --color-button: #1A1F26;            /* matches surface system */
+  --color-timeline: #3A424C;          /* replaces plain gray */
+  --color-textarea: #181C21;          /* slightly darker than surface */
 
   --shadow-inset: inset 0.2rem 0.2rem 0.8rem rgba(0, 0, 0, 0.8), inset -0.2rem -0.2rem 0.8rem rgba(255, 255, 255, 0.06);
   --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.9), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.1);
@@ -62,26 +68,35 @@ body.light-theme {
 
   --cube-size: clamp(12rem, 20vw, 20rem);
   --cube-half: calc(var(--cube-size) / 2);
+
+  --fade-height: 20vh;
 }
 
 /* Light Mode Overrides */
 .light-theme {
-  --color-bg: #e6f8ffff;
-  --color-text: #1A1D23;
-  --color-text-rgb: 26, 29, 35;
-  --color-primary: #29C2C2;
-  --color-primary-rgb: 41, 194, 194;
-  --color-surface: #f4fbff;
-  --color-surface-highlight: #FFFFFF;
-  --color-accent: #e3fffe;
-  --color-primary-highlight: #00AAAA;
-  --color-text-dark: #1A1C01;
-  --color-textarea: #dedede;
+  --color-bg: #F4FBFF;                /* remove extra alpha, cleaner base */
+  --color-text: #161A20;              /* slightly deeper for contrast */
+  --color-text-rgb: 22, 26, 32;
+
+  --color-primary: #1FCFD1;           /* more vibrant but still soft cyan */
+  --color-primary-rgb: 31, 207, 209;
+  --color-primary-highlight: #00AEB3; /* consistent with dark mode */
+
+  --color-surface: #FFFFFF;           /* true white for clarity */
+  --color-surface-highlight: #F0F7FA; /* subtle elevation */
+
+  --color-accent: #E0FFFF;            /* slightly cleaner cyan tint */
+
+  --color-text-dark: #5C6670;         /* usable muted text (not near-black) */
+
+  --color-textarea: #F2F4F6;          /* softer than #dedede */
 
   --shadow-inset: inset 0.2rem 0.2rem 0.8rem rgba(0, 0, 0, 0.15), inset -0.2rem -0.2rem 0.8rem rgba(255, 255, 255, 0.95);
   --shadow-inset-image: inset 0.4rem 0.4rem 0.8rem rgba(0, 0, 0, 0.4), inset -0.4rem -0.4rem 0.8rem rgba(255, 255, 255, 0.8);
   --shadow-card: 0.2rem 0.2rem 1rem rgba(0, 0, 0, 0.12), -0.15rem -0.15rem 0.8rem rgba(255, 255, 255, 0.8);
   --shadow-button: 0.15rem 0.15rem 0.5rem rgba(0, 0, 0, 0.2), -0.1rem -0.1rem 0.4rem rgba(255, 255, 255, 0.8);
+
+
 }
 
 app-root {

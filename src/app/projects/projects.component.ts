@@ -1,8 +1,9 @@
 import {
-  Component,
+  Component, ViewChildren, QueryList, ElementRef, AfterViewInit, OnDestroy
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HammerModule } from '@angular/platform-browser'
+import { Subscription } from 'rxjs';
 
 export interface Project {
   title: string,
@@ -19,7 +20,7 @@ export interface Project {
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss',
 })
-export class ProjectsComponent {
+export class ProjectsComponent implements AfterViewInit, OnDestroy {
   projects: Project[] = [
     {
       title: 'Portfolio Website',
@@ -83,6 +84,47 @@ export class ProjectsComponent {
 
   selectedIndex = 0;
   isTransitioning = false;
+
+  @ViewChildren('fadeItem') fadeItems!: QueryList<ElementRef>;
+
+  private fadeObserver!: IntersectionObserver;
+  private fadeItemsSub?: Subscription;
+
+  ngAfterViewInit(): void {
+    this.fadeObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            this.fadeObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: 0.1,
+      },
+    );
+
+    this.observeFadeItems();
+
+    this.fadeItemsSub = this.fadeItems.changes.subscribe(() => {
+      this.observeFadeItems();
+    });
+  }
+
+  private observeFadeItems(): void {
+    this.fadeItems.forEach((item) => {
+      const el = item.nativeElement;
+
+      if (!el.classList.contains('visible')) {
+        this.fadeObserver.observe(el);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.fadeObserver?.disconnect();
+  }
 
   getIndex(i: number): number {
     const total = this.projects.length;
